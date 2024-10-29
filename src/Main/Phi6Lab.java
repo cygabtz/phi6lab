@@ -1,10 +1,12 @@
+package Main;
+
 import processing.core.PApplet;
 import Constants.Colors;
 import static Constants.Layout.*;
 
 public class Phi6Lab extends PApplet {
     public static void main(String[] args) {
-        PApplet.main("Phi6Lab", args);
+        PApplet.main("Main.Phi6Lab", args);
     }
 
     @Override
@@ -21,6 +23,7 @@ public class Phi6Lab extends PApplet {
         frameRate(80);
         appColors = new Colors(this);
         gui = new GUI(this);
+        gui.buildScreen(GUI.SCREEN.HOME, this);
     }
 
     public void draw(){
@@ -32,18 +35,26 @@ public class Phi6Lab extends PApplet {
     //KEYBOARD INTERACTION ----------------------------------------------
     public void keyPressed(){
         if(key=='0'){
-            gui.setActualSecreen(GUI.SCREEN.HOME);
+            gui.buildScreen(GUI.SCREEN.HOME, this);
         }
         else if(key=='1'){
-            gui.setActualSecreen(GUI.SCREEN.SELECTION);
+            gui.buildScreen(GUI.SCREEN.SELECTION, this);
         }
         else if(key=='2'){
-            gui.setActualSecreen(GUI.SCREEN.ABOUT);
+            gui.buildScreen(GUI.SCREEN.SIMULATOR, this);
+        }
+        else if(key=='3'){
+            gui.buildScreen(GUI.SCREEN.ABOUT, this);
+        }
+        else if(key=='4'){
+            gui.buildScreen(GUI.SCREEN.SETTINGS, this);
         }
     }
 
     public void mousePressed(){
         println("X: "+mouseX+", Y:"+mouseY);
+
+        //Pendent
     }
 
     public void mouseDragged(){

@@ -20,7 +20,7 @@ public class Layout {
     //-------------------------------HOME-------------------------------
     // Side bar
     public static float sidebarWidth  = hRect - marginH*2, sidebarHeight = 6*vRect - 2*marginV;
-    public static float sideBarCardWidh = sidebarWidth - 2*marginH;
+    public static float sideBarCardWidth = sidebarWidth - 2*marginH;
 
     // Banner
     public static float bannerWidth  = (4*hRect) - marginH, bannerHeight = 2*vRect - 2*marginH;
