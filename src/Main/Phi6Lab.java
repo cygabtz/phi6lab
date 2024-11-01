@@ -1,5 +1,6 @@
 package Main;
 
+import Screens.HomeScreen;
 import processing.core.PApplet;
 import Constants.Colors;
 import static Constants.Layout.*;
@@ -43,7 +44,10 @@ public class Phi6Lab extends PApplet {
 
     public void mousePressed(){
         println("X: "+mouseX+", Y:"+mouseY);
+        HomeScreen hs = (HomeScreen) gui.screens[0];
+        if(hs.b1.mouseOverButton(this)){
 
+        }
     }
 
     public void mouseDragged(){

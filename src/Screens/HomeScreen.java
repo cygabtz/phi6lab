@@ -12,6 +12,7 @@ public class HomeScreen extends Screen {
     public Button b1;
 
     public HomeScreen(PApplet p5, Colors appColors){
+        super();
         this.appColors = appColors;
 
         b1 = new Button(p5, marginH*2, marginV*2,
@@ -38,5 +39,9 @@ public class HomeScreen extends Screen {
         p5.rect((2*marginH)+sidebarWidth, (2*marginV)+bannerHeight,
                 cardsZoneWidth, cardsZoneHeight, corner);
         p5.pop();
+    }
+
+    public Button getButtonRef(){
+        return b1;
     }
 }
