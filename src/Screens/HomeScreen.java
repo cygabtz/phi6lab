@@ -1,22 +1,18 @@
 package Screens;
-import Components.Button;
-import Constants.Colors;
-import Main.GUI;
+
+
 import processing.core.PApplet;
-
-import java.awt.*;
-
 import static Constants.Layout.*;
-import static Constants.Layout.corner;
-
-public class HomeScreen implements Iscreen {
-
-    Constants.Colors appColors;
-    Components.Button b1;
+import Constants.Colors;
+import Components.Button;
 
 
-    public HomeScreen(PApplet p5){
-        appColors = new Colors(p5);
+public class HomeScreen extends Screen {
+    Colors appColors;
+    public Button b1;
+
+    public HomeScreen(PApplet p5, Colors appColors){
+        this.appColors = appColors;
 
         b1 = new Button(p5, marginH*2, marginV*2,
                 sidebarWidth-marginH*2, 200);

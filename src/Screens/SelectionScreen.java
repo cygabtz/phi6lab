@@ -2,7 +2,7 @@ package Screens;
 
 import processing.core.PApplet;
 
-public class SelectionScreen implements Iscreen{
+public class SelectionScreen extends Screen {
     public SelectionScreen(PApplet p5){
 
     }

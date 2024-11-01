@@ -22,8 +22,8 @@ public class Phi6Lab extends PApplet {
     public void setup(){
         frameRate(80);
         appColors = new Colors(this);
-        gui = new GUI(this);
-        gui.buildScreen(GUI.SCREEN.HOME, this);
+        gui = new GUI(this, appColors);
+
     }
 
     public void draw(){
@@ -34,27 +34,16 @@ public class Phi6Lab extends PApplet {
 
     //KEYBOARD INTERACTION ----------------------------------------------
     public void keyPressed(){
-        if(key=='0'){
-            gui.buildScreen(GUI.SCREEN.HOME, this);
-        }
-        else if(key=='1'){
-            gui.buildScreen(GUI.SCREEN.SELECTION, this);
-        }
-        else if(key=='2'){
-            gui.buildScreen(GUI.SCREEN.SIMULATOR, this);
-        }
-        else if(key=='3'){
-            gui.buildScreen(GUI.SCREEN.ABOUT, this);
-        }
-        else if(key=='4'){
-            gui.buildScreen(GUI.SCREEN.SETTINGS, this);
+        int keyNum = Character.getNumericValue(key);
+        if(keyNum>=0 && keyNum<=5){
+            println("Key reference: " + Character.getNumericValue(key));
+            gui.setActualScreen(GUI.SCREEN.values()[keyNum]);
         }
     }
 
     public void mousePressed(){
         println("X: "+mouseX+", Y:"+mouseY);
 
-        //Pendent
     }
 
     public void mouseDragged(){

@@ -2,7 +2,7 @@ package Screens;
 
 import processing.core.PApplet;
 
-public class SettingsScreen implements Iscreen {
+public class SettingsScreen extends Screen {
     public SettingsScreen(PApplet p5){
 
     }

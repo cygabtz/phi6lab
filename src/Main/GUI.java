@@ -10,38 +10,39 @@ import static Constants.Layout.*;
 public class GUI {
 
     public enum SCREEN {HOME, SELECTION, SIMULATOR, SETTINGS, ABOUT};
+    private SCREEN actualSecreenType;
+    private Screen actualScreen;
+    public Screen[] screens;
 
-    private SCREEN actualSecreen;
-    private Iscreen actualIscreen;
     private final Colors appColors;
     private Fonts fonts;
 
 
-    public GUI(PApplet p5){
-        actualSecreen = SCREEN.HOME;
-        appColors = new Colors(p5);
+    public GUI(PApplet p5, Colors appColors){
+        // Make p5 an attribute??
+        this.appColors = appColors;
+
+        initializeScreens(p5);
+        setActualScreen(SCREEN.HOME);
     }
 
-    public void buildScreen(SCREEN screen, PApplet p5){
-        switch(screen){
-            case HOME:      actualIscreen = new HomeScreen(p5);       break;
-            case SELECTION: actualIscreen = new SelectionScreen(p5);  break;
-            case SIMULATOR: actualIscreen = new SimulatorScreen(p5);  break;
-            case ABOUT:     actualIscreen = new AboutScreen(p5);      break;
-            case SETTINGS:  actualIscreen = new SettingsScreen(p5);   break;
-        }
+    public void initializeScreens(PApplet p5){
+        screens = new Screen[5];
+        screens[0] = new HomeScreen(p5, appColors);
+        screens[1] = new SelectionScreen(p5);
+        screens[2] = new SimulatorScreen(p5);
+        screens[3] = new SettingsScreen(p5);
+        screens[4] = new AboutScreen(p5);
     }
-    public boolean isScreenBuilt(SCREEN screen){
-        return false;//pendent
+
+    public void setActualScreen(SCREEN screenType){
+        actualSecreenType = screenType;
+        actualScreen = screens[screenType.ordinal()];
     }
 
     public void displayActualScreen(PApplet p5){
         displayGrid(p5);
-        actualIscreen.display(p5);
-    }
-
-    public Iscreen getActualIScreen(){
-        return actualIscreen;
+        actualScreen.display(p5);
     }
 
     public void displayGrid(PApplet p5){

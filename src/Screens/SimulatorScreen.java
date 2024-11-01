@@ -1,9 +1,8 @@
 package Screens;
 
-import Screens.Iscreen;
 import processing.core.PApplet;
 
-public class SimulatorScreen implements Iscreen {
+public class SimulatorScreen extends Screen {
     public SimulatorScreen(PApplet p5){
 
     }
