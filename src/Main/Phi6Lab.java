@@ -1,5 +1,7 @@
 package Main;
 
+
+import Constants.Fonts;
 import Screens.HomeScreen;
 import processing.core.PApplet;
 import Constants.Colors;
@@ -19,12 +21,13 @@ public class Phi6Lab extends PApplet {
 
     Colors appColors;
     GUI gui;
+    Fonts fonts;
 
     public void setup(){
         frameRate(80);
         appColors = new Colors(this);
-        gui = new GUI(this, appColors);
-
+        fonts = new Fonts(this);
+        gui = new GUI(this, appColors, fonts);
     }
 
     public void draw(){
@@ -44,9 +47,11 @@ public class Phi6Lab extends PApplet {
 
     public void mousePressed(){
         println("X: "+mouseX+", Y:"+mouseY);
+
         HomeScreen hs = (HomeScreen) gui.screens[0];
         if(hs.b1.mouseOverButton(this)){
-
+            hs.b1.setEnabled(true);
+            hs.b1.setButtonText("ENABLED");
         }
     }
 

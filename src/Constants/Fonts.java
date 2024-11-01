@@ -14,8 +14,4 @@ public class Fonts {
         this.fonts[1] = p5.createFont("data/fonts/Rubik-SemiBold.ttf", Sizes.widgetHeading);
         this.fonts[2] = p5.createFont("data/fonts/Rubik-Light.ttf", Sizes.details);
     }
-
-    public PFont getWidgetHeading(){
-        return fonts[1];
-    }
 }

@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Changed IScreen interface to Screen class">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/solucioInfo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/solucioInfo.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Button.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Button.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants/Fonts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants/Fonts.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/GUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main/Phi6Lab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/Phi6Lab.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/HomeScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/HomeScreen.java" afterDir="false" />
@@ -55,7 +58,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/benit/Documents/processing-4.3/core/library/windows-amd64/newt_head.dll",
+    "last_opened_file_path": "C:/Users/benit/OneDrive/Documentos/processing-4.3-windows-x64/processing-4.3/core/library/jogl-all.jar",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",

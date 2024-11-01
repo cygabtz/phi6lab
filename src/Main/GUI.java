@@ -14,20 +14,15 @@ public class GUI {
     private SCREEN actualSecreenType;
     private Screen actualScreen;
     public Screen[] screens;
-    public HomeScreen hs;
-    public SelectionScreen ss;
 
     private final Colors appColors;
     private Fonts fonts;
 
 
-    public GUI(PApplet p5, Colors appColors){
+    public GUI(PApplet p5, Colors appColors, Fonts fonts){
         // Make p5 an attribute??
         this.appColors = appColors;
-
-
-        ss = new SelectionScreen(p5);
-        hs = new HomeScreen(p5, appColors);
+        this.fonts = fonts;
 
         initializeScreens(p5);
 
@@ -37,11 +32,11 @@ public class GUI {
     public void initializeScreens(PApplet p5){
         screens = new Screen[5];
 
-        screens[0] = hs;
-        screens[1] = ss;
-//        screens[2] = new SimulatorScreen(p5);
-//        screens[3] = new SettingsScreen(p5);
-//        screens[4] = new AboutScreen(p5);
+        screens[0] = new HomeScreen(p5, appColors, fonts);
+        screens[1] = new SelectionScreen(p5);
+        screens[2] = new SimulatorScreen(p5);
+        screens[3] = new SettingsScreen(p5);
+        screens[4] = new AboutScreen(p5);
     }
 
     public void setActualScreen(SCREEN screenType){

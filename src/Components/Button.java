@@ -1,5 +1,7 @@
 package Components;
 import processing.core.PApplet;
+import processing.core.PFont;
+
 import static Constants.Layout.*;
 public class Button {
     private float x, y;
@@ -7,7 +9,8 @@ public class Button {
     private int fillColor, strokeColor;
     private int fillColorOver, fillColorDisabled;
     private boolean enabled;
-    private String buttonTittle;
+    private String buttonText;
+    private PFont textFont;
 
     public Button(PApplet p5, float x, float y, float width, float height){
         this.x = x;
@@ -23,8 +26,9 @@ public class Button {
         this.strokeColor = p5.color(0);
 
         //Text
-        buttonTittle = "New Button";
+        buttonText = "New Button";
     }
+
     //Setters
     public void setColors(int fillColor, int strokeColor,
                           int fillColorOver, int fillColorDisabled){
@@ -34,11 +38,15 @@ public class Button {
         this.strokeColor = fillColorDisabled;
     }
 
+    public void setFont(PFont font){
+        this.textFont = font;
+    }
+
     public void setEnabled(boolean b){
         this.enabled = b;
     }
 
-    public void setTextBoto(String t){ this.buttonTittle = t; }
+    public void setButtonText(String t){ this.buttonText = t; }
 
     //Getters
     public boolean isEnabled(){
@@ -56,13 +64,14 @@ public class Button {
         else{
             p5.fill(fillColor);          // mouse is out of the button
         }
+
         //Button properties
         p5.stroke(strokeColor); p5.strokeWeight(2);
         p5.rect(this.x, this.y, this.width, this.height, corner);
 
         // Text properties
-        p5.fill(0); p5.textAlign(p5.CENTER); p5.textSize(20);
-        p5.text(buttonTittle, this.x + this.width/2, this.y + this.height/2 + 10);
+        p5.fill(0); p5.textAlign(p5.CENTER); p5.textSize(20); p5.textFont(textFont);
+        p5.text(buttonText, this.x + this.width/2, this.y + this.height/2 + 10);
         p5.popStyle();
     }
 
