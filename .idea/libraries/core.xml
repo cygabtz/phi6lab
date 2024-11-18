@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="core">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Documents/processing-4.3/core/library/core.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/processing-4.3/core/library/gluegen-rt.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/processing-4.3/core/library/jogl-all.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://$USER_HOME$/Documents/processing-4.3/core/library/windows-amd64" />
+      <root url="file://$USER_HOME$/Documents/processing-4.3/core/library/windows-amd64" />
+      <root url="file://$USER_HOME$/Documents/processing-4.3/core/library/windows-amd64" />
+      <root url="file://$USER_HOME$/Documents/processing-4.3/core/library/windows-amd64" />
+      <root url="file://$USER_HOME$/Documents/processing-4.3/core/library/windows-amd64" />
+      <root url="file://$USER_HOME$/Documents/processing-4.3/core/library/windows-amd64" />
+    </NATIVE>
+    <SOURCES />
+  </library>
+</component>

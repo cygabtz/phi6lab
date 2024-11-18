@@ -1,52 +1,55 @@
 package Main;
 
-import Components.Button;
 import Screens.*;
+
+import processing.core.PApplet;
 import Constants.Colors;
 import Constants.Fonts;
-import processing.core.PApplet;
-
-import static Constants.Layout.*; 
+import static Constants.Layout.*;
 
 public class GUI {
+    //Processing Attributes
+    public PApplet p5;
+    public final Colors appColors;
+    public Fonts fonts;
 
-    public enum SCREEN {HOME, SELECTION, SIMULATOR, SETTINGS, ABOUT};
-    private SCREEN actualSecreenType;
-    private Screen actualScreen;
+    //Screen switching control
+    public enum SCREEN {HOME, SELECTION, SIMULATOR, SETTINGS, ABOUT}
+    public SCREEN currentSCREEN;
+    public Screen currentScreen;
     public Screen[] screens;
-
-    private final Colors appColors;
-    private Fonts fonts;
 
 
     public GUI(PApplet p5, Colors appColors, Fonts fonts){
-        // Make p5 an attribute??
+        this.p5 = p5;
         this.appColors = appColors;
         this.fonts = fonts;
 
         initializeScreens(p5);
+        currentScreen = new Screen(p5, appColors, fonts);
+        setCurrentScreen(SCREEN.HOME);
+    }
 
-        setActualScreen(SCREEN.HOME);
+    public void setCurrentScreen(SCREEN screenType){
+        currentSCREEN = screenType;
+        currentScreen = screens[screenType.ordinal()];
     }
 
     public void initializeScreens(PApplet p5){
         screens = new Screen[5];
 
         screens[0] = new HomeScreen(p5, appColors, fonts);
-        screens[1] = new SelectionScreen(p5);
-        screens[2] = new SimulatorScreen(p5);
-        screens[3] = new SettingsScreen(p5);
-        screens[4] = new AboutScreen(p5);
-    }
-
-    public void setActualScreen(SCREEN screenType){
-        actualSecreenType = screenType;
-        actualScreen = screens[screenType.ordinal()];
+        screens[1] = new SelectionScreen(p5, appColors, fonts);
+        screens[2] = new SimulatorScreen(p5, appColors, fonts);
+        screens[3] = new SettingsScreen(p5, appColors, fonts);
+        screens[4] = new AboutScreen(p5, appColors, fonts);
     }
 
     public void displayActualScreen(PApplet p5){
         displayGrid(p5);
-        actualScreen.display(p5);
+
+        //Normal execution
+        currentScreen.display(p5);
     }
 
     public void displayGrid(PApplet p5){

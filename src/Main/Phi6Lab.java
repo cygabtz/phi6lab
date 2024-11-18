@@ -1,11 +1,12 @@
 package Main;
 
-
-import Constants.Fonts;
-import Screens.HomeScreen;
+//Processing properties
 import processing.core.PApplet;
 import Constants.Colors;
+import Constants.Fonts;
 import static Constants.Layout.*;
+
+
 
 public class Phi6Lab extends PApplet {
     public static void main(String[] args) {
@@ -41,18 +42,20 @@ public class Phi6Lab extends PApplet {
         int keyNum = Character.getNumericValue(key);
         if(keyNum>=0 && keyNum<=5){
             println("Key reference: " + Character.getNumericValue(key));
-            gui.setActualScreen(GUI.SCREEN.values()[keyNum]);
+            gui.setCurrentScreen(GUI.SCREEN.values()[keyNum]);
         }
     }
 
     public void mousePressed(){
         println("X: "+mouseX+", Y:"+mouseY);
 
-        HomeScreen hs = (HomeScreen) gui.screens[0];
-        if(hs.b1.mouseOverButton(this)){
-            hs.b1.setEnabled(true);
-            hs.b1.setButtonText("ENABLED");
+        if (gui.currentScreen instanceof Screens.HomeScreen hs){
+            if(hs.b1.mouseOverButton(this)){
+                hs.b1.setEnabled(true);
+                hs.b1.setButtonText("ENABLED");
+            }
         }
+
     }
 
     public void mouseDragged(){
