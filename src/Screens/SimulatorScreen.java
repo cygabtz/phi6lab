@@ -4,14 +4,16 @@ package Screens;
 import processing.core.PApplet;
 import Constants.Fonts;
 import Constants.Colors;
+import processing.core.PFont;
 
 public class SimulatorScreen extends Screen {
-    public SimulatorScreen(PApplet p5, Colors appColors, Fonts fonts){
+    public SimulatorScreen(PApplet p5, Constants.Colors appColors, Constants.Fonts fonts){
         super(p5, appColors, fonts);
+
     }
 
     @Override
-    public void display(PApplet p5) {
+    public void display() {
 
     }
 }

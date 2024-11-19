@@ -53,6 +53,10 @@ public class Button {
         return  this.enabled;
     }
 
+    public String getButtonText(){
+        return buttonText;
+    }
+
     public void display(PApplet p5){
         p5.pushStyle();
         if(!enabled){
@@ -70,7 +74,8 @@ public class Button {
         p5.rect(this.x, this.y, this.width, this.height, corner);
 
         // Text properties
-        p5.fill(0); p5.textAlign(p5.CENTER); p5.textSize(20); p5.textFont(textFont);
+        p5.fill(0); p5.textAlign(p5.CENTER); p5.textSize(20);
+        p5.textFont(textFont);
         p5.text(buttonText, this.x + this.width/2, this.y + this.height/2 + 10);
         p5.popStyle();
     }

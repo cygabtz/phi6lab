@@ -4,14 +4,14 @@ import Screens.*;
 
 import processing.core.PApplet;
 import Constants.Colors;
-import Constants.Fonts;
+
 import static Constants.Layout.*;
 
 public class GUI {
     //Processing Attributes
     public PApplet p5;
     public final Colors appColors;
-    public Fonts fonts;
+    public Constants.Fonts appFonts;
 
     //Screen switching control
     public enum SCREEN {HOME, SELECTION, SIMULATOR, SETTINGS, ABOUT}
@@ -20,13 +20,13 @@ public class GUI {
     public Screen[] screens;
 
 
-    public GUI(PApplet p5, Colors appColors, Fonts fonts){
+    public GUI(PApplet p5, Colors appColors, Constants.Fonts appFonts){
         this.p5 = p5;
         this.appColors = appColors;
-        this.fonts = fonts;
+        this.appFonts = appFonts;
 
         initializeScreens(p5);
-        currentScreen = new Screen(p5, appColors, fonts);
+        currentScreen = new Screen(p5, appColors, appFonts);
         setCurrentScreen(SCREEN.HOME);
     }
 
@@ -38,18 +38,18 @@ public class GUI {
     public void initializeScreens(PApplet p5){
         screens = new Screen[5];
 
-        screens[0] = new HomeScreen(p5, appColors, fonts);
-        screens[1] = new SelectionScreen(p5, appColors, fonts);
-        screens[2] = new SimulatorScreen(p5, appColors, fonts);
-        screens[3] = new SettingsScreen(p5, appColors, fonts);
-        screens[4] = new AboutScreen(p5, appColors, fonts);
+        screens[0] = new HomeScreen(p5, appColors, appFonts);
+        screens[1] = new SelectionScreen(p5, appColors, appFonts);
+        screens[2] = new SimulatorScreen(p5, appColors, appFonts);
+        screens[3] = new SettingsScreen(p5, appColors, appFonts);
+        screens[4] = new AboutScreen(p5, appColors, appFonts);
     }
 
     public void displayActualScreen(PApplet p5){
-        displayGrid(p5);
+        //displayGrid(p5);
 
         //Normal execution
-        currentScreen.display(p5);
+        currentScreen.display();
     }
 
     public void displayGrid(PApplet p5){
