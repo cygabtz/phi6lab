@@ -40,7 +40,7 @@ public class Phi6Lab extends PApplet {
     //KEYBOARD INTERACTION ----------------------------------------------
     public void keyPressed(){
         //Printing key
-        System.out.println("keyPressed(): key: " + key + " with keyCode: " + keyCode);
+//        System.out.println("keyPressed(): key: " + key + " with keyCode: " + keyCode);
 
         //Screen switching (temporal)
         int keyNum = Character.getNumericValue(key);
@@ -51,13 +51,10 @@ public class Phi6Lab extends PApplet {
 
 
         if (gui.currentScreen instanceof Screens.HomeScreen hs){
-            //TextField
-            hs.searchBar.keyPressed(key, keyCode);
-
             //TextList
-            if(hs.tList.getTextField().mouseOverTextField(this)){
-                hs.tList.getTextField().keyPressed(key, keyCode);
-                hs.tList.update(this, appFonts);
+            if(hs.searchBar.getTextField().mouseOverTextField(this)){
+                hs.searchBar.getTextField().keyPressed(key, keyCode);
+                hs.searchBar.update(this, appFonts);
             }
         }
     }
@@ -67,21 +64,16 @@ public class Phi6Lab extends PApplet {
 
         if (gui.currentScreen instanceof Screens.HomeScreen hs){
             //"Create" button
-            if(hs.b1.mouseOverButton(this)){
-                hs.b1.setEnabled(true);
-                hs.b1.setButtonText("ENABLED");
+            if(hs.createButton.mouseOverButton(this)){
+                hs.createButton.setEnabled(true);
+                hs.createButton.setText("ENABLED");
             }
-            //TextField
-            hs.searchBar.isPressed(this);
             //TextList
-
-            if(hs.b.mouseOverButton(this) && hs.b.isEnabled()){
-                hs.selectedText = hs.tList.getSelectedValue();
+            if(hs.searchButton.mouseOverButton(this) && hs.searchButton.isEnabled()){
+                hs.selectedText = hs.searchBar.getSelectedValue();
             }
-
-            // Mirarm si pitjam damunt el textList (camp de text o botó)
-            hs.tList.getTextField().isPressed(this);
-            hs.tList.buttonPressed(this);
+            hs.searchBar.getTextField().isPressed(this);
+            hs.searchBar.buttonPressed(this);
         }
 
     }

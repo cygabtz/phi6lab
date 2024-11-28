@@ -1,62 +1,60 @@
 package Screens;
 
-import Components.TextField;
 import Components.TextList;
 import Constants.Colors;
-import Constants.Fonts;
 
 import processing.core.PApplet;
 import static Constants.Layout.*;
 import static processing.core.PConstants.*;
 
 import Components.Button;
-import processing.core.PFont;
 
 
 public class HomeScreen extends Screen {
-    public Button b1;
-    public TextField searchBar;
+    //Create Button ---------------------------
+    public Button createButton;
 
-    //TextList
-    public TextList tList;
-    public Button b;
-    String[][] listValues = {{"0", "Alemania"},{"1", "Angola"},{"2", "Canada"}, {"3", "Brasil"}};
+    //TextList Searchbar ----------------------
+    public TextList searchBar;
+    public Button searchButton;
+    String[][] simuList = {{"0", "Alemania"},{"1", "Angola"},{"2", "Canada"}, {"3", "Brasil"}};
     public String selectedText;
-    float tListW = 600, tListH = 60; float buttonW = 120, buttonH = 60;
+
+    //Logo buttons ---------------------------
+    public Button info, settings;
 
     public HomeScreen(PApplet p5, Colors appColors, Constants.Fonts appFonts){
         super(p5, appColors, appFonts);
 
-        //Buttons --------------------------------
-        b1 = new Button(this.p5, marginH, marginV, hRect-marginV*2, vRect-marginH*2);
-        b1.setButtonText("Create Simulator");
-        b1.setFont(this.appFonts.fonts[1]);
+        //Create Button --------------------------------
+        createButton = new Button(this.p5, marginH, marginV,
+                hRect-marginV*2, vRect-marginH*2);
+        createButton.setText("Create Simulator");
+        createButton.setFont(this.appFonts.fonts[1]);
 
-        //SearchBar ------------------------------
-        searchBar = new TextField(this.p5, marginH, vRect+marginH, hRect-marginV*2, vRect/2);
-        float width = screenH; float height = screenV;
+        //SearchBar -------------------------------------
+        float searchBarWidth = hRect-marginV*5;
+        searchBar = new TextList(this.p5, simuList, marginV, vRect+marginH,
+                searchBarWidth, ((vRect-2*marginH)/2)-(marginH)/2);
 
-        tList = new TextList(this.p5, listValues, width/8, height/12, tListW, tListH);
+        searchButton = new Button(this.p5, searchBarWidth+marginV+5, vRect+marginH,
+                hRect-searchBarWidth-marginV*2, ((vRect-2*marginH)/2)-(marginH)/2);
+        searchButton.setText("S"); searchButton.setFont(this.appFonts.fonts[1]);
 
-        b = new Button(this.p5, 3*width/4, height/12, buttonW, buttonH);
-        b.setButtonText("TRIA");
-        b.setFont(this.appFonts.fonts[1]);
+        //Buttons with logo
+        info = new Button(this.p5, marginV, marginH*2+vRect*2,
+                searchBarWidth, (vRect-2*marginH)/2);
     }
 
     @Override
     public void display() {
         p5.push();
 
-        //Sidebar Area ----------------------------------------------------
-//        p5.fill(this.appColors.bgBlack());
-//        p5.strokeWeight(2); p5.stroke(0);
-//        p5.rect(marginH, marginV, sidebarWidth, sidebarHeight, corner);
-        //SearchBar
-//        searchBar.display(p5);
+        //TextList searchbar ----------------------------------------------
+        this.searchBar.display(p5);
+        this.searchButton.display(p5);
+        this.updateCursor(p5);
 
-        this.tList.display(p5);
-        this.b.display(p5);
-//        this.updateCursor(p5);
 
         if(selectedText!=null){
             p5.pushStyle();
@@ -65,22 +63,29 @@ public class HomeScreen extends Screen {
             p5.popStyle();
         }
 
-        //Create simulator button
-//        b1.display(p5);
+        //Sidebar Area ----------------------------------------------------
+//        p5.fill(this.appColors.bgBlack());
+//        p5.strokeWeight(2); p5.stroke(0);
+//        p5.rect(marginH, marginV, sidebarWidth, sidebarHeight, corner);
 
-//        //Banner     ----------------------------------------------------
-//        p5.fill(this.appColors.bgGrey()); p5.noStroke();
-//        p5.rect((2*marginH)+sidebarWidth, marginV,
-//                bannerWidth, bannerHeight, corner);
-//
-//        //Cards Zone ----------------------------------------------------
-//        p5.fill(this.appColors.bgGrey());
-//        p5.rect((2*marginH)+sidebarWidth, (2*marginV)+bannerHeight,
-//                cardsZoneWidth, cardsZoneHeight, corner);
+        //Banner Area -----------------------------------------------------
+        p5.fill(this.appColors.bgGrey()); p5.noStroke();
+        float bannerWidth = (4*hRect)-marginV*2;
+        float bannerHeight = 2*vRect - 2*marginH;
+        p5.rect(hRect+marginV, marginV, bannerWidth, bannerHeight, corner);
+
+        //Cards Area ------------------------------------------------------
+        p5.fill(this.appColors.bgGrey());
+        p5.rect(hRect+marginV, (2*marginV)+bannerHeight,
+                bannerWidth, 4*vRect - marginV, corner);
+
+        //Create simulator button -----------------------------------------
+        createButton.display(p5);
+
         p5.pop();
     }
     private void updateCursor(PApplet p5){
-        if( b.mouseOverButton(p5) || tList.mouseOverButtons(p5)){
+        if(searchButton.mouseOverButton(p5) || searchBar.mouseOverButtons(p5) || searchBar.getTextField().mouseOverTextField(p5)){
             p5.cursor(HAND);
         }
         else {

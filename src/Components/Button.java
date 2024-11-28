@@ -46,7 +46,7 @@ public class Button {
         this.enabled = b;
     }
 
-    public void setButtonText(String t){ this.buttonText = t; }
+    public void setText(String t){ this.buttonText = t; }
 
     //Getters
     public boolean isEnabled(){

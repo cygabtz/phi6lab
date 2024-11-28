@@ -22,10 +22,4 @@ public class Layout {
     public static float sidebarWidth  = hRect - marginH*2, sidebarHeight = 6*vRect - 2*marginV;
     public static float sideBarCardWidth = sidebarWidth - 2*marginH;
 
-    // Banner
-    public static float bannerWidth  = (4*hRect) - marginH, bannerHeight = 2*vRect - 2*marginH;
-
-    // Cards Zone
-    public static float cardsZoneWidth  = 4*hRect - marginH, cardsZoneHeight = 4*vRect - marginV;
-
 }

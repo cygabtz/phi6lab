@@ -46,7 +46,7 @@ public class GUI {
     }
 
     public void displayActualScreen(PApplet p5){
-        //displayGrid(p5);
+        displayGrid(p5);
 
         //Normal execution
         currentScreen.display();

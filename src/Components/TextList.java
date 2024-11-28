@@ -36,9 +36,12 @@ public class TextList {
         p5.pushStyle();
         textField.display(p5);
 
-        for(Button b : buttons){
-            b.display(p5);
+        if(textField.selected){
+            for(Button b : buttons){
+                b.display(p5);
+            }
         }
+
         p5.popStyle();
     }
 
@@ -61,8 +64,9 @@ public class TextList {
         if (searchFor.length() > 0) {
             for (int i=0; i<texts.length; i++) {
                 if (texts[i][1].startsWith(searchFor)) {
-                    Button b = new Button(p5, x + 10, y + h + 50 + (h + 50)*numMatchs, w, h);
-                    b.setButtonText(texts[i][1]);
+                    int s = 10; //Space between buttons
+                    Button b = new Button(p5, x, y + h + s + (h + s)*numMatchs, w, h);
+                    b.setText(texts[i][1]);
                     b.setFont(appFonts.fonts[1]);
                     buttons.add(b);
                     this.numMatchs++;
