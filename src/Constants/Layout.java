@@ -9,7 +9,7 @@ public class Layout {
     public final static float screenV = Toolkit.getDefaultToolkit().getScreenSize().height;
 
     // Horizontal and vertical margins
-    public static float marginH = 30, marginV = 30;
+    public static float hMargin = 30, vMargin = 30;
 
     //Guidelines rectangles (5:6)
     public static float hRect = screenH/5, vRect = screenV/6;
@@ -19,7 +19,7 @@ public class Layout {
 
     //-------------------------------HOME-------------------------------
     // Side bar
-    public static float sidebarWidth  = hRect - marginH*2, sidebarHeight = 6*vRect - 2*marginV;
-    public static float sideBarCardWidth = sidebarWidth - 2*marginH;
+    public static float sidebarWidth  = hRect - hMargin *2, sidebarHeight = 6*vRect - 2* vMargin;
+    public static float sideBarCardWidth = sidebarWidth - 2* hMargin;
 
 }

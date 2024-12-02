@@ -1,4 +1,5 @@
 package Components;
+import Constants.Fonts;
 import processing.core.PApplet;
 import processing.core.PFont;
 
@@ -23,10 +24,12 @@ public class Button {
         this.fillColor = p5.color(155, 55, 155);
         this.fillColorOver = p5.color(255, 55, 155);
         this.fillColorDisabled = p5.color(150);
-        this.strokeColor = p5.color(0);
+        this.strokeColor = p5.color(255);
 
         //Text
         buttonText = "New Button";
+        PFont defaultFont = new Fonts(p5).fonts[0];
+        setFont(defaultFont);
     }
 
     //Setters
@@ -55,6 +58,43 @@ public class Button {
 
     public String getButtonText(){
         return buttonText;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public PFont getTextFont() {
+        return textFont;
+    }
+
+    //Color getters
+    public int getFillColor() {
+        return fillColor;
+    }
+
+    public int getStrokeColor() {
+        return strokeColor;
+    }
+
+    public int getFillColorOver() {
+        return fillColorOver;
+    }
+
+    public int getFillColorDisabled() {
+        return fillColorDisabled;
     }
 
     public void display(PApplet p5){
