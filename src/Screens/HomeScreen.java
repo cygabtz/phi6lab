@@ -1,6 +1,7 @@
 package Screens;
 
 import Components.Card;
+import Components.Gallery;
 import Components.TextList;
 import Constants.Colors;
 
@@ -10,6 +11,8 @@ import static processing.core.PConstants.*;
 
 import Components.Button;
 
+import javax.management.ConstructorParameters;
+
 
 public class HomeScreen extends Screen {
     //Create Button ---------------------------
@@ -18,25 +21,29 @@ public class HomeScreen extends Screen {
     //TextList Searchbar ----------------------
     public TextList searchBar;
     public Button searchButton;
-    String[][] simuList = {{"0", "Alemania"},{"1", "Angola"},{"2", "Canada"}, {"3", "Brasil"}};
+    String[][] simuList = {{"0", "SimuA"},{"1", "SimuB"},{"2", "SimuC"}, {"3", "SimuD"}};
     public String selectedText;
 
     //Logo buttons ---------------------------
     public Button info, settings;
 
+    //Banner ---------------------------------
+    float bannerWidth = (4*hRect)- vMargin *2;
+    float bannerHeight = 2*vRect - 2* hMargin;
+
     //Cards Gallery --------------------------
-    Card card;
+    Gallery gallery;
 
     public HomeScreen(PApplet p5, Colors appColors, Constants.Fonts appFonts){
         super(p5, appColors, appFonts);
 
-        //Create Button --------------------------------
+        //Create Button ------------------------------------------------------------------
         createButton = new Button(this.p5, hMargin, vMargin,
                 hRect - vMargin *2, vRect - hMargin *2);
         createButton.setText("Create Simulator");
         createButton.setFont(this.appFonts.fonts[1]);
 
-        //SearchBar -------------------------------------
+        //SearchBar -----------------------------------------------------------------------
         float m = 10;
         float searchBarWidth = hRect - vMargin *5 - m;
         searchBar = new TextList(this.p5, simuList, vMargin, vRect+ hMargin,
@@ -46,7 +53,7 @@ public class HomeScreen extends Screen {
                 hRect-searchBarWidth- vMargin *2, ((vRect-2* hMargin)/2)-(hMargin)/2);
         searchButton.setText("S"); searchButton.setFont(this.appFonts.fonts[1]);
 
-        //Extra Buttons
+        //Extra Buttons---------------------------------------------------------------------
 
         float bHeight = (vRect - vMargin*3) / 2;
         float bWidth = hRect - 2*hMargin - bHeight - m;
@@ -56,16 +63,18 @@ public class HomeScreen extends Screen {
         settings = new Button(this.p5, hMargin+bHeight+m, 4*vRect + vMargin*2 +bHeight,
                 bWidth, bHeight);
 
-        //Cards gallery ------------------------------
-        card = new Card(p5, 500, 500, 250, 500);
-        card.setTitle("Card Example");
-
+        //Cards gallery ---------------------------------------------------------------------
+        gallery = new Gallery(p5, 6, hRect+ vMargin, (2* vMargin)+bannerHeight,
+                400, 400);
+        gallery.setCards(p5);
     }
 
     @Override
     public void display() {
         p5.push();
-        //****************** SIDEBAR AREA ********************************
+        //****************************************************************
+        //*********************** SIDEBAR AREA ***************************
+        //****************************************************************
 
         //Create simulator button -----------------------------------------
         createButton.display(p5);
@@ -81,11 +90,6 @@ public class HomeScreen extends Screen {
             p5.popStyle();
         }
 
-        //Sidebar Area ----------------------------------------------------
-//        p5.fill(this.appColors.bgBlack());
-//        p5.strokeWeight(2); p5.stroke(0);
-//        p5.rect(marginH, marginV, sidebarWidth, sidebarHeight, corner);
-
         //Extra buttons ---------------------------------------------------
         info.display(p5);
         settings.display(p5);
@@ -93,17 +97,21 @@ public class HomeScreen extends Screen {
         p5.rect(hMargin, info.getY(), info.getHeight(), info.getHeight(), corner);
         p5.rect(hMargin, settings.getY(), settings.getHeight(), info.getHeight(), corner);
 
+        //****************************************************************
+        //*********************** GALLERY AREA ***************************
+        //****************************************************************
+
         //Banner Area -----------------------------------------------------
         p5.fill(this.appColors.bgGrey()); p5.noStroke();
-        float bannerWidth = (4*hRect)- vMargin *2;
-        float bannerHeight = 2*vRect - 2* hMargin;
+
         p5.rect(hRect+ vMargin, vMargin, bannerWidth, bannerHeight, corner);
 
         //Cards Area ------------------------------------------------------
         p5.fill(this.appColors.bgLightGrey());
         p5.rect(hRect+ vMargin, (2* vMargin)+bannerHeight,
                 bannerWidth, 4*vRect - vMargin, corner);
-        card.display(p5);
+
+        gallery.display(p5);
 
         p5.pop();
     }
