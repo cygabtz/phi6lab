@@ -7,16 +7,15 @@ import java.time.format.DateTimeFormatter;
 public class Simulator {
     private String id;
     private String title;
-    public enum SIMU_TYPE {KINETIC, ELECTROSTATICS}
-    SIMU_TYPE simeType;
+
+
     String creationDateTime;
     String lastModifiedDateTime;
 
-    public Simulator(String title, SIMU_TYPE simuType){
+    public Simulator(String title){
         this.title = title;
-        this.simeType = simuType;
         this.creationDateTime = dateTimeBuilder();
-        this.lastModifiedDateTime = "0";
+        this.lastModifiedDateTime = dateTimeBuilder();
     }
 
     //SETTERS AND GETTERS
@@ -34,14 +33,6 @@ public class Simulator {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public SIMU_TYPE getSimeType() {
-        return simeType;
-    }
-
-    public void setSimeType(SIMU_TYPE simeType) {
-        this.simeType = simeType;
     }
 
     public String getCreationDateTime() {

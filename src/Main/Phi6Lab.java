@@ -85,4 +85,8 @@ public class Phi6Lab extends PApplet {
     public void mouseReleased() {
         println("MOUSE RELEASED");
     }
+
+    public void changeVar(){
+
+    }
 }

@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="SideBar finished&#10;Card programmed">
-      <change afterPath="$PROJECT_DIR$/data/testImage.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/Gallery.java" afterDir="false" />
+    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Gallery working">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Gallery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Gallery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Simulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/Phi6Lab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/Phi6Lab.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/simuCardTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/simuCardTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/HomeScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/HomeScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,13 +116,6 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="jdk-21.0.2-openjdk-21.0.2-4caba194b151-4f524021" />
-      </set>
-    </attachedChunks>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -185,7 +181,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733141775885</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Gallery working">
+      <option name="closed" value="true" />
+      <created>1733216501574</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1733216501574</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -193,7 +197,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -207,6 +223,7 @@
     <MESSAGE value="Screen switching completed" />
     <MESSAGE value="TextList working" />
     <MESSAGE value="SideBar finished&#10;Card programmed" />
-    <option name="LAST_COMMIT_MESSAGE" value="SideBar finished&#10;Card programmed" />
+    <MESSAGE value="Gallery working" />
+    <option name="LAST_COMMIT_MESSAGE" value="Gallery working" />
   </component>
 </project>

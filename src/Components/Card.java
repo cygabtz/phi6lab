@@ -12,15 +12,18 @@ public class Card extends Button{
     String id;
     String title;
     String category;
-    String description;
+    String lastModified, creation; //Tiempos
     PImage image;
-    PGraphics maskedImg;
+    String imgPath;
     float imageHeight;
+
+    Constants.Fonts appFonts;
 
     public Card(PApplet p5, float x, float y, float width, float height){
         super(p5, x, y, width, height);
-        imageHeight = height/3;
+        imageHeight = height/1.5f;
         title = "New Card";
+        appFonts = new Fonts(p5);
     }
 
     //Setters
@@ -37,6 +40,17 @@ public class Card extends Button{
         image.mask(p5.get());
     }
 
+    public void setInfo(String [][] simuList){
+        for (String[] strings : simuList) {
+            this.id = strings[0];
+            this.title = strings[1];
+            //No se visualiza la descripción
+            this.lastModified = strings[3];
+            this.creation = strings[4];
+            this.imgPath = strings[5];
+        }
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -47,10 +61,6 @@ public class Card extends Button{
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public void setImageHeight(float height){
@@ -67,26 +77,34 @@ public class Card extends Button{
             p5.fill(getFillColorOver());
         }
         else{
-            p5.fill(getFillColor());          // mouse is out of the button
+            p5.fill(getFillColor());          // El mouse está fuera del botón
         }
 
-
-        //Button properties
+        //Propiedades Button
         p5.stroke(getStrokeColor()); p5.strokeWeight(2);
         p5.rect(this.getX(), this.getY()+imageHeight, this.getWidth(), this.getHeight()-imageHeight, corner);
 
-        //Image upper zone
-        p5.image(image, 0,0);
+        //Imagen superior
+        //p5.image(image, 0,0);
         p5.fill(0, 0);
         p5.stroke(getStrokeColor());
         p5.rect(this.getX(), this.getY(), this.getWidth(), imageHeight+10,
                 corner, corner, 0, 0);
 
-        // Text properties
+        //Texto inferior
         p5.fill(0); p5.textAlign(p5.CENTER); p5.textSize(20);
-        p5.textFont(new Fonts(p5).fonts[1]); //Change Fonts to static
-        //add more text and set positions
-        p5.text(title, getX() + getWidth()/2, getY() + imageHeight + getHeight()/10);
+        p5.textFont(appFonts.fonts[1]); //Change Fonts to static
+            //Título
+            p5.text(title, getX() + getWidth()/2, getY() + imageHeight + getHeight()/10);
+            //Descripción
+            p5.textFont(appFonts.fonts[0]); p5.textAlign(p5.LEFT);
+            float marginH = 15,  marginV = 10, height = this.getY()+imageHeight + 60;
+            //Tiempos
+            p5.text("Última modificación: "+this.lastModified,
+                    this.getX()+marginH, height+appFonts.fonts[0].getSize()+marginV, this.getWidth(), height);
+            p5.text("Creado: "+this.creation,
+                    this.getX()+marginH, height, this.getWidth(), height);
+
         p5.popStyle();
     }
 

@@ -21,7 +21,14 @@ public class HomeScreen extends Screen {
     //TextList Searchbar ----------------------
     public TextList searchBar;
     public Button searchButton;
-    String[][] simuList = {{"0", "SimuA"},{"1", "SimuB"},{"2", "SimuC"}, {"3", "SimuD"}};
+    String[][] simuList = {
+            {"0", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
+            {"1", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
+            {"2", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
+            {"3", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
+            {"4", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
+            {"5", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
+    };
     public String selectedText;
 
     //Logo buttons ---------------------------
@@ -64,9 +71,11 @@ public class HomeScreen extends Screen {
                 bWidth, bHeight);
 
         //Cards gallery ---------------------------------------------------------------------
-        gallery = new Gallery(p5, 6, hRect+ vMargin, (2* vMargin)+bannerHeight,
-                400, 400);
-        gallery.setCards(p5);
+        int numCardsInPage = 6;
+        gallery = new Gallery(p5, numCardsInPage, (int)vMargin, hRect+ vMargin, (2* vMargin)+bannerHeight,
+                bannerWidth, 4*vRect - vMargin);
+
+        gallery.setCards(p5, simuList);
     }
 
     @Override
