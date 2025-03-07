@@ -1,17 +1,16 @@
 package Screens;
 
-import Components.Card;
+import Components.ButtonIcon;
 import Components.Gallery;
 import Components.TextList;
 import Constants.Colors;
 
+import Constants.FinalColors;
 import processing.core.PApplet;
 import static Constants.Layout.*;
 import static processing.core.PConstants.*;
 
 import Components.Button;
-
-import javax.management.ConstructorParameters;
 
 
 public class HomeScreen extends Screen {
@@ -20,7 +19,7 @@ public class HomeScreen extends Screen {
 
     //TextList Searchbar ----------------------
     public TextList searchBar;
-    public Button searchButton;
+    public ButtonIcon searchButton;
     String[][] simuList = {
             {"0", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
             {"1", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
@@ -52,13 +51,16 @@ public class HomeScreen extends Screen {
 
         //SearchBar -----------------------------------------------------------------------
         float m = 10;
-        float searchBarWidth = hRect - vMargin *5 - m;
-        searchBar = new TextList(this.p5, simuList, vMargin, vRect+ hMargin,
+        float searchBarWidth = hRect - margin*2 - frame*2;
+        searchBar = new TextList(this.p5, simuList, vMargin, vRect + hMargin,
                 searchBarWidth, ((vRect-2* hMargin)/2)-(hMargin)/2);
+        searchBar.getTextField().setEmptyText("Buscar");
 
-        searchButton = new Button(this.p5, searchBarWidth + vMargin + m, vRect+ hMargin,
-                hRect-searchBarWidth- vMargin *2, ((vRect-2* hMargin)/2)-(hMargin)/2);
-        searchButton.setText("S"); searchButton.setFont(this.appFonts.fonts[1]);
+        searchButton = new ButtonIcon(this.p5, hRect-vMargin-frame, vRect + hMargin,
+                frame-margin, frame-margin);
+        searchButton.scale = 12;
+        searchButton.setFont(this.appFonts.fonts[1]);
+        searchButton.setIcon("data/icons/search.svg");
 
         //Extra Buttons---------------------------------------------------------------------
 
@@ -86,22 +88,16 @@ public class HomeScreen extends Screen {
         //****************************************************************
 
         //Create simulator button -----------------------------------------
-        createButton.display(p5);
+        createButton.display();
 
         //TextList searchbar ----------------------------------------------
         this.searchBar.display(p5);
-        this.searchButton.display(p5);
+        this.searchButton.display();
         this.updateCursor(p5);
-        if(selectedText!=null){
-            p5.pushStyle();
-            p5.textAlign(CENTER); p5.fill(0);
-            p5.text(selectedText, screenH/2, screenV/2);
-            p5.popStyle();
-        }
 
         //Extra buttons ---------------------------------------------------
-        info.display(p5);
-        settings.display(p5);
+        info.display();
+        settings.display();
         p5.fill(255, 0, 0); p5.stroke(255); //LOGO
         p5.rect(hMargin, info.getY(), info.getHeight(), info.getHeight(), corner);
         p5.rect(hMargin, settings.getY(), settings.getHeight(), info.getHeight(), corner);
@@ -117,14 +113,13 @@ public class HomeScreen extends Screen {
 
         //Cards Area ------------------------------------------------------
         p5.fill(this.appColors.bgLightGrey());
-        p5.rect(hRect+ vMargin, (2* vMargin)+bannerHeight,
-                bannerWidth, 4*vRect - vMargin, corner);
+        //p5.rect(hRect+ vMargin, (2* vMargin)+bannerHeight, bannerWidth, 4*vRect - vMargin, corner);
 
         gallery.display(p5);
 
         p5.pop();
     }
-    private void updateCursor(PApplet p5){
+    private void updateCursor(PApplet p5){ //NO FUNCIONA
         if(searchButton.mouseOverButton(p5) || searchBar.mouseOverButtons(p5) || searchBar.getTextField().mouseOverTextField(p5)){
             p5.cursor(HAND);
         }

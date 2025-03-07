@@ -1,8 +1,8 @@
 package Components;
 
+import Constants.FinalColors;
 import Constants.Fonts;
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.core.PImage;
 
 import static Constants.Layout.corner;
@@ -68,20 +68,23 @@ public class Card extends Button{
     }
 
     @Override
-    public void display(PApplet p5) {
+    public void display() {
         p5.pushStyle();
         if(!isEnabled()){
-            p5.fill(getFillColorDisabled());
+            p5.fill(fillColorDisabled);
+            p5.noStroke();
         }
         else if(mouseOverButton(p5)){
-            p5.fill(getFillColorOver());
+            p5.fill(fillColorOver);
+            p5.stroke(strokeWeight); p5.stroke(strokeColor);
         }
         else{
-            p5.fill(getFillColor());          // El mouse está fuera del botón
+            p5.fill(fillColor);          // El mouse está fuera del botón
+            p5.noStroke();
         }
 
         //Propiedades Button
-        p5.stroke(getStrokeColor()); p5.strokeWeight(2);
+
         p5.rect(this.getX(), this.getY()+imageHeight, this.getWidth(), this.getHeight()-imageHeight, corner);
 
         //Imagen superior
@@ -92,7 +95,7 @@ public class Card extends Button{
                 corner, corner, 0, 0);
 
         //Texto inferior
-        p5.fill(0); p5.textAlign(p5.CENTER); p5.textSize(20);
+        p5.fill(FinalColors.textWhite()); p5.textAlign(p5.CENTER); p5.textSize(20);
         p5.textFont(appFonts.fonts[1]); //Change Fonts to static
             //Título
             p5.text(title, getX() + getWidth()/2, getY() + imageHeight + getHeight()/10);

@@ -18,7 +18,6 @@ public class TextList {
     ArrayList<Button> buttons; // lista de botones
 
     public TextList(PApplet p5, String[][] texts, float x, float y, float w, float h) {
-
         this.texts = texts;
         this.selectedId = "";
         this.selectedValue = "";
@@ -34,11 +33,11 @@ public class TextList {
 
     public void display(PApplet p5) {
         p5.pushStyle();
-        textField.display(p5);
+        textField.display();
 
         if(textField.selected){
             for(Button b : buttons){
-                b.display(p5);
+                b.display();
             }
         }
 
@@ -68,6 +67,7 @@ public class TextList {
                     Button b = new Button(p5, x, y + h + s + (h + s)*numMatchs, w, h);
                     b.setText(texts[i][1]);
                     b.setFont(appFonts.fonts[1]);
+                    b.textAlign = p5.LEFT;
                     buttons.add(b);
                     this.numMatchs++;
                     if (this.numMatchs==5) {

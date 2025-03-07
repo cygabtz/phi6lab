@@ -1,6 +1,7 @@
 package Constants;
 import processing.core.PApplet;
 import processing.core.PFont;
+
 public class Fonts {
     public PFont[] fonts;
 
@@ -14,4 +15,5 @@ public class Fonts {
         this.fonts[1] = p5.createFont("data/fonts/Rubik-SemiBold.ttf", Sizes.widgetHeading);
         this.fonts[2] = p5.createFont("data/fonts/Rubik-Light.ttf", Sizes.details);
     }
+
 }

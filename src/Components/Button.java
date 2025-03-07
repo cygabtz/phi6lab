@@ -1,19 +1,24 @@
 package Components;
+import Constants.FinalColors;
 import Constants.Fonts;
+import Constants.Sizes;
 import processing.core.PApplet;
 import processing.core.PFont;
 
 import static Constants.Layout.*;
 public class Button {
-    private float x, y;
-    private float height, width;
-    private int fillColor, strokeColor;
-    private int fillColorOver, fillColorDisabled;
-    private boolean enabled;
-    private String buttonText;
-    private PFont textFont;
+    PApplet p5;
+    public float x, y;
+    public float height, width;
+    public int fillColor, strokeColor, strokeWeight;
+    public int fillColorOver, fillColorDisabled;
+    public boolean enabled;
+    public String buttonText;
+    public PFont textFont;
+    public int textAlign = 3;
 
     public Button(PApplet p5, float x, float y, float width, float height){
+        this.p5 = p5;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -21,24 +26,25 @@ public class Button {
         this.enabled = true;
 
         //Color
-        this.fillColor = p5.color(155, 55, 155);
-        this.fillColorOver = p5.color(255, 55, 155);
+        this.fillColor = FinalColors.bgGrey();
+        this.fillColorOver = FinalColors.bgLightGrey();
         this.fillColorDisabled = p5.color(150);
-        this.strokeColor = p5.color(255);
+        this.strokeColor = FinalColors.accentSkyBlue();
+        this.strokeWeight = borderWeight;
 
         //Text
         buttonText = "New Button";
-        PFont defaultFont = new Fonts(p5).fonts[0];
-        setFont(defaultFont);
+        setFont(new Fonts(p5).fonts[0]);
     }
 
     //Setters
     public void setColors(int fillColor, int strokeColor,
                           int fillColorOver, int fillColorDisabled){
         this.fillColor = fillColor;
-        this.fillColorOver = strokeColor;
-        this.fillColorDisabled = fillColorOver;
-        this.strokeColor = fillColorDisabled;
+        this.strokeColor = strokeColor;
+        this.fillColorOver = fillColorOver;
+        this.fillColorDisabled = fillColorDisabled;
+
     }
 
     public void setFont(PFont font){
@@ -97,7 +103,7 @@ public class Button {
         return fillColorDisabled;
     }
 
-    public void display(PApplet p5){
+    public void display(){
         p5.pushStyle();
         if(!enabled){
             p5.fill(fillColorDisabled);
@@ -110,13 +116,22 @@ public class Button {
         }
 
         //Button properties
-        p5.stroke(strokeColor); p5.strokeWeight(2);
+        p5.noStroke();
         p5.rect(this.x, this.y, this.width, this.height, corner);
 
         // Text properties
-        p5.fill(0); p5.textAlign(p5.CENTER); p5.textSize(20);
+        p5.fill(FinalColors.textWhite());
         p5.textFont(textFont);
-        p5.text(buttonText, this.x + this.width/2, this.y + this.height/2 + 10);
+        p5.textSize(Sizes.buttonText);
+
+        p5.textAlign(textAlign);
+        if (textAlign==p5.CENTER){
+            p5.text(buttonText, this.x + this.width/2, this.y + this.height/2 + 10);
+        }
+        else if (textAlign==p5.LEFT){
+            p5.text(buttonText, this.x + margin, this.y + this.height/2 + 8);
+        }
+
         p5.popStyle();
     }
 
@@ -129,4 +144,21 @@ public class Button {
         return mouseOverButton(p5) && enabled;
     }
 
+
+    //Setters
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
 }

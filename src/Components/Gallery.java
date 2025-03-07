@@ -1,7 +1,6 @@
 package Components;
 
 import processing.core.PApplet;
-import processing.core.PImage;
 
 public class Gallery {
     Card[] cards;               // Productes
@@ -78,7 +77,7 @@ public class Gallery {
         for (int i = firstCardPage; i <= lastCardPage; i++) {
             //i targetas
             if (i<cards.length) {
-                cards[i].display(p5);
+                cards[i].display();
             }
         }
 

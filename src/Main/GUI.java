@@ -14,7 +14,7 @@ public class GUI {
     public Constants.Fonts appFonts;
 
     //Screen switching control
-    public enum SCREEN {HOME, SELECTION, SIMULATOR, SETTINGS, ABOUT}
+    public enum SCREEN {HOME, SIMULATOR, GRAPH, SETTINGS, ABOUT}
     public SCREEN currentSCREEN;
     public Screen currentScreen;
     public Screen[] screens;
@@ -27,7 +27,7 @@ public class GUI {
 
         initializeScreens(p5);
         currentScreen = new Screen(p5, appColors, appFonts);
-        setCurrentScreen(SCREEN.HOME);
+        setCurrentScreen(SCREEN.SIMULATOR);
     }
 
     public void setCurrentScreen(SCREEN screenType){
@@ -39,14 +39,14 @@ public class GUI {
         screens = new Screen[5];
 
         screens[0] = new HomeScreen(p5, appColors, appFonts);
-        screens[1] = new SelectionScreen(p5, appColors, appFonts);
-        screens[2] = new SimulatorScreen(p5, appColors, appFonts);
+        screens[1] = new SimulatorScreen(p5, appColors, appFonts);
+        screens[2] = new GraphScreen(p5, appColors, appFonts);
         screens[3] = new SettingsScreen(p5, appColors, appFonts);
         screens[4] = new AboutScreen(p5, appColors, appFonts);
     }
 
     public void displayActualScreen(PApplet p5){
-        displayGrid(p5);
+        //displayGrid(p5);
 
         //Normal execution
         currentScreen.display();
