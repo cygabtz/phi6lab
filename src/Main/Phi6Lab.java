@@ -29,11 +29,16 @@ public class Phi6Lab extends PApplet {
     GUI gui;
     Constants.Fonts appFonts;
 
+    DataBase db;
+
     public void setup(){
         frameRate(80);
         appColors = new Colors(this);
         appFonts = new Fonts(this);
         gui = new GUI(this, appColors, appFonts);
+
+        db = new DataBase("admin", "12345", "simulaciones");
+        db.connect();
     }
 
     public void draw(){
