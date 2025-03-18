@@ -58,7 +58,7 @@ public class SimulatorScreen extends Screen {
         //ButtonIcon prueba = new ButtonIcon(p5, createModule.x, createModule.y, frame, frame);
         //createModule.components.add(prueba);
 
-        beamModule = new Module(p5, frame + margin, frame + margin, moduleWidth, 300);
+        beamModule = new Module(p5, frame + margin, frame + margin, moduleWidth, 150);
         beamModule.setTitle("Propiedades viga");
 
         float beamSizeFieldWidth = beamModule.width/5 - 4*margin;
@@ -67,6 +67,7 @@ public class SimulatorScreen extends Screen {
                 beamSizeFieldWidth, frame*0.75f);
         beamSizeField.setBorderColor(FinalColors.primaryYellow());
         beamSizeField.borderEnabled = true;
+
 
         beamSizeSlider = new Slider(p5, beamModule.x + beamSizeFieldWidth + vMargin, beamModule.y + margin + frame,
                 4*beamModule.width/5 - 3*margin, frame*0.75f, 0, 100, 50);
@@ -97,6 +98,7 @@ public class SimulatorScreen extends Screen {
 
 
         //Module box -----------------------------------------------------------------
+        beamSizeField.text = Float.toString(beamSizeSlider.value);
         leftBox.display();
 
 //        p5.strokeWeight(2);

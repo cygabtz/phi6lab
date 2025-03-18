@@ -9,6 +9,8 @@ import processing.core.PApplet;
 import Constants.Colors;
 import Constants.Fonts;
 
+import java.util.Arrays;
+
 import static Constants.Layout.*;
 
 
@@ -39,6 +41,23 @@ public class Phi6Lab extends PApplet {
 
         db = new DataBase("admin", "12345", "simulaciones");
         db.connect();
+
+        String[] infoColumna = db.getInfoArray("tipo", "NOMBRE");
+        println("COLUMNA: " );
+        printArray(infoColumna);
+
+        System.out.println( Arrays.deepToString(db.getInfoArray2DTipo()) );
+
+        System.out.println( Arrays.deepToString(db.getInfoArray2DElementoABAJO()) );
+
+        System.out.println( Arrays.deepToString( db.getTipoOfElement() ) );
+
+        System.out.println( String.valueOf(db.totalFuerzasPuntuales()  ) );
+
+        String user = "usuarioEjemplo";
+        String pass = "342";
+        System.out.println(db.isUserPassInDB(user, pass));
+
     }
 
     public void draw(){

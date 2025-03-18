@@ -86,4 +86,6 @@ public class Slider {
         this.value = value;
         this.handleX = PApplet.map(value, minValue, maxValue, x + mg, x + width - mg);
     }
+
+
 }
