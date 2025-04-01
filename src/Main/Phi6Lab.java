@@ -31,7 +31,7 @@ public class Phi6Lab extends PApplet {
     GUI gui;
     Constants.Fonts appFonts;
 
-    DataBase db;
+    public DataBase db;
 
     public void setup(){
         frameRate(80);
@@ -42,22 +42,37 @@ public class Phi6Lab extends PApplet {
         db = new DataBase("admin", "12345", "simulaciones");
         db.connect();
 
-        String[] infoColumna = db.getInfoArray("tipo", "NOMBRE");
-        println("COLUMNA: " );
-        printArray(infoColumna);
-
-        System.out.println( Arrays.deepToString(db.getInfoArray2DTipo()) );
-
-        System.out.println( Arrays.deepToString(db.getInfoArray2DElementoABAJO()) );
-
-        System.out.println( Arrays.deepToString( db.getTipoOfElement() ) );
 
         System.out.println( String.valueOf(db.totalFuerzasPuntuales()  ) );
 
-        String user = "usuarioEjemplo";
-        String pass = "342";
-        System.out.println(db.isUserPassInDB(user, pass));
-
+//        String[] infoColumna = db.getInfoArray("tipo", "NOMBRE");
+//        println("COLUMNA: " );
+//        printArray(infoColumna);
+//
+//        System.out.println( Arrays.deepToString(db.getInfoArray2DTipo()) );
+//
+//        System.out.println( Arrays.deepToString(db.getInfoArray2DElementoABAJO()) );
+//
+//        System.out.println( Arrays.deepToString( db.getTipoOfElement() ) );
+//
+//        System.out.println( String.valueOf(db.totalFuerzasPuntuales()  ) );
+//
+//        String user = "usuarioEjemplo";
+//        String pass = "342";
+//        System.out.println(db.isUserPass(user, pass));
+//
+//        String newUser = "pepito";
+//        String newPass = "qwerty";
+//        db.insertUser(newUser, newPass);
+//
+//        db.deleteUser(newUser);
+//
+//        String originalUser = "martina56";
+//        String originalPass = "1111";
+//        db.insertUser(originalUser, originalPass);
+//        db.updateUser(user, "martinaPatata", "2222");
+//
+//        System.out.println( Arrays.deepToString( db.getInfoSimuladores()   ) );
     }
 
     public void draw(){
@@ -73,10 +88,10 @@ public class Phi6Lab extends PApplet {
 
         //Selección de pantalla
         int keyNum = Character.getNumericValue(key);
-        if(keyNum>=0 && keyNum<=4){
-            println("Key reference: " + Character.getNumericValue(key));
-            gui.setCurrentScreen(GUI.SCREEN.values()[keyNum]);
-        }
+//        if(keyNum>=0 && keyNum<=4){
+//            println("Key reference: " + Character.getNumericValue(key));
+//            gui.setCurrentScreen(GUI.SCREEN.values()[keyNum]);
+//        }
 
 
         if (gui.currentScreen instanceof Screens.HomeScreen hs){
@@ -114,9 +129,16 @@ public class Phi6Lab extends PApplet {
 
         if (gui.currentScreen instanceof Screens.HomeScreen hs){
             //"Create" button
-            if(hs.createButton.mouseOverButton(this)){
-                hs.createButton.setEnabled(true);
-                hs.createButton.setText("ENABLED");
+            if(hs.newButtonIcon.mouseOverButton(this)){
+                hs.newButtonIcon.setEnabled(true);
+                gui.setCurrentScreen(GUI.SCREEN.SIMULATOR);
+            }
+            //Gallery buttons
+            for (Button cardButton : hs.gallery.getCards()) {
+                if(cardButton.mouseOverButton(this)){
+                    cardButton.setEnabled(true);
+                    gui.setCurrentScreen(GUI.SCREEN.SIMULATOR);
+                }
             }
             //TextList
             if(hs.searchButton.mouseOverButton(this) && hs.searchButton.isEnabled()){

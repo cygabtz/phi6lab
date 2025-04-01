@@ -1,14 +1,12 @@
 package Components;
 
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.core.PShape;
 
 import static Constants.Layout.corner;
 
 public class ButtonIcon extends Button{
     PShape icon;
-    int iconColor;
     public int scale = 5;
     public ButtonIcon(PApplet p5, float x, float y, float width, float height){
         super(p5, x, y, width, height);
@@ -21,7 +19,7 @@ public class ButtonIcon extends Button{
         p5.pushStyle();
         p5.fill(this.fillColor);
         if(mouseOverButton(p5)) {
-            p5.stroke(this.strokeColor);
+            p5.stroke(this.strokeColorOn);
             p5.strokeWeight(2);
         }
         else p5.noStroke();
@@ -42,6 +40,10 @@ public class ButtonIcon extends Button{
         if (this.mouseOverButton(p5)){
             //Do action
         }
+    }
+
+    public void setScale(int scale){
+        this.scale = scale;
     }
 
 }

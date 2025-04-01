@@ -41,13 +41,13 @@ public class Card extends Button{
     }
 
     public void setInfo(String [][] simuList){
+
         for (String[] strings : simuList) {
             this.id = strings[0];
             this.title = strings[1];
-            //No se visualiza la descripción
-            this.lastModified = strings[3];
-            this.creation = strings[4];
-            this.imgPath = strings[5];
+            this.lastModified = strings[2];
+            this.creation = strings[3];
+            this.imgPath = "";
         }
     }
 
@@ -76,7 +76,7 @@ public class Card extends Button{
         }
         else if(mouseOverButton(p5)){
             p5.fill(fillColorOver);
-            p5.stroke(strokeWeight); p5.stroke(strokeColor);
+            p5.stroke(strokeWeight); p5.stroke(strokeColorOn);
         }
         else{
             p5.fill(fillColor);          // El mouse está fuera del botón
@@ -90,7 +90,7 @@ public class Card extends Button{
         //Imagen superior
         //p5.image(image, 0,0);
         p5.fill(0, 0);
-        p5.stroke(getStrokeColor());
+        p5.stroke(getStrokeColorOn());
         p5.rect(this.getX(), this.getY(), this.getWidth(), imageHeight+10,
                 corner, corner, 0, 0);
 
@@ -110,5 +110,7 @@ public class Card extends Button{
 
         p5.popStyle();
     }
+
+
 
 }

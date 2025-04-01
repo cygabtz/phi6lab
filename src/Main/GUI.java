@@ -19,15 +19,18 @@ public class GUI {
     public Screen currentScreen;
     public Screen[] screens;
 
+    public DataBase appDataBase;
 
-    public GUI(PApplet p5, Colors appColors, Constants.Fonts appFonts){
+
+    public GUI(PApplet p5, Colors appColors, Constants.Fonts appFonts, DataBase db){
         this.p5 = p5;
         this.appColors = appColors;
         this.appFonts = appFonts;
+        this.appDataBase = db;
 
         initializeScreens(p5);
         currentScreen = new Screen(p5, appColors, appFonts);
-        setCurrentScreen(SCREEN.SIMULATOR);
+        setCurrentScreen(SCREEN.HOME);
     }
 
     public void setCurrentScreen(SCREEN screenType){
@@ -38,7 +41,7 @@ public class GUI {
     public void initializeScreens(PApplet p5){
         screens = new Screen[5];
 
-        screens[0] = new HomeScreen(p5, appColors, appFonts);
+        screens[0] = new HomeScreen(p5, appColors, appFonts, appDataBase);
         screens[1] = new SimulatorScreen(p5, appColors, appFonts);
         screens[2] = new GraphScreen(p5, appColors, appFonts);
         screens[3] = new SettingsScreen(p5, appColors, appFonts);

@@ -1,33 +1,29 @@
 package Screens;
 
-import Components.ButtonIcon;
-import Components.Gallery;
-import Components.TextList;
+import Components.*;
+import Components.Module;
 import Constants.Colors;
 
 import Constants.FinalColors;
+import Main.DataBase;
+import Main.Phi6Lab;
 import processing.core.PApplet;
+
+import java.util.ArrayList;
+
 import static Constants.Layout.*;
 import static processing.core.PConstants.*;
-
-import Components.Button;
 
 
 public class HomeScreen extends Screen {
     //Create Button ---------------------------
-    public Button createButton;
+    public ButtonIconText newButtonIcon;
 
     //TextList Searchbar ----------------------
     public TextList searchBar;
     public ButtonIcon searchButton;
-    String[][] simuList = {
-            {"0", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
-            {"1", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
-            {"2", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
-            {"3", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
-            {"4", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
-            {"5", "SimuA", "Descripción", "LastModifiedTime", "TimeCreation", "testImage.png"},
-    };
+    String[][] simuList;
+
     public String selectedText;
 
     //Logo buttons ---------------------------
@@ -38,16 +34,22 @@ public class HomeScreen extends Screen {
     float bannerHeight = 2*vRect - 2* hMargin;
 
     //Cards Gallery --------------------------
-    Gallery gallery;
+    public Gallery gallery;
 
-    public HomeScreen(PApplet p5, Colors appColors, Constants.Fonts appFonts){
+    //DataBase -------------------------------
+    public DataBase appDataBase;
+
+    public HomeScreen(PApplet p5, Colors appColors, Constants.Fonts appFonts, DataBase db){
         super(p5, appColors, appFonts);
+        this.appDataBase = db;
+        simuList = db.getInfoSimuladores();
 
         //Create Button ------------------------------------------------------------------
-        createButton = new Button(this.p5, hMargin, vMargin,
+        newButtonIcon = new ButtonIconText(p5, hMargin, vMargin,
                 hRect - vMargin *2, vRect - hMargin *2);
-        createButton.setText("Create Simulator");
-        createButton.setFont(this.appFonts.fonts[1]);
+        newButtonIcon.setText("Crear");
+        newButtonIcon.setIcon("data/icons/add.svg");
+        newButtonIcon.setScale(20);
 
         //SearchBar -----------------------------------------------------------------------
         float m = 10;
@@ -73,10 +75,11 @@ public class HomeScreen extends Screen {
                 bWidth, bHeight);
 
         //Cards gallery ---------------------------------------------------------------------
-        int numCardsInPage = 6;
-        gallery = new Gallery(p5, numCardsInPage, (int)vMargin, hRect+ vMargin, (2* vMargin)+bannerHeight,
-                bannerWidth, 4*vRect - vMargin);
 
+        gallery = new Gallery(p5, hRect+ vMargin, (2* vMargin)+bannerHeight,
+                bannerWidth, 4*vRect - vMargin, (int)vMargin);
+        gallery.setNumCards(simuList.length);
+        gallery.setMaxCardsInPage(6);
         gallery.setCards(p5, simuList);
     }
 
@@ -87,8 +90,6 @@ public class HomeScreen extends Screen {
         //*********************** SIDEBAR AREA ***************************
         //****************************************************************
 
-        //Create simulator button -----------------------------------------
-        createButton.display();
 
         //TextList searchbar ----------------------------------------------
         this.searchBar.display(p5);
@@ -114,8 +115,11 @@ public class HomeScreen extends Screen {
         //Cards Area ------------------------------------------------------
         p5.fill(this.appColors.bgLightGrey());
         //p5.rect(hRect+ vMargin, (2* vMargin)+bannerHeight, bannerWidth, 4*vRect - vMargin, corner);
-
         gallery.display(p5);
+
+
+        //Create simulator button -----------------------------------------
+        newButtonIcon.display();
 
         p5.pop();
     }
