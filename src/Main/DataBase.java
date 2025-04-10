@@ -199,11 +199,29 @@ public class DataBase {
         return total;
     }
 
-    public boolean isUserPassInDB(String userName, String password){
-        String q =  " SELECT COUNT(*) AS found" +
-                    " FROM `usuario`"  +
-                    " WHERE NOMBRE='" + userName + "'" +
-                    " AND PASSWORD='" + password + "'";
+    public float getFuerzasPuntuales() {
+        String q = " SELECT SUM(e.VALOR) AS total, t.idTIPO" +
+                " FROM elemento e, tipo t" +
+                " WHERE e.TIPO_idTIPO = t.idTIPO";
+
+        float total = 0;
+
+        try {
+            ResultSet rs = query.executeQuery(q);
+            rs.next();
+            total = rs.getFloat("total");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return total;
+    }
+
+    public boolean isUserPass(String userName, String password) {
+        String q = " SELECT COUNT(*) AS found" +
+                " FROM `usuario`" +
+                " WHERE NOMBRE='" + userName + "'" +
+                " AND PASSWORD='" + password + "'";
         try {
             ResultSet rs = query.executeQuery(q);
             rs.next();

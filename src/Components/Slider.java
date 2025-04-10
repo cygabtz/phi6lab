@@ -52,15 +52,15 @@ public class Slider {
         p5.stroke(FinalColors.bgBlack()); p5.strokeWeight(2);
         p5.ellipse(handleX, y + height/2, handleRadius*2, handleRadius*2);
 
-        // Draw the value label
-        p5.fill(boxColor);
-        float labelWidth = 100;
-        float labelHeight = 30;
-        p5.rect(handleX - labelWidth/2, y + height - height/4, labelWidth, labelHeight);
-        p5.fill(fontColor);
-        p5.textAlign(PApplet.CENTER, PApplet.CENTER);
-        String unit = "m";
-        p5.text(String.format("%.2f %s", value, unit), handleX, y + height + 4);
+        // Draw the value label (Deprecated)
+//        p5.fill(boxColor);
+//        float labelWidth = 100;
+//        float labelHeight = 30;
+//        p5.rect(handleX - labelWidth/2, y + height - height/4, labelWidth, labelHeight);
+//        p5.fill(fontColor);
+//        p5.textAlign(PApplet.CENTER, PApplet.CENTER);
+//        String unit = "m";
+//        p5.text(String.format("%.2f %s", value, unit), handleX, y + height + 4);
     }
 
     public void update() {
@@ -78,6 +78,11 @@ public class Slider {
         }
     }
 
+    public boolean isMouseOverSlider(){
+        float handleRadius = 10;
+        return PApplet.dist(p5.mouseX, p5.mouseY, handleX, y + height/2) < handleRadius;
+    }
+
     public void mouseReleased() {
         dragging = false;
     }
@@ -87,5 +92,22 @@ public class Slider {
         this.handleX = PApplet.map(value, minValue, maxValue, x + mg, x + width - mg);
     }
 
+    @Override
+    public Slider clone() {
+        // Crear una nueva instancia de Slider con las mismas propiedades iniciales
+        Slider clonedSlider = new Slider(this.p5, this.x, this.y, this.width, this.height, this.minValue, this.maxValue, this.value);
+
+        // Clonar propiedades adicionales
+        clonedSlider.handleX = this.handleX;
+        clonedSlider.boxColor = this.boxColor;
+        clonedSlider.selectedColor = this.selectedColor;
+        clonedSlider.lineColor = this.lineColor;
+        clonedSlider.fontColor = this.fontColor;
+        clonedSlider.lineWeight = this.lineWeight;
+        clonedSlider.dragging = this.dragging;
+        clonedSlider.handleRadius = this.handleRadius;
+
+        return clonedSlider;
+    }
 
 }

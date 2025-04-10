@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Funciones para acceder a los datos de la base de datos">
-      <change afterPath="$PROJECT_DIR$/PHPcommands/phpMyAdmin_instructions" afterDir="false" />
+    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Modulo para añadir fuerzas funcionando sin conectar con la BD">
+      <change afterPath="$PROJECT_DIR$/src/Components/FieldSlider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Button.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Button.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ButtonIcon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ButtonIcon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Gallery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Gallery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Module.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Module.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/Slider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Slider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/TextField.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/TextField.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants/Sizes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants/Sizes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main/DataBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/DataBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main/ModuleBox.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main/Phi6Lab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/Phi6Lab.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main/simuCardTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/HomeScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/HomeScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +69,7 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/benit/Documents/mysql-connector-java-8.0.27.jar&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/benit/IdeaProjects/solucioInfo/data/icons&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
@@ -248,7 +257,31 @@
       <option name="project" value="LOCAL" />
       <updated>1741604014089</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Funciones para acceder a los datos de la base de datos.&#10;&#10;Función para comprobar usario y contraseña.">
+      <option name="closed" value="true" />
+      <created>1742283628303</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1742283628304</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Gallery muestra los Cards de cada simulador en la BD">
+      <option name="closed" value="true" />
+      <created>1743520060834</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1743520060834</updated>
+    </task>
+    <task id="LOCAL-00014" summary="ButtonIconText necesario para HomeScreen">
+      <option name="closed" value="true" />
+      <created>1743520450697</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1743520450697</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -285,6 +318,9 @@
     <MESSAGE value="Gallery working" />
     <MESSAGE value="Gallery funcionando" />
     <MESSAGE value="Clase DataBase para conectar con MySQL funcionando. Base da datos conecta con éxito." />
-    <option name="LAST_COMMIT_MESSAGE" value="Clase DataBase para conectar con MySQL funcionando. Base da datos conecta con éxito." />
+    <MESSAGE value="Funciones para acceder a los datos de la base de datos.&#10;&#10;Función para comprobar usario y contraseña." />
+    <MESSAGE value="Gallery muestra los Cards de cada simulador en la BD" />
+    <MESSAGE value="ButtonIconText necesario para HomeScreen" />
+    <option name="LAST_COMMIT_MESSAGE" value="ButtonIconText necesario para HomeScreen" />
   </component>
 </project>

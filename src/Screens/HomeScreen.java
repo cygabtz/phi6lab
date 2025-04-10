@@ -14,9 +14,12 @@ import java.util.ArrayList;
 import static Constants.Layout.*;
 import static processing.core.PConstants.*;
 
-
+/**
+ * Pantalla principal donde se pueden añadir, abrir, eleminar simulaciones y acceder a los ajustes.
+ */
 public class HomeScreen extends Screen {
     //Create Button ---------------------------
+
     public ButtonIconText newButtonIcon;
 
     //TextList Searchbar ----------------------
@@ -42,7 +45,11 @@ public class HomeScreen extends Screen {
     public HomeScreen(PApplet p5, Colors appColors, Constants.Fonts appFonts, DataBase db){
         super(p5, appColors, appFonts);
         this.appDataBase = db;
-        simuList = db.getInfoSimuladores();
+        try {
+            simuList = db.getInfoSimuladores();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //Create Button ------------------------------------------------------------------
         newButtonIcon = new ButtonIconText(p5, hMargin, vMargin,

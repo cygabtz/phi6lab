@@ -9,7 +9,7 @@ import static processing.core.PConstants.BACKSPACE;
 public class TextField {
     PApplet p5;
     // Properties of the text field
-    float x, y, h, w;
+    public float x, y, height, width;
 
     // Colors
     int bgColor, fgColor, selectedColor, borderColor;
@@ -22,10 +22,10 @@ public class TextField {
     private String emptyText = "";
     int textSize = 24;
 
-    boolean selected = false;
+    public boolean selected = false;
 
-    public TextField(PApplet p5, float x, float y, float w, float h) {
-        this.x = x; this.y = y; this.w = w; this.h = h;
+    public TextField(PApplet p5, float x, float y, float width, float height) {
+        this.x = x; this.y = y; this.width = width; this.height = height;
         this.bgColor = FinalColors.bgGrey();
         this.fgColor = FinalColors.textWhite();
         this.selectedColor = FinalColors.bgLightGrey();
@@ -36,6 +36,7 @@ public class TextField {
     public void display() {
         p5.pushStyle();
 
+        //p5.textFont(); --> Pendiente poner en default
 
         if (selected){
             p5.fill(selectedColor);
@@ -51,14 +52,14 @@ public class TextField {
             p5.stroke(borderColor);
         }
 
-        p5.rect(x, y, w, h, Layout.corner);
+        p5.rect(x, y, width, height, Layout.corner);
 
         p5.fill(fgColor);
         p5.textSize(textSize); p5.textAlign(p5.LEFT, p5.CENTER);
 
-        p5.text(text, x + 10, y + h/2);
+        p5.text(text, x + 10, y + height /2);
 
-        if (text.isEmpty()) p5.text(emptyText, x + 10, y + h/2);
+        if (text.isEmpty()) p5.text(emptyText, x + 10, y + height /2);
 
         p5.popStyle();
     }
@@ -85,7 +86,7 @@ public class TextField {
 
     // Añade un char al final
     public void addText(char c) {
-        if (this.text.length() + 1 < w) {
+        if (this.text.length() + 1 < width) {
             this.text += c;
         }
     }
@@ -114,16 +115,12 @@ public class TextField {
 
 
     public boolean mouseOverTextField(PApplet p5) {
-        return (p5.mouseX >= this.x && p5.mouseX <= this.x + this.w && p5.mouseY >= this.y && p5.mouseY <= this.y + this.h);
+        return (p5.mouseX >= this.x && p5.mouseX <= this.x + this.width && p5.mouseY >= this.y && p5.mouseY <= this.y + this.height);
     }
 
     // Selected / unselected depending on if mouse is over the TextField
-    public void mousePressed(PApplet p5) {
-        if (mouseOverTextField(p5)) {
-            selected = true;
-        } else {
-            selected = false;
-        }
+    public void mousePressed() {
+        selected = mouseOverTextField(p5);
     }
 
     //Setters
@@ -160,5 +157,18 @@ public class TextField {
         this.emptyText = s;
     }
 
+    @Override
+    public TextField clone() {
+        // Crear una nueva instancia y copiar todas las propiedades
+        TextField clonedTextField = new TextField(this.p5, this.x, this.y, this.width, this.height);
+        clonedTextField.setColors(this.bgColor, this.fgColor, this.selectedColor, this.borderColor);
+        clonedTextField.setBorderWeight(this.borderWeight);
+        clonedTextField.borderEnabled = this.borderEnabled;
+        clonedTextField.setText(this.text);
+        clonedTextField.setEmptyText(this.emptyText);
+        clonedTextField.setTextSize(this.textSize);
+        clonedTextField.selected = this.selected;
+        return clonedTextField;
+    }
 
 }

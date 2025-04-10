@@ -1,15 +1,14 @@
 package Main;
 
 //Processing properties
-import Components.Slider;
-import Components.TextField;
+import Components.Button;
+import Components.FieldSlider;
 import Constants.FinalColors;
+import Constants.StaticFonts;
 import Screens.SimulatorScreen;
 import processing.core.PApplet;
 import Constants.Colors;
 import Constants.Fonts;
-
-import java.util.Arrays;
 
 import static Constants.Layout.*;
 
@@ -37,13 +36,19 @@ public class Phi6Lab extends PApplet {
         frameRate(80);
         appColors = new Colors(this);
         appFonts = new Fonts(this);
-        gui = new GUI(this, appColors, appFonts);
+        StaticFonts.initialize(this);
 
         db = new DataBase("admin", "12345", "simulaciones");
-        db.connect();
 
 
-        System.out.println( String.valueOf(db.totalFuerzasPuntuales()  ) );
+        try {
+            db.connect();
+        } catch (Exception e) {
+            System.out.println("BASE NO CONECTADA");
+        }
+
+
+        gui = new GUI(this, appColors, appFonts, db);
 
 //        String[] infoColumna = db.getInfoArray("tipo", "NOMBRE");
 //        println("COLUMNA: " );
@@ -83,17 +88,6 @@ public class Phi6Lab extends PApplet {
 
     //KEYBOARD INTERACTION ----------------------------------------------
     public void keyPressed(){
-        //Printing key
-//        System.out.println("keyPressed(): key: " + key + " with keyCode: " + keyCode);
-
-        //Selección de pantalla
-        int keyNum = Character.getNumericValue(key);
-//        if(keyNum>=0 && keyNum<=4){
-//            println("Key reference: " + Character.getNumericValue(key));
-//            gui.setCurrentScreen(GUI.SCREEN.values()[keyNum]);
-//        }
-
-
         if (gui.currentScreen instanceof Screens.HomeScreen hs){
             //TextList
             if(hs.searchBar.getTextField().mouseOverTextField(this)){
@@ -102,16 +96,7 @@ public class Phi6Lab extends PApplet {
             }
         }
         else if (gui.currentScreen instanceof Screens.SimulatorScreen ss){
-            if (ss.nameField.mouseOverTextField(this)) ss.nameField.keyPressed(key, keyCode);
-
-            TextField bsf = ss.beamSizeField;
-            Slider s = ss.beamSizeSlider;
-            bsf.keyPressed(key, keyCode);
-            if(!bsf.text.isEmpty() &&  keyNum>=s.minValue && keyNum<=s.maxValue){
-                s.setValueAt(keyNum);
-            }
-
-
+            ss.keyPressed(key, keyCode);
         }
         else if (gui.currentScreen instanceof Screens.GraphScreen){
 
@@ -144,33 +129,24 @@ public class Phi6Lab extends PApplet {
             if(hs.searchButton.mouseOverButton(this) && hs.searchButton.isEnabled()){
                 hs.selectedText = hs.searchBar.getSelectedValue();
             }
-            hs.searchBar.getTextField().mousePressed(this);
+            hs.searchBar.getTextField().mousePressed();
             hs.searchBar.buttonPressed(this);
+
         }
         else if (gui.currentScreen instanceof Screens.SimulatorScreen ss){
-            ss.nameField.mousePressed(this);
-            //ss.leftBox.mousePressed();
-            ss.beamSizeSlider.mousePressed();
-            ss.beamSizeField.mousePressed(this);
+            ss.mousePressed();
         }
 
     }
 
     public void mouseDragged(){
-        //println("MOUSE DRAGGED");
-        if (gui.currentScreen instanceof Screens.SimulatorScreen ss){
-            //ss.leftBox.mouseDragged();
 
-        }
     }
 
     public void mouseReleased() {
         if (gui.currentScreen instanceof SimulatorScreen ss){
-            ss.beamSizeSlider.mouseReleased();
+            ss.mouseReleased();
         }
     }
 
-    public void changeVar(){
-
-    }
 }

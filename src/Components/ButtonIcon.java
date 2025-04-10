@@ -5,24 +5,47 @@ import processing.core.PShape;
 
 import static Constants.Layout.corner;
 
+/**
+ * Un <code>ButtonIcon</code> es un {@link Button} cuadrado
+ * con la posibilidad de poseer un icono en <code>.svg</code>.
+ */
 public class ButtonIcon extends Button{
     PShape icon;
     public int scale = 5;
     public ButtonIcon(PApplet p5, float x, float y, float width, float height){
         super(p5, x, y, width, height);
     }
-    public void setIcon(String iconPath){
-        this.icon = p5.loadShape(iconPath); //image.svg
-    }
+
     @Override
     public void display() {
         p5.pushStyle();
-        p5.fill(this.fillColor);
-        if(mouseOverButton(p5)) {
-            p5.stroke(this.strokeColorOn);
-            p5.strokeWeight(2);
+        p5.strokeWeight(strokeWeight);
+        if(!enabled){
+            p5.stroke(strokeColorOff);
+            p5.fill(fillColorDisabled);
         }
-        else p5.noStroke();
+        else if(mouseOverButton(p5)){
+            p5.stroke(this.strokeColorOn);
+            p5.fill(fillColorOver);
+        }
+        else{
+            p5.stroke(strokeColorOff);
+            p5.fill(fillColor);          // mouse is out of the button
+        }
+
+        p5.strokeWeight(strokeWeight);
+        if(!enabled){
+            p5.stroke(strokeColorOff);
+            p5.fill(fillColorDisabled);
+        }
+        else if(mouseOverButton(p5)){
+            p5.stroke(this.strokeColorOn);
+            p5.fill(fillColorOver);
+        }
+        else{
+            p5.stroke(strokeColorOff);
+            p5.fill(fillColor);          // mouse is out of the button
+        }
 
         p5.rect(this.x, this.y, this.width, this.height, corner);
 
@@ -36,12 +59,18 @@ public class ButtonIcon extends Button{
         p5.popStyle();
     }
 
-    public void mousePressed(){
-        if (this.mouseOverButton(p5)){
-            //Do action
-        }
+    /**
+     * Almacena la ruta del icono en <code>.svg</code> a dibujar.
+     * @param iconPath ruta al archivo vectorial
+     */
+    public void setIcon(String iconPath){
+        this.icon = p5.loadShape(iconPath); //image.svg
     }
 
+    /**
+     * Escala el icono del botón respecto a sus márgenes.
+     * @param scale factor de escala positivo
+     */
     public void setScale(int scale){
         this.scale = scale;
     }

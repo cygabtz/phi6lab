@@ -1,11 +1,12 @@
 package Components;
 
+import Main.GUI;
 import processing.core.PApplet;
 
 public class Gallery {
     Card[] cards;               // Productes
     int numCards;               // Número total de Productes
-    int numCardsPage;           // Número de Productes en 1 Pàgina
+    int maxCardsInPage;         // Número de targetas en una página
     int numCardsRows = 3;
 
     int numPage;
@@ -16,10 +17,10 @@ public class Gallery {
     float wCard, hCard;
 
     // Constructor
-    public Gallery(PApplet p5, int ncp,int margin, float x, float y, float w, float h) {
+    public Gallery(PApplet p5, float x, float y, float w, float h, int margin) {
 
         this.numCards = 10;
-        this.numCardsPage = ncp;
+        this.maxCardsInPage = 6;
         this.numPage = 0;
 
         this.x = x;
@@ -31,6 +32,7 @@ public class Gallery {
 
         this.wCard = (w - margin *(numCardsRows -1)) / numCardsRows;
         this.hCard = (h - margin) / 2f;
+
     }
 
     // Setters
@@ -42,7 +44,7 @@ public class Gallery {
         for (int i=0; i<cards.length; i++) {
 
             float xc =  x + (i% numCardsRows)* (wCard + margin);
-            float yc = (k% numCardsPage)<(numCardsPage /2)? y : y + hCard + margin;
+            float yc = (k% maxCardsInPage)<(maxCardsInPage /2)? y : y + hCard + margin;
 
             cards[i] = new Card(p5, xc, yc, wCard, hCard);
             cards[i].setInfo(cardsInfo);
@@ -70,12 +72,13 @@ public class Gallery {
         p5.pushStyle();
 
         // Dibuixa Cards
-        int firstCardPage = numCardsPage * numPage;
-        int lastCardPage  = numCardsPage *(numPage+1) - 1;
+        int firstCardPage = maxCardsInPage * numPage;
+        int lastCardPage  = maxCardsInPage *(numPage+1) - 1;
 
         //Dibuja solo las targetas en la página indicada
-        for (int i = firstCardPage; i <= lastCardPage; i++) {
+        for (int i = 0; i <= numCards; i++) {
             //i targetas
+
             if (i<cards.length) {
                 cards[i].display();
             }
@@ -90,15 +93,15 @@ public class Gallery {
 
     public int numCardOver(PApplet p5) {
 
-        int firstCardPage = numCardsPage *numPage;
-        int lastCardPage  = numCardsPage *(numPage+1) - 1;
+        int firstCardPage = maxCardsInPage *numPage;
+        int lastCardPage  = maxCardsInPage *(numPage+1) - 1;
 
 
         for (int i = firstCardPage; i <= lastCardPage; i++) {
             if (i<cards.length) {
 
                 float xc =  x + (i% numCardsRows)* (wCard + margin);
-                float yc = ((i)% numCardsPage)<(numCardsPage /2)? y : y + hCard + margin;
+                float yc = ((i)% maxCardsInPage)<(maxCardsInPage /2)? y : y + hCard + margin;
 
                 if (p5.mouseX > xc && p5.mouseX < xc + wCard &&
                         p5.mouseY > yc && p5.mouseY < yc + hCard) {
@@ -107,5 +110,17 @@ public class Gallery {
             }
         }
         return -1;
+    }
+
+    public void setNumCards(int numCards) {
+        this.numCards = numCards;
+    }
+
+    public void setMaxCardsInPage(int num){
+        this.maxCardsInPage = num;
+    }
+
+    public Card[] getCards(){
+        return this.cards;
     }
 }

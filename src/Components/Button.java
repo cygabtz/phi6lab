@@ -1,7 +1,7 @@
 package Components;
 import Constants.FinalColors;
-import Constants.Fonts;
 import Constants.Sizes;
+import Constants.StaticFonts;
 import processing.core.PApplet;
 import processing.core.PFont;
 
@@ -10,12 +10,13 @@ public class Button {
     PApplet p5;
     public float x, y;
     public float height, width;
-    public int fillColor, strokeColor, strokeWeight;
+    public int fillColor, strokeColorOn, strokeColorOff, strokeWeight;
     public int fillColorOver, fillColorDisabled;
     public boolean enabled;
     public String buttonText;
     public PFont textFont;
     public int textAlign = 3;
+    public float textSize;
 
     public Button(PApplet p5, float x, float y, float width, float height){
         this.p5 = p5;
@@ -29,19 +30,21 @@ public class Button {
         this.fillColor = FinalColors.bgGrey();
         this.fillColorOver = FinalColors.bgLightGrey();
         this.fillColorDisabled = p5.color(150);
-        this.strokeColor = FinalColors.accentSkyBlue();
+        this.strokeColorOn = FinalColors.accentSkyBlue();
+        this.strokeColorOff = fillColor;
         this.strokeWeight = borderWeight;
 
         //Text
-        buttonText = "New Button";
-        setFont(new Fonts(p5).fonts[0]);
+        this.buttonText = "New Button";
+        this.textFont = StaticFonts.getFont(0);
+        this.textSize = Sizes.buttonText;
     }
 
     //Setters
     public void setColors(int fillColor, int strokeColor,
                           int fillColorOver, int fillColorDisabled){
         this.fillColor = fillColor;
-        this.strokeColor = strokeColor;
+        this.strokeColorOn = strokeColor;
         this.fillColorOver = fillColorOver;
         this.fillColorDisabled = fillColorDisabled;
 
@@ -91,8 +94,8 @@ public class Button {
         return fillColor;
     }
 
-    public int getStrokeColor() {
-        return strokeColor;
+    public int getStrokeColorOn() {
+        return strokeColorOn;
     }
 
     public int getFillColorOver() {
@@ -105,28 +108,32 @@ public class Button {
 
     public void display(){
         p5.pushStyle();
+        p5.strokeWeight(strokeWeight);
         if(!enabled){
+            p5.stroke(strokeColorOff);
             p5.fill(fillColorDisabled);
         }
         else if(mouseOverButton(p5)){
+            p5.stroke(this.strokeColorOn);
             p5.fill(fillColorOver);
         }
         else{
+            p5.stroke(strokeColorOff);
             p5.fill(fillColor);          // mouse is out of the button
         }
 
         //Button properties
-        p5.noStroke();
+
         p5.rect(this.x, this.y, this.width, this.height, corner);
 
         // Text properties
         p5.fill(FinalColors.textWhite());
         p5.textFont(textFont);
-        p5.textSize(Sizes.buttonText);
+        p5.textSize(textSize);
 
         p5.textAlign(textAlign);
         if (textAlign==p5.CENTER){
-            p5.text(buttonText, this.x + this.width/2, this.y + this.height/2 + 10);
+            p5.text(buttonText, this.x + this.width/2, this.y + this.height/2 + 8);
         }
         else if (textAlign==p5.LEFT){
             p5.text(buttonText, this.x + margin, this.y + this.height/2 + 8);
@@ -160,5 +167,20 @@ public class Button {
 
     public void setWidth(float width) {
         this.width = width;
+    }
+    
+    public Button clone() {
+        Button b = new Button(this.p5, this.x, this.y, this.width, this.height);
+        b.strokeColorOn = this.strokeColorOn;
+        b.strokeColorOff = this.strokeColorOff;
+        b.fillColorOver = this.fillColorOver;
+        b.fillColorDisabled = this.fillColorDisabled;
+        b.strokeWeight = this.strokeWeight;
+        b.buttonText = this.buttonText;
+        b.textSize = this.textSize;
+        b.textFont = this.textFont;
+        b.textAlign = this.textAlign;
+
+        return b;
     }
 }
