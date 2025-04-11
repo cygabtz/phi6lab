@@ -8,7 +8,6 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static Constants.Layout.*;
 
@@ -36,11 +35,20 @@ public class SimulatorScreen extends Screen {
     public ArrayList<FieldSlider> forceValueFieldSliders, forceUbiFieldSliders;
     float forceNameBoxWidth = frame * 0.75f;
     public ArrayList<String> forceNames;
-    public ArrayList<Button> deleteButtons;
+    public ArrayList<Button> forceDeleteButtons;
     public Button initialDeleteForceButton;
 
     //Moment Module
     private Module momentModule;
+    private int numMoments = 1;
+    public Button addMomentButton;
+    public TextField initialValueMomentField, initialUbiMomentField;
+    public Slider initialValueMomentSlider, initialUbiMomentSlider;
+    public ArrayList<FieldSlider> momentValueFieldSliders, momentUbiFieldSliders;
+    float momentNameBoxWidth = frame * 0.75f;
+    public ArrayList<String> momentNames;
+    public ArrayList<Button> momentDeleteButtons;
+    public Button initialDeleteMomentButton;
 
     /**
      * Constructor de la pantalla de simulación.
@@ -74,7 +82,7 @@ public class SimulatorScreen extends Screen {
 
         //Temporal
 
-        forceModule.opened = false;
+        forceModule.opened = true;
     }
 
     @Override
@@ -110,6 +118,24 @@ public class SimulatorScreen extends Screen {
             p5.text("Ubicación de la fuerza", initialUbiForceField.x + margin + (initialUbiForceField.width + initialUbiForceSlider.width)/2,
                     addForceButton.y + addForceButton.height + 2 * margin + (frame*0.75f)/2);
         }
+
+        momentModule.display();
+
+//        if (momentModule.opened) {
+//            p5.stroke(FinalColors.primaryYellow());
+//            p5.line(momentModule.x + 2*margin, addMomentButton.y + addMomentButton.height + 2 * margin + frame*0.75f,
+//                    momentModule.x+momentModule.width-2*margin, addMomentButton.y + addMomentButton.height + 2 * margin + frame*0.75f);
+//
+//            p5.textAlign(PConstants.CENTER, PConstants.CENTER);
+//            p5.textSize(Sizes.buttonText);
+//            p5.fill(FinalColors.textWhite());
+//            p5.text("Valor de la fuerza",
+//                    initialValueMomentField.x + margin + (initialValueMomentField.width + margin + initialValueMomentSlider.width)/2,
+//                    addMomentButton.y + addMomentButton.height + 2 * margin + (frame*0.75f)/2);
+//
+//            p5.text("Ubicación de la fuerza", initialUbiMomentField.x + margin + (initialUbiMomentField.width + initialUbiMomentSlider.width)/2,
+//                    addMomentButton.y + addMomentButton.height + 2 * margin + (frame*0.75f)/2);
+//        }
     }
 
     /**
@@ -125,14 +151,21 @@ public class SimulatorScreen extends Screen {
 
         for (FieldSlider fs : forceValueFieldSliders) fs.mousePressed();
         for (FieldSlider fs : forceUbiFieldSliders) fs.mousePressed();
-
         forceModule.mousePressed();
+
+
+        for (FieldSlider fs : momentValueFieldSliders) fs.mousePressed();
+        for (FieldSlider fs : momentUbiFieldSliders) fs.mousePressed();
+        momentModule.mousePressed();
     }
 
     public void mouseReleased() {
         beamFieldSlider.mouseReleased();
         for (FieldSlider fs : forceValueFieldSliders) fs.mouseReleased();
         for (FieldSlider fs : forceUbiFieldSliders) fs.mouseReleased();
+
+        for (FieldSlider fs : momentValueFieldSliders) fs.mouseReleased();
+        for (FieldSlider fs : momentUbiFieldSliders) fs.mouseReleased();
     }
 
     public void keyPressed(char key, int keyCode) {
@@ -144,6 +177,9 @@ public class SimulatorScreen extends Screen {
 
         for (FieldSlider fs : forceValueFieldSliders) fs.keyPressed(key, keyCode);
         for (FieldSlider fs : forceUbiFieldSliders) fs.keyPressed(key, keyCode);
+
+        for (FieldSlider fs : momentValueFieldSliders) fs.keyPressed(key, keyCode);
+        for (FieldSlider fs : momentUbiFieldSliders) fs.keyPressed(key, keyCode);
     }
 
     /**
@@ -263,11 +299,7 @@ public class SimulatorScreen extends Screen {
 
         //Añadir componentes al módulo
         forceModule.components.add(addForceButton);
-
-//        forceModule.components.add(initialValueForceField);
-//        forceModule.components.add(initialValueForceSlider);
         forceModule.components.addAll(forceValueFieldSliders);
-
         forceModule.components.add(initialUbiForceField);
         forceModule.components.add(initialUbiForceSlider);
 
@@ -286,16 +318,97 @@ public class SimulatorScreen extends Screen {
         initialDeleteForceButton.buttonText = Integer.toBinaryString(numForces);
         initialDeleteForceButton.textSize = Sizes.widgetHeading;
 
-        deleteButtons = new ArrayList<>();
-        deleteButtons.add(initialDeleteForceButton);
+        forceDeleteButtons = new ArrayList<>();
+        forceDeleteButtons.add(initialDeleteForceButton);
 
-        forceModule.components.addAll(deleteButtons);
-
+        forceModule.components.addAll(forceDeleteButtons);
 
     }
 
     private void initializeMomentModule(){
+        //Se podría sintetizar usando los métodos de clonación posteriormente añadidos.
 
+        //Instanciación del módulo
+        momentModule = new Module(p5, 800, beamModule.y, beamModule.width, 600);
+        momentModule.setTitle("Momentos puntuales");
+
+        float inputZoneWidth = (momentModule.width - 3 * margin - momentNameBoxWidth) / 2;
+
+        //Botón de añadir momento puntual
+        addMomentButton = new Button(p5, momentModule.x + 2 * margin, momentModule.y + margin + frame,
+                momentModule.width - 4 * margin, frame * 0.75f);
+        addMomentButton.setText("Añadir momento");
+        addMomentButton.strokeColorOn = FinalColors.primaryYellow();
+        addMomentButton.strokeColorOff = FinalColors.primaryYellow();
+        addMomentButton.strokeWeight = 1;
+
+
+        //Instanciación del TextField inicial del valor del momento
+        initialValueMomentField = new TextField(p5,
+                momentModule.x + 4 * margin + momentNameBoxWidth,
+                addMomentButton.y + addMomentButton.height + frame * 0.75f + 4 * margin,
+                inputZoneWidth / 3 - margin, frame * 0.75f);
+        initialValueMomentField.setBorderColor(FinalColors.primaryYellow());
+        initialValueMomentField.borderEnabled = true;
+
+        //Instanciación del Slider inicial del valor de la fuerza
+        initialValueMomentSlider = new Slider(p5,
+                initialValueMomentField.x + initialValueMomentField.width + 2 * margin,
+                initialValueMomentField.y,
+                inputZoneWidth * 2 / 3 - 4 * margin, frame * 0.75f,
+                0, 100, 50
+        );
+        momentModule.components.add(initialValueMomentSlider);
+
+        //Añadir a la lista de FieldSliders
+        momentValueFieldSliders = new ArrayList<>();
+        momentValueFieldSliders.add(new FieldSlider(p5, initialValueMomentField, initialValueMomentSlider));
+
+        //Instanciación del TextField de la ubicación de la fuerza
+        initialUbiMomentField = new TextField(p5,
+                initialValueMomentSlider.x + initialValueMomentSlider.width + 3 * margin,
+                addMomentButton.y + addMomentButton.height + frame * 0.75f + 4 * margin,
+                inputZoneWidth / 3 - margin, frame * 0.75f);
+        initialUbiMomentField.setBorderColor(FinalColors.primaryYellow());
+        initialUbiMomentField.borderEnabled = true;
+
+        //Instanciación del Slider de la ubicación de la fuerza
+        initialUbiMomentSlider = new Slider(p5,
+                initialUbiMomentField.x + initialUbiMomentField.width + 2 * margin,
+                initialValueMomentField.y,
+                inputZoneWidth * 2 / 3 - 4 * margin, frame * 0.75f,
+                0, 100, 50
+        );
+
+        //Añadir a la lista de FieldSliders
+        momentUbiFieldSliders = new ArrayList<>();
+        momentUbiFieldSliders.add(new FieldSlider(p5, initialUbiMomentField, initialUbiMomentSlider));
+
+        //Añadir componentes al módulo
+        momentModule.components.add(addMomentButton);
+        momentModule.components.addAll(momentValueFieldSliders);
+        momentModule.components.add(initialUbiMomentField);
+        momentModule.components.add(initialUbiMomentSlider);
+
+        //Nombre de cada fuerza
+        momentNames = new ArrayList<>();
+        for (int i = 0; i <= numForces; i++) momentNames.add("" + (i + 1));
+
+        //Instanciación del botón inicial para borrar un fuerza
+        initialDeleteMomentButton = new Button(p5, momentModule.x + 2 * margin,
+                initialValueMomentField.y,
+                frame * 0.75f, frame * 0.75f);
+        momentModule.components.add(initialDeleteMomentButton);
+        initialDeleteMomentButton.strokeColorOn = FinalColors.primaryYellow();
+        initialDeleteMomentButton.strokeColorOff = FinalColors.primaryYellow();
+        initialDeleteMomentButton.strokeWeight = 1;
+        initialDeleteMomentButton.buttonText = Integer.toBinaryString(numForces);
+        initialDeleteMomentButton.textSize = Sizes.widgetHeading;
+
+        momentDeleteButtons = new ArrayList<>();
+        momentDeleteButtons.add(initialDeleteMomentButton);
+
+        momentModule.components.addAll(momentDeleteButtons);
     }
 
     /**
@@ -358,8 +471,8 @@ public class SimulatorScreen extends Screen {
         Button newDeleteButton = initialDeleteForceButton.clone();
         newDeleteButton.buttonText = forceNames.getLast();
         newDeleteButton.y = y;
-        deleteButtons.add(newDeleteButton);
-        forceModule.components.addAll(deleteButtons);
+        forceDeleteButtons.add(newDeleteButton);
+        forceModule.components.addAll(forceDeleteButtons);
     }
 
 }

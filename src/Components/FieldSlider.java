@@ -2,7 +2,7 @@ package Components;
 
 import processing.core.PApplet;
 
-public class FieldSlider {
+public class FieldSlider implements Cloneable {
     public TextField textField;
     public Slider slider;
     PApplet p5;

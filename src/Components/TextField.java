@@ -6,7 +6,7 @@ import processing.core.PApplet;
 
 import static processing.core.PConstants.BACKSPACE;
 
-public class TextField {
+public class TextField implements Cloneable{
     PApplet p5;
     // Properties of the text field
     public float x, y, height, width;

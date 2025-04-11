@@ -6,7 +6,7 @@ import processing.core.PApplet;
 import static Constants.Layout.corner;
 import static Constants.Layout.margin;
 
-public class Slider {
+public class Slider implements Cloneable{
     private PApplet p5;
     public float x, y, width, height, handleX;
     public int boxColor, selectedColor, lineColor, fontColor, lineWeight;

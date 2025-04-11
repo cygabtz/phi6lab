@@ -6,7 +6,7 @@ import processing.core.PApplet;
 import processing.core.PFont;
 
 import static Constants.Layout.*;
-public class Button {
+public class Button implements Cloneable{
     PApplet p5;
     public float x, y;
     public float height, width;
@@ -171,6 +171,7 @@ public class Button {
     
     public Button clone() {
         Button b = new Button(this.p5, this.x, this.y, this.width, this.height);
+
         b.strokeColorOn = this.strokeColorOn;
         b.strokeColorOff = this.strokeColorOff;
         b.fillColorOver = this.fillColorOver;

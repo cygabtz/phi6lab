@@ -16,7 +16,7 @@ import static Constants.Layout.*;
  * <p>
  * La interacción con el ratón debe manejarse individualmente para cada componente añadido.
  */
-public class Module {
+public class Module implements Cloneable{
     private PApplet p5;
     public String title;
     public float x, y, width, height;
@@ -187,4 +187,5 @@ public class Module {
     public void mousePressed(){
         if (this.closeButton.mouseOverButton(p5)) this.opened = false;
     }
+
 }

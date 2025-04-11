@@ -9,7 +9,7 @@ import static Constants.Layout.corner;
  * Un <code>ButtonIcon</code> es un {@link Button} cuadrado
  * con la posibilidad de poseer un icono en <code>.svg</code>.
  */
-public class ButtonIcon extends Button{
+public class ButtonIcon extends Button implements Cloneable{
     PShape icon;
     public int scale = 5;
     public ButtonIcon(PApplet p5, float x, float y, float width, float height){
@@ -75,4 +75,11 @@ public class ButtonIcon extends Button{
         this.scale = scale;
     }
 
+    @Override
+    public ButtonIcon clone() {
+        ButtonIcon clone = new ButtonIcon(this.p5, this.x, this.y, this.width, this.height);
+        clone.scale = this.scale;
+        clone.icon = this.icon;
+        return clone;
+    }
 }
