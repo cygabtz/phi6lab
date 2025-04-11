@@ -5,19 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Modulo para añadir momentos funcionando sin conectar con la BD">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/Main/BeamReactionCalculator.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/Main/PruebaSymJa.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/solucioInfo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/solucioInfo.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Button.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Button.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ButtonIcon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ButtonIcon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/FieldSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/FieldSlider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Module.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Module.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Slider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Slider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/TextField.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/TextField.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +41,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.BeamReactionCalculator.executor": "Run",
     "Application.ModuleBox.executor": "Run",
     "Application.Phi6Lab.executor": "Run",
     "Application.PruebaSymJa.executor": "Run",
@@ -88,7 +80,20 @@
       <recent name="Components" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.PruebaSymJa">
+  <component name="RunManager" selected="Application.BeamReactionCalculator">
+    <configuration name="BeamReactionCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main.BeamReactionCalculator" />
+      <module name="solucioInfo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ModuleBox" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main.ModuleBox" />
       <module name="solucioInfo" />
@@ -135,26 +140,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="simuCardTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main.simuCardTest" />
-      <module name="solucioInfo" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="Main.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.BeamReactionCalculator" />
         <item itemvalue="Application.PruebaSymJa" />
         <item itemvalue="Application.Phi6Lab" />
         <item itemvalue="Application.ModuleBox" />
         <item itemvalue="Application.fontsTest" />
-        <item itemvalue="Application.simuCardTest" />
       </list>
     </recent_temporary>
   </component>
@@ -287,7 +279,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744307708585</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Modulo para añadir momentos funcionando sin conectar con la BD">
+      <option name="closed" value="true" />
+      <created>1744372244738</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1744372244738</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
