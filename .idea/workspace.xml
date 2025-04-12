@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Modulo para añadir momentos funcionando sin conectar con la BD">
-      <change afterPath="$PROJECT_DIR$/src/Main/BeamReactionCalculator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Main/PruebaSymJa.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Calculadora de fuerzas funciona">
+      <change afterPath="$PROJECT_DIR$/src/SimulationEngine/BeamDrawing.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/SimulationEngine/Elements.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/BeamReactionCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/BeamReactionCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/GUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/PruebaSymJa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/PruebaSymJa.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +44,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.BeamDrawing.executor": "Run",
     "Application.BeamReactionCalculator.executor": "Run",
     "Application.ModuleBox.executor": "Run",
     "Application.Phi6Lab.executor": "Run",
@@ -80,13 +84,26 @@
       <recent name="Components" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.BeamReactionCalculator">
-    <configuration name="BeamReactionCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main.BeamReactionCalculator" />
+  <component name="RunManager" selected="Application.Phi6Lab">
+    <configuration name="BeamDrawing" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="SimulationEngine.BeamDrawing" />
       <module name="solucioInfo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="Main.*" />
+          <option name="PATTERN" value="SimulationEngine.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BeamReactionCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="SimulationEngine.BeamReactionCalculator" />
+      <module name="solucioInfo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="SimulationEngine.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -99,7 +116,7 @@
       <module name="solucioInfo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="Main.*" />
+          <option name="PATTERN" value="SimulationEngine.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -115,24 +132,11 @@
       </method>
     </configuration>
     <configuration name="PruebaSymJa" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main.PruebaSymJa" />
+      <option name="MAIN_CLASS_NAME" value="SimulationEngine.PruebaSymJa" />
       <module name="solucioInfo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="Main.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="fontsTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main.fontsTest" />
-      <module name="solucioInfo" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="Main.*" />
+          <option name="PATTERN" value="SimulationEngine.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -142,11 +146,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Phi6Lab" />
+        <item itemvalue="Application.BeamDrawing" />
         <item itemvalue="Application.BeamReactionCalculator" />
         <item itemvalue="Application.PruebaSymJa" />
-        <item itemvalue="Application.Phi6Lab" />
         <item itemvalue="Application.ModuleBox" />
-        <item itemvalue="Application.fontsTest" />
       </list>
     </recent_temporary>
   </component>
@@ -287,7 +291,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744372244738</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Calculadora de fuerzas funciona">
+      <option name="closed" value="true" />
+      <created>1744402296813</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1744402296813</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -329,6 +341,7 @@
     <MESSAGE value="ButtonIconText necesario para HomeScreen" />
     <MESSAGE value="Modulo para añadir fuerzas funcionando sin conectar con la BD" />
     <MESSAGE value="Modulo para añadir momentos funcionando sin conectar con la BD" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modulo para añadir momentos funcionando sin conectar con la BD" />
+    <MESSAGE value="Calculadora de fuerzas funciona" />
+    <option name="LAST_COMMIT_MESSAGE" value="Calculadora de fuerzas funciona" />
   </component>
 </project>
