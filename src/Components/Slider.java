@@ -87,7 +87,7 @@ public class Slider implements Cloneable{
         dragging = false;
     }
 
-    public void setValueAt(int value){
+    public void setValueAt(float value){
         this.value = value;
         this.handleX = PApplet.map(value, minValue, maxValue, x + mg, x + width - mg);
     }

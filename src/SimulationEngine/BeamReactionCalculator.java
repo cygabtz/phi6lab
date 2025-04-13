@@ -120,8 +120,8 @@ public class BeamReactionCalculator {
         Force f1 = new Force(200, 1.5, true);
         Force f2 = new Force(-200, 4.5, false);
 
-        Support sA = new Support(PIN, 0);
-        Support sB = new Support(ROLLER, 3.0);
+        Support sA = new Support("A", PIN, 0);
+        Support sB = new Support("B", ROLLER, 3.0);
 
         List<Force> forces = new ArrayList<>();
         forces.add(f1);

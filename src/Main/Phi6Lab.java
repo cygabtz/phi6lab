@@ -140,7 +140,9 @@ public class Phi6Lab extends PApplet {
     }
 
     public void mouseDragged(){
-
+        if (gui.currentScreen instanceof Screens.SimulatorScreen ss) {
+            ss.mouseDragged();
+        }
     }
 
     public void mouseReleased() {

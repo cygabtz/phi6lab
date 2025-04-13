@@ -25,17 +25,18 @@ public class FieldSlider implements Cloneable {
     public void keyPressed(char key, int keyCode) {
         if (textField.mouseOverTextField(p5) || slider.isMouseOverSlider()) {
             textField.keyPressed(key, keyCode);
-            int val;
+            float val;
             try {
-                val = Integer.valueOf(textField.getText());
+                val = Float.parseFloat(textField.getText().replace(',', '.')); // Soporte para coma como decimal
             } catch (NumberFormatException e) {
-                val = 0;
+                val = slider.minValue;
             }
             if (val >= slider.minValue && val <= slider.maxValue) {
-                slider.setValueAt(val);
+                slider.setValueAt((int)val);
             }
         }
     }
+
 
     public void mousePressed() {
         if (textField.mouseOverTextField(p5) || slider.isMouseOverSlider()) {
@@ -58,5 +59,17 @@ public class FieldSlider implements Cloneable {
         // Creamos una nueva instancia de FieldSlider
         return new FieldSlider(this.p5, clonedTextField, clonedSlider);
     }
+
+    public void setValue(float val) {
+        // Asegura que el valor esté dentro del rango permitido
+        val = Math.max(slider.minValue, Math.min(slider.maxValue, val));
+
+        // Actualiza el slider
+        slider.setValueAt(val);
+
+        // Actualiza el textField con dos decimales
+        textField.setText(String.format("%.2f", val));
+    }
+
 
 }

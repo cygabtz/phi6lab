@@ -2,13 +2,14 @@ package SimulationEngine;
 
 public class Elements {
     public static enum SUPPORT_TYPE {PIN, ROLLER, FIXED}
+
     public static class Force {
         double magnitude; // Magnitud de la fuerza
         double position;  // Posición de la fuerza respecto al origen de la viga
         boolean isUpward; // Dirección de la fuerza: true para hacia arriba, false para hacia abajo
         double angle;     // Ángulo de la fuerza respecto al eje horizontal (en grados)
 
-        Force(double magnitude, double position, boolean isUpward) {
+        public Force(double magnitude, double position, boolean isUpward) {
             this.magnitude = isUpward ? Math.abs(magnitude) : -Math.abs(magnitude);
             this.position = position;
             this.isUpward = isUpward;
@@ -23,6 +24,25 @@ public class Elements {
         double getVerticalComponent() {
             return magnitude * Math.sin(Math.toRadians(angle));
         }
+
+        // Setters
+
+        public void setMagnitude(double magnitude) {
+            this.magnitude = magnitude;
+        }
+
+        public void setPosition(double position) {
+            this.position = position;
+        }
+
+        public void setUpward(boolean upward) {
+            isUpward = upward;
+        }
+
+        public void setAngle(double angle) {
+            this.angle = angle;
+        }
+
     }
 
     /**
@@ -33,18 +53,31 @@ public class Elements {
         double position;    // Posición del momento respecto al origen de la viga
         boolean isClokwise; // Sentido del momento. Criterio: negativo sentido horario, postivo antihorario
 
-        Moment(double magnitude, double position, boolean isClokwise) {
+        public Moment(double magnitude, double position, boolean isClokwise) {
             this.magnitude = isClokwise ? -Math.abs(magnitude) : Math.abs(magnitude);
             this.position = position;
         }
 
+        public void setMagnitude(double magnitude) {
+            this.magnitude = magnitude;
+        }
+
+        public void setPosition(double position) {
+            this.position = position;
+        }
+
+        public void setClokwise(boolean clokwise) {
+            isClokwise = clokwise;
+        }
     }
 
     public static class Support {
-        SUPPORT_TYPE type;      // Tipo de soporte: "fijo", "articulado", "empotrado"
-        double position;  // Posición del soporte respecto al origen de la viga
+        public String id;
+        public SUPPORT_TYPE type;      // Tipo de soporte: "fijo", "articulado", "empotrado"
+        public double position;  // Posición del soporte respecto al origen de la viga
 
-        Support(SUPPORT_TYPE type, double position) {
+        public Support(String id, SUPPORT_TYPE type, double position) {
+            this.id = id;
             this.type = type;
             this.position = position;
         }
