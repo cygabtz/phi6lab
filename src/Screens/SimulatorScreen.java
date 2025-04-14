@@ -84,7 +84,15 @@ public class SimulatorScreen extends Screen {
      */
     private Button saveButton;
 
+    /**
+     * Botón para limpiar la simulación actual.
+     */
     private Button clearButton;
+
+    /**
+     * Botón para eliminar la simulación actual.
+     */
+    private Button deleteButton;
 
 
     // === Barra lateral izquierda ===
@@ -195,8 +203,8 @@ public class SimulatorScreen extends Screen {
      */
     public Button initialDeleteForceButton;
 
-//
-// === Módulo de momentos ===
+
+    // === Módulo de momentos ===
 
     /**
      * Módulo visual de momentos puntuales.
@@ -263,8 +271,8 @@ public class SimulatorScreen extends Screen {
      */
     public Button initialDeleteMomentButton;
 
-//
-// === Módulo de apoyos ===
+
+    //=== Módulo de apoyos ===
 
     /**
      * Objeto lógico que representa el apoyo A.
@@ -371,8 +379,8 @@ public class SimulatorScreen extends Screen {
      */
     private Elements.SUPPORT_TYPE typeB;
 
-//
-// === Zona de simulación y cálculo ===
+
+    // === Zona de simulación y cálculo ===
 
     /**
      * Encargado de dibujar gráficamente la viga y sus elementos.
@@ -384,8 +392,8 @@ public class SimulatorScreen extends Screen {
      */
     SimuZone simuZone;
 
-//
-// === Parámetros y resultados ===
+
+    // === Parámetros y resultados ===
 
     /**
      * Límite máximo permitido para las magnitudes de fuerza.
@@ -401,6 +409,11 @@ public class SimulatorScreen extends Screen {
      * Arreglo con los resultados de las reacciones: [RAx, RAy, MA, RBx, RBy, MB].
      */
     private double[] results = new double[6];
+
+    // Confirmación de acciones
+
+    private ConfirmationModule confirmModule;
+
 
     /**
      * Constructor de la pantalla de simulación.
@@ -433,6 +446,7 @@ public class SimulatorScreen extends Screen {
         initializeMomentModule();
         initializeSimulationZone();
         initializeSupportModule();
+        initializeConfirmationModule();
         closeAllModules();
         clearEverything();
         setAllUbiSlidersMaxTo(beamSizeSlider.value);
@@ -477,6 +491,9 @@ public class SimulatorScreen extends Screen {
 
         // Results Panel
         displayResultsPanel();
+
+        // Díalogo de confirmación
+        confirmModule.display();
     }
 
     /**
@@ -499,6 +516,7 @@ public class SimulatorScreen extends Screen {
         calculateButton.display();
         saveButton.display();
         clearButton.display();
+        deleteButton.display();
     }
 
     /**
@@ -594,6 +612,11 @@ public class SimulatorScreen extends Screen {
         // Abrir un solo módulo a la vez
         leftButtonsMousePressed();
 
+        // Botón de eliminar
+        deleteButtonMousePressed();
+
+        // Diálogo de confirmación
+        confirmationModuleMousePressed();
 
         // Realizar acciones en función de sí el módulo está abierto
         beamModuleMousePressed();
@@ -604,6 +627,22 @@ public class SimulatorScreen extends Screen {
         // Actulizar listas de nombres en SimuZone
         updateLabels();
 
+    }
+
+    private void deleteButtonMousePressed() {
+        if (deleteButton.mouseOverButton(p5)) {
+            confirmModule.setTitle("Eliminar simulación");
+            confirmModule.setOnConfirm(() -> {
+                deleteSimFromDB(GUI.currentSimId);
+                GUI.currentSimId = -1;
+                GUI.setCurrentScreen(GUI.SCREEN.HOME);
+            });
+            confirmModule.opened = true;
+        }
+    }
+
+    private void confirmationModuleMousePressed() {
+        if (confirmModule.opened) confirmModule.mousePressed();
     }
 
     private void saveButtonMousePressed() {
@@ -999,6 +1038,10 @@ public class SimulatorScreen extends Screen {
         // Clear Button
         clearButton = new Button(p5, calculateButton.x - buttonW - buttonW - 4 * margin, margin, buttonW, frame - 2 * margin);
         clearButton.setText("Limpiar");
+
+        // Delete Button
+        deleteButton = new Button(p5, calculateButton.x - 3*buttonW - 6 * margin, margin, buttonW, frame - 2 * margin);
+        deleteButton.setText("Eliminar");
     }
 
     /**
@@ -1165,6 +1208,10 @@ public class SimulatorScreen extends Screen {
 
     }
 
+    private void initializeConfirmationModule() {
+        confirmModule = new ConfirmationModule(p5, screenH / 2f - 200, screenV / 2f - 100, 400, 200);
+        confirmModule.opened = false;
+    }
 
     private void initializeMomentModule() {
         //Se podría sintetizar usando los métodos de clonación posteriormente añadidos.
@@ -2396,8 +2443,10 @@ public class SimulatorScreen extends Screen {
                 rsViga.next();
                 vigaId = rsViga.getInt("id");
 
-                // === 2. Crear nuevo simulador ===
-                String qInsertSim = "INSERT INTO simulador (TITULO, CREACION, MODIFICACION, VIGA_idVIGA) " + "VALUES ('" + titulo + "', '" + now + "', '" + now + "', " + vigaId + ")";
+                // Crear nuevo simulador ===
+                String usuario = GUI.currentUser; // o como lo gestiones
+                String qInsertSim = "INSERT INTO simulador (TITULO, CREACION, MODIFICACION, VIGA_idVIGA, USUARIO_NOMBRE) " +
+                        "VALUES ('" + titulo + "', '" + now + "', '" + now + "', " + vigaId + ", '" + usuario + "')";
                 Main.Phi6Lab.db.query.execute(qInsertSim);
                 ResultSet rsSim = Main.Phi6Lab.db.query.executeQuery("SELECT LAST_INSERT_ID() as id");
                 rsSim.next();
@@ -2459,6 +2508,36 @@ public class SimulatorScreen extends Screen {
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
+        }
+    }
+
+    public void deleteSimFromDB(int simId) {
+        try {
+            // 1. Obtener id de la viga
+            String qViga = "SELECT VIGA_idVIGA FROM simulador WHERE idSIMULADOR = " + simId;
+            ResultSet rs = Main.Phi6Lab.db.query.executeQuery(qViga);
+            if (!rs.next()) {
+                System.out.println("No se encontró simulador con ID: " + simId);
+                return;
+            }
+            int vigaId = rs.getInt("VIGA_idVIGA");
+
+            // 2. Eliminar elementos relacionados
+            String qDeleteElems = "DELETE FROM elemento WHERE VIGA_idVIGA = " + vigaId;
+            Main.Phi6Lab.db.query.execute(qDeleteElems);
+
+            // 3. Eliminar simulador
+            String qDeleteSim = "DELETE FROM simulador WHERE idSIMULADOR = " + simId;
+            Main.Phi6Lab.db.query.execute(qDeleteSim);
+
+            // 4. Eliminar viga
+            String qDeleteViga = "DELETE FROM viga WHERE idVIGA = " + vigaId;
+            Main.Phi6Lab.db.query.execute(qDeleteViga);
+
+            System.out.println("Simulación con ID " + simId + " eliminada correctamente.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

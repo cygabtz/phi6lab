@@ -15,14 +15,17 @@ public class GUI {
 
     //Screen switching control
     public enum SCREEN {HOME, SIMULATOR, GRAPH, SETTINGS, ABOUT}
-    public SCREEN currentSCREEN;
-    public Screen currentScreen;
-    public Screen[] screens;
+    public static SCREEN currentSCREEN;
+    public static Screen currentScreen;
+    public static Screen[] screens;
 
     public DataBase appDataBase;
 
     // Control de simuladores
     public static int currentSimId = -1;
+
+    // Control de usuarios
+    public static String currentUser = "admin";
 
 
     public GUI(PApplet p5, Colors appColors, Constants.Fonts appFonts, DataBase db){
@@ -36,7 +39,7 @@ public class GUI {
         setCurrentScreen(SCREEN.HOME);
     }
 
-    public void setCurrentScreen(SCREEN screenType){
+    public static void setCurrentScreen(SCREEN screenType){
         currentSCREEN = screenType;
         currentScreen = screens[screenType.ordinal()];
     }

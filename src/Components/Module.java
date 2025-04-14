@@ -17,7 +17,7 @@ import static Constants.Layout.*;
  * La interacción con el ratón debe manejarse individualmente para cada componente añadido.
  */
 public class Module implements Cloneable{
-    private PApplet p5;
+    PApplet p5;
     public String title;
     public float x, y, width, height;
     public int bgColor, fontColor, selectedColor, borderColor;

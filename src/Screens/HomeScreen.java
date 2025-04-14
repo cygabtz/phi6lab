@@ -175,7 +175,8 @@ public class HomeScreen extends Screen {
         //"Create" button
         if(newButtonIcon.mouseOverButton(p5)){
             newButtonIcon.setEnabled(true);
-            gui.setCurrentScreen(GUI.SCREEN.SIMULATOR);
+            GUI.currentSimId = -1; //
+            GUI.setCurrentScreen(GUI.SCREEN.SIMULATOR);
         }
         //Gallery buttons
         for (Card cardButton : gallery.getCards()) {
