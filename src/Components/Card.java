@@ -45,8 +45,8 @@ public class Card extends Button{
         for (String[] strings : simuList) {
             this.id = strings[0];
             this.title = strings[1];
-            this.lastModified = strings[2];
-            this.creation = strings[3];
+            this.creation = strings[2];
+            this.lastModified = strings[3];
             this.imgPath = "";
         }
     }
@@ -111,6 +111,41 @@ public class Card extends Button{
         p5.popStyle();
     }
 
+    // Getters
 
+    public String getId() {
+        return id;
+    }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getLastModified() {
+        return lastModified;
+    }
+
+    public String getCreation() {
+        return creation;
+    }
+
+    public PImage getImage() {
+        return image;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public float getImageHeight() {
+        return imageHeight;
+    }
+
+    public Fonts getAppFonts() {
+        return appFonts;
+    }
 }

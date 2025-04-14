@@ -71,7 +71,7 @@ public class Gallery {
 
         p5.pushStyle();
 
-        // Dibuixa Cards
+        // Dibuja Cards
         int firstCardPage = maxCardsInPage * numPage;
         int lastCardPage  = maxCardsInPage *(numPage+1) - 1;
 
@@ -84,7 +84,7 @@ public class Gallery {
             }
         }
 
-        //Dijuda la información de la página
+        // Dibuja la información de la página
         p5.fill(0); p5.textSize(18); p5.textAlign(p5.LEFT);
         p5.text("Pag: "+(this.numPage+1)+" / "+(this.numTotalPages+1), x + w + 60, y+30);
 

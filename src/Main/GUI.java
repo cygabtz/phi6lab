@@ -21,6 +21,9 @@ public class GUI {
 
     public DataBase appDataBase;
 
+    // Control de simuladores
+    public static int currentSimId = -1;
+
 
     public GUI(PApplet p5, Colors appColors, Constants.Fonts appFonts, DataBase db){
         this.p5 = p5;

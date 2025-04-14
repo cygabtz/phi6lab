@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class DataBase {
     Connection c;               //Variable de conexión
-    Statement query;            //Variablde de consulta
+    public Statement query;            //Variablde de consulta
     String user, password, databaseName;
     boolean connected = false;  //Estado de la conexión
 
@@ -29,6 +29,16 @@ public class DataBase {
             e.printStackTrace();
         }
     }
+
+
+
+
+
+
+
+
+
+    // ==== Funciones prescindibles =====
 
     public String getInfo(String tableName, String columnName, String keyName, String keyValue) {
         String q = " SELECT " + columnName +

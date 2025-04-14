@@ -43,6 +43,24 @@ public class Elements {
             this.angle = angle;
         }
 
+        public double getMagnitude() {
+            return magnitude;
+        }
+
+        public double getPosition() {
+            return position;
+        }
+
+        public boolean isUpward() {
+            return isUpward;
+        }
+
+        public double getAngle() {
+            return angle;
+        }
+
+        // Getters
+
     }
 
     /**
@@ -58,6 +76,8 @@ public class Elements {
             this.position = position;
         }
 
+        //Setters
+
         public void setMagnitude(double magnitude) {
             this.magnitude = magnitude;
         }
@@ -68,6 +88,20 @@ public class Elements {
 
         public void setClokwise(boolean clokwise) {
             isClokwise = clokwise;
+        }
+
+        //Getters
+
+        public double getMagnitude() {
+            return magnitude;
+        }
+
+        public double getPosition() {
+            return position;
+        }
+
+        public boolean isClokwise() {
+            return isClokwise;
         }
     }
 

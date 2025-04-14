@@ -1,6 +1,7 @@
 package Main;
 
 //Processing properties
+
 import Components.Button;
 import Components.FieldSlider;
 import Constants.FinalColors;
@@ -11,7 +12,6 @@ import Constants.Colors;
 import Constants.Fonts;
 
 import static Constants.Layout.*;
-
 
 
 public class Phi6Lab extends PApplet {
@@ -30,9 +30,9 @@ public class Phi6Lab extends PApplet {
     GUI gui;
     Constants.Fonts appFonts;
 
-    public DataBase db;
+    public static DataBase db;
 
-    public void setup(){
+    public void setup() {
         frameRate(80);
         appColors = new Colors(this);
         appFonts = new Fonts(this);
@@ -80,73 +80,48 @@ public class Phi6Lab extends PApplet {
 //        System.out.println( Arrays.deepToString( db.getInfoSimuladores()   ) );
     }
 
-    public void draw(){
+    public void draw() {
         background(FinalColors.bgBlack());
         gui.displayActualScreen(this);
     }
 
 
     //KEYBOARD INTERACTION ----------------------------------------------
-    public void keyPressed(){
-        if (gui.currentScreen instanceof Screens.HomeScreen hs){
+    public void keyPressed() {
+        if (gui.currentScreen instanceof Screens.HomeScreen hs) {
             //TextList
-            if(hs.searchBar.getTextField().mouseOverTextField(this)){
+            if (hs.searchBar.getTextField().mouseOverTextField(this)) {
                 hs.searchBar.getTextField().keyPressed(key, keyCode);
                 hs.searchBar.update(this, appFonts);
             }
-        }
-        else if (gui.currentScreen instanceof Screens.SimulatorScreen ss){
+        } else if (gui.currentScreen instanceof Screens.SimulatorScreen ss) {
             ss.keyPressed(key, keyCode);
-        }
-        else if (gui.currentScreen instanceof Screens.GraphScreen){
+        } else if (gui.currentScreen instanceof Screens.GraphScreen) {
 
-        }
-        else if (gui.currentScreen instanceof Screens.SettingsScreen){
+        } else if (gui.currentScreen instanceof Screens.SettingsScreen) {
 
-        }
-        else if (gui.currentScreen instanceof Screens.AboutScreen){
+        } else if (gui.currentScreen instanceof Screens.AboutScreen) {
 
         }
     }
 
-    public void mousePressed(){
-        //println("X: "+mouseX+", Y:"+mouseY);
-
-        if (gui.currentScreen instanceof Screens.HomeScreen hs){
-            //"Create" button
-            if(hs.newButtonIcon.mouseOverButton(this)){
-                hs.newButtonIcon.setEnabled(true);
-                gui.setCurrentScreen(GUI.SCREEN.SIMULATOR);
-            }
-            //Gallery buttons
-            for (Button cardButton : hs.gallery.getCards()) {
-                if(cardButton.mouseOverButton(this)){
-                    cardButton.setEnabled(true);
-                    gui.setCurrentScreen(GUI.SCREEN.SIMULATOR);
-                }
-            }
-            //TextList
-            if(hs.searchButton.mouseOverButton(this) && hs.searchButton.isEnabled()){
-                hs.selectedText = hs.searchBar.getSelectedValue();
-            }
-            hs.searchBar.getTextField().mousePressed();
-            hs.searchBar.buttonPressed(this);
-
-        }
-        else if (gui.currentScreen instanceof Screens.SimulatorScreen ss){
+    public void mousePressed() {
+        if (gui.currentScreen instanceof Screens.HomeScreen hs) {
+            hs.mousePressed(gui);
+        } else if (gui.currentScreen instanceof Screens.SimulatorScreen ss) {
             ss.mousePressed();
         }
 
     }
 
-    public void mouseDragged(){
+    public void mouseDragged() {
         if (gui.currentScreen instanceof Screens.SimulatorScreen ss) {
             ss.mouseDragged();
         }
     }
 
     public void mouseReleased() {
-        if (gui.currentScreen instanceof SimulatorScreen ss){
+        if (gui.currentScreen instanceof SimulatorScreen ss) {
             ss.mouseReleased();
         }
     }
