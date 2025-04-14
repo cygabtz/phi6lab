@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Dibujo de viga y sus elementos con BeamDrawing. Pendiente integrar con SimulatorScreen.&#10;&#10;Botones laterales de SimulatorScreen conectados a los Module correspondientes.">
-      <change afterPath="$PROJECT_DIR$/src/SimulationEngine/SimuZone.java" afterDir="false" />
+    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="SimuZone integrado con SimulatorScreen">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/FieldSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/FieldSlider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Slider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Slider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main/Phi6Lab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/Phi6Lab.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/GUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SimulationEngine/BeamDrawing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/BeamDrawing.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SimulationEngine/BeamReactionCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/BeamReactionCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SimulationEngine/Elements.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/Elements.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SimulationEngine/SimuZone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/SimuZone.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -309,7 +305,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744462130059</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="SimuZone integrado con SimulatorScreen">
+      <option name="closed" value="true" />
+      <created>1744560253897</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1744560253897</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -353,6 +357,7 @@
     <MESSAGE value="Modulo para añadir momentos funcionando sin conectar con la BD" />
     <MESSAGE value="Calculadora de fuerzas funciona" />
     <MESSAGE value="Dibujo de viga y sus elementos con BeamDrawing. Pendiente integrar con SimulatorScreen.&#10;&#10;Botones laterales de SimulatorScreen conectados a los Module correspondientes." />
-    <option name="LAST_COMMIT_MESSAGE" value="Dibujo de viga y sus elementos con BeamDrawing. Pendiente integrar con SimulatorScreen.&#10;&#10;Botones laterales de SimulatorScreen conectados a los Module correspondientes." />
+    <MESSAGE value="SimuZone integrado con SimulatorScreen" />
+    <option name="LAST_COMMIT_MESSAGE" value="SimuZone integrado con SimulatorScreen" />
   </component>
 </project>

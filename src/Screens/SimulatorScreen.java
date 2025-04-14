@@ -5,23 +5,60 @@ import Components.Module;
 import Constants.FinalColors;
 import Constants.Sizes;
 import SimulationEngine.BeamDrawing;
+import SimulationEngine.BeamReactionCalculator;
 import SimulationEngine.Elements;
 import SimulationEngine.SimuZone;
-import org.matheclipse.core.eval.interfaces.IArrayFunction;
+import org.matheclipse.core.eval.ExprEvaluator;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static Constants.Layout.*;
+import static SimulationEngine.BeamReactionCalculator.calculateReactions;
+import static SimulationEngine.Elements.SUPPORT_TYPE.PIN;
+import static SimulationEngine.Elements.SUPPORT_TYPE.ROLLER;
 
+/**
+ * Pantalla principal de simulación de estructuras tipo viga.
+ *
+ * <p>Esta clase extiende {@link Screen} y constituye el núcleo interactivo del entorno de simulación.
+ * El usuario puede definir la geometría de la viga, aplicar fuerzas puntuales y momentos,
+ * establecer apoyos y calcular las reacciones mediante {@link BeamReactionCalculator}.
+ *
+ * <p>La interfaz está organizada en distintas zonas:
+ * <ul>
+ *   <li>Una barra superior con controles generales (título, guardar, calcular).</li>
+ *   <li>Una barra lateral izquierda con botones que permiten abrir módulos.</li>
+ *   <li>Cuatro módulos interactivos: propiedades de la viga, fuerzas, momentos y apoyos.</li>
+ *   <li>Una zona de simulación visual ({@link SimuZone}) donde se representa gráficamente la viga con sus cargas y apoyos.</li>
+ *   <li>Un panel de resultados que muestra las reacciones calculadas.</li>
+ * </ul>
+ *
+ * <p>La clase integra elementos visuales ({@link TextField}, {@link Slider}, {@link FieldSlider}),
+ * controles de interacción con el teclado y ratón, lógica de sincronización con el motor de simulación
+ * y validación visual de integridad de los datos.
+ *
+ * <p>Se invoca y gestiona desde {@link Main.Phi6Lab} a través de la clase {@link Main.GUI}, siendo la pantalla activa
+ * cuando el usuario crea o abre una simulación.
+ *
+ * @see Main.Phi6Lab
+ * @see SimuZone
+ * @see BeamReactionCalculator
+ * @see Main.GUI
+ * @see FieldSlider
+ */
 public class SimulatorScreen extends Screen {
     private final PApplet p5;
     private final float margin = 6;
+
     //Top bar
     public TextField simuTitleField;
+    private Button calculateButton;
+    private Button saveButton;
 
     //Left bar
     public ButtonIcon[] leftButtons;
@@ -84,6 +121,9 @@ public class SimulatorScreen extends Screen {
     private float maxForceMagnitude = 1000f;
     private float maxMomentMagnitude = 1000f;
 
+    // Panel de resultados
+    private double [] results = new double[6];
+
 
     /**
      * Constructor de la pantalla de simulación.
@@ -109,7 +149,7 @@ public class SimulatorScreen extends Screen {
     public SimulatorScreen(PApplet p5, Constants.Colors appColors, Constants.Fonts fonts) {
         super(p5, appColors, fonts);
         this.p5 = p5;
-        initializeSimulatorTitle();
+        initializeTopBar();
         initializeLeftButtons();
         initializeBeamModule();
         initializePointForceModule();
@@ -120,58 +160,57 @@ public class SimulatorScreen extends Screen {
         setAllUbiSlidersMaxTo(beamSizeSlider.value);
     }
 
-    private void checkForceIntegrity() {
-        int valCount = forceValueFieldSliders.size();
-        int ubiCount = forceUbiFieldSliders.size();
-        int btnCount = forceDeleteButtons.size();
-        int drawCount = simuZone.forces.size();
+    /**
+     * Renderiza todos los elementos gráficos de la pantalla de simulación.
+     *
+     * <p>Este método debe ser llamado en cada ciclo del método {@link Main.Phi6Lab#draw()},
+     * y representa visualmente la totalidad de la interfaz de usuario de la simulación estructural.
+     *
+     * <p>El orden de visualización está diseñado para mantener la jerarquía visual y funcional del entorno:
+     * <ul>
+     *   <li><b>Barra superior:</b> incluye el campo de título y botones para calcular y guardar.</li>
+     *   <li><b>Barra lateral izquierda:</b> contiene los botones de acceso a módulos.</li>
+     *   <li><b>Zona de módulos:</b> muestra los módulos activos (viga, fuerzas, momentos) y sus componentes interactivos.</li>
+     *   <li><b>Zona de simulación (SimuZone):</b> visualiza gráficamente la viga, fuerzas, momentos y apoyos definidos por el usuario.</li>
+     *   <li><b>Módulo de apoyos:</b> permite gestionar visualmente los apoyos A y B.</li>
+     *   <li><b>Panel de resultados:</b> muestra las reacciones calculadas con base en la configuración actual.</li>
+     * </ul>
+     *
+     * <p>Se invoca automáticamente por {@link Main.GUI#displayActualScreen(PApplet)} cuando la pantalla activa es un {@code SimulatorScreen}.
+     */
+    public void display() {
+        // Top bar
+        displayTopBar();
 
-        System.out.println("---------- Verificación de Fuerzas ----------");
-        System.out.println("Value sliders: " + valCount);
-        System.out.println("Position sliders: " + ubiCount);
-        System.out.println("Delete buttons: " + btnCount);
-        System.out.println("SimuZone forces: " + drawCount);
+        // Left bar
+        displayLeftBar();
 
-        boolean ok = true;
+        // Module zone
+        beamModule.display();
+        forceModule.display();
+        momentModule.display();
+        displayHeaders();
 
-        if (valCount != ubiCount || valCount != btnCount || valCount != drawCount) {
-            System.out.println("Inconsistencia en conteos");
-            ok = false;
-        }
+        // SimuZone
+        simuZone.display();
 
-        // Verifica que cada componente fue eliminado visualmente
-        for (FieldSlider fs : forceValueFieldSliders) {
-            if (!forceModule.components.contains(fs.slider) || !forceModule.components.contains(fs.textField)) {
-                System.out.println("Value FieldSlider no está en forceModule.components");
-                ok = false;
-            }
-        }
+        // Support Module
+        supportModule.display();
 
-        for (FieldSlider fs : forceUbiFieldSliders) {
-            if (!forceModule.components.contains(fs.slider) || !forceModule.components.contains(fs.textField)) {
-                System.out.println("Ubi FieldSlider no está en forceModule.components");
-                ok = false;
-            }
-        }
-
-        for (Button b : forceDeleteButtons) {
-            if (!forceModule.components.contains(b)) {
-                System.out.println("DeleteButton no está en forceModule.components");
-                ok = false;
-            }
-        }
-
-        if (ok) {
-            System.out.println("Todo está sincronizado");
-        }
+        // Results Panel
+        displayResultsPanel();
     }
 
-
-    @Override
-    public void display() {
-        //System.out.println(Arrays.toString(simuZone.supports.toArray()));
-
-        //Top bar --------------------------------------------------------------------
+    /**
+     * Dibuja la barra superior de la pantalla de simulación.
+     *
+     * <p>Incluye el fondo oscuro superior, el área para el logo de Phi6Lab,
+     * el campo de texto editable para el título de la simulación y los botones
+     * de "Calcular reacciones" y "Guardar".
+     *
+     * <p>Este método es invocado automáticamente dentro de {@link #display()}.
+     */
+    private void displayTopBar() {
         p5.fill(FinalColors.bgBlack());
         p5.strokeWeight(2);
         p5.stroke(FinalColors.bgLightGrey());
@@ -179,15 +218,36 @@ public class SimulatorScreen extends Screen {
         p5.rect(0, 0, frame, frame); //Phi6Lab logo
         simuTitleField.display();
 
-        //Left bar -------------------------------------------------------------------
+        calculateButton.display();
+        saveButton.display();
+    }
+
+    /**
+     * Dibuja la barra lateral izquierda que contiene los botones de acceso a los módulos.
+     *
+     * <p>Estos botones permiten abrir módulos como la viga, los apoyos, las fuerzas y los momentos.
+     * Solo un módulo puede estar abierto al mismo tiempo.
+     *
+     * <p>Este método es invocado dentro de {@link #display()}.
+     */
+    private void displayLeftBar() {
         p5.rect(0, frame, frame, screenV - frame - 1);
         for (ButtonIcon bt : leftButtons) bt.display();
+    }
 
-        //Module zone -----------------------------------------------------------------
-        beamModule.display();
-        forceModule.display();
-        momentModule.display();
-
+    /**
+     * Muestra los encabezados de los módulos abiertos (fuerzas y momentos).
+     *
+     * <p>Este método se encarga de dibujar etiquetas con los títulos
+     * "Valor de la fuerza", "Ubicación de la fuerza", "Valor del momento" y
+     * "Ubicación del momento", según el módulo activo.
+     *
+     * <p>También establece la posición y alineación de estos encabezados en relación
+     * con sus respectivos sliders y campos de texto.
+     *
+     * <p>Internamente llama al método {@link #displayModuleHeaders(Module, String, String, TextField, Slider, TextField, Slider, Button)}.
+     */
+    private void displayHeaders() {
         if (forceModule.opened) {
             displayModuleHeaders(forceModule, "Valor de la fuerza", "Ubicación de la fuerza",
                     initialValueForceField, initialValueForceSlider,
@@ -201,30 +261,19 @@ public class SimulatorScreen extends Screen {
                     initialUbiMomentField, initialUbiMomentSlider,
                     addMomentButton);
         }
-
-        p5.fill(FinalColors.bgLightGrey());
-        p5.noStroke();
-        p5.rect(2 * hRect + 2 * margin, frame + 2 * margin, 3 * hRect - 4 * margin, 4 * vRect - 4 * margin - frame, corner);
-
-        //SimuZone
-
-        simuZone.display();
-
-        // Support Module
-        supportModule.display();
     }
 
     /**
-     * Dibuja encabezados para un módulo
+     * Muestra los encabezados de los módulos abiertos (fuerzas y momentos).
      *
-     * @param module
-     * @param label1
-     * @param label2
-     * @param initialValueField
-     * @param initialValueSlider
-     * @param initialUbiField
-     * @param initialUbiSlider
-     * @param addButton
+     * <p>Este método se encarga de dibujar etiquetas con los títulos
+     * "Valor de la fuerza", "Ubicación de la fuerza", "Valor del momento" y
+     * "Ubicación del momento", según el módulo activo.
+     *
+     * <p>También establece la posición y alineación de estos encabezados en relación
+     * con sus respectivos sliders y campos de texto.
+     *
+     * <p>Internamente llama al método {@link #displayModuleHeaders(Module, String, String, TextField, Slider, TextField, Slider, Button)}.
      */
     private void displayModuleHeaders(Module module, String label1, String label2,
                                       TextField initialValueField, Slider initialValueSlider,
@@ -251,14 +300,52 @@ public class SimulatorScreen extends Screen {
 
 
     /**
-     * Llama a los <code> mousePressed()</code> de cada <code>Components</code>.
-     * Hace que los componentes reaccionen en función de la posición del ratón.
+     * Maneja los eventos de presión del botón del ratón dentro de la pantalla de simulación.
+     *
+     * <p>Este método es llamado desde {@link Main.Phi6Lab#mousePressed()} cuando {@link Main.GUI}
+     * tiene como pantalla activa una instancia de {@code SimulatorScreen}.
+     *
+     * <p>Al presionar el ratón, se evalúan e interpretan las acciones del usuario en distintos contextos:
+     * <ul>
+     *   <li>Actualización del título del proyecto si se hace clic sobre el campo de texto.</li>
+     *   <li>Cálculo de reacciones si se presiona el botón correspondiente.</li>
+     *   <li>Apertura de módulos laterales según el ícono presionado.</li>
+     *   <li>Interacción con sliders, botones y elementos dentro de los módulos activos.</li>
+     * </ul>
+     *
+     * <p>Cada módulo implementa su propia lógica interna en métodos auxiliares separados
+     * para garantizar claridad y mantenibilidad del código.
      */
     public void mousePressed() {
         simuTitleField.mousePressed();
 
-        // Abrir un solo módulo a la vez
+        // Botón de calcular
+        if (calculateButton.mouseOverButton(p5)) {
+            updateResults();
+        }
 
+        // Abrir un solo módulo a la vez
+        leftButtonsMousePressed();
+
+
+        // Realizar acciones en función de sí el módulo está abierto
+        beamModuleMousePressed();
+        forceModuleMousePressed();
+        momentModuleMousePressed();
+        supportModuleMousePressed();
+
+        // Actulizar listas de nombres en SimuZone
+        updateLabels();
+
+    }
+
+    /**
+     * Controla la apertura de módulos desde los botones laterales.
+     *
+     * <p>Solo se permite un módulo abierto a la vez. Al hacer clic sobre un ícono,
+     * se cierran los demás módulos y se activa el correspondiente.
+     */
+    private void leftButtonsMousePressed() {
         if (leftButtons[0].mouseOverButton(p5)) {
             closeAllModules();
             beamModule.opened = true;
@@ -278,9 +365,15 @@ public class SimulatorScreen extends Screen {
             closeAllModules();
             momentModule.opened = true;
         }
+    }
 
-        // Realizar acciones en función de sí el módulo está abierto
-
+    /**
+     * Maneja la interacción del usuario con el módulo de la viga (beam).
+     *
+     * <p>Permite modificar la longitud de la viga mediante un {@link FieldSlider}
+     * y actualiza automáticamente los límites máximos de posición de fuerzas, momentos y apoyos.
+     */
+    private void beamModuleMousePressed() {
         if (beamModule.opened) {
             beamModule.mousePressed();
             beamFieldSlider.mousePressed();
@@ -288,7 +381,19 @@ public class SimulatorScreen extends Screen {
             // Asegurarse de que ningún elemento se puede colocar más allá de la longitud de la viga
             setAllUbiSlidersMaxTo(beamSizeSlider.value);
         }
+    }
 
+    /**
+     * Maneja los eventos del ratón dentro del módulo de fuerzas puntuales.
+     *
+     * <ul>
+     *   <li>Agrega nuevas fuerzas si se presiona el botón "Añadir fuerza".</li>
+     *   <li>Actualiza los sliders activos y sincroniza sus valores con {@link SimuZone}.</li>
+     *   <li>Permite eliminar fuerzas si se presionan los botones correspondientes.</li>
+     *   <li>Permite cerrar el módulo.</li>
+     * </ul>
+     */
+    private void forceModuleMousePressed() {
         if (forceModule.opened) {
 
             // Añadir fuerza si se pulsa "Añadir fuerza"
@@ -312,7 +417,19 @@ public class SimulatorScreen extends Screen {
                 }
             }
         }
+    }
 
+    /**
+     * Maneja los eventos del ratón dentro del módulo de momentos.
+     *
+     * <ul>
+     *   <li>Agrega nuevos momentos si se presiona el botón "Añadir momento".</li>
+     *   <li>Actualiza sliders y sincroniza valores con {@link SimuZone}.</li>
+     *   <li>Permite eliminar momentos existentes.</li>
+     *   <li>Permite cerrar el módulo.</li>
+     * </ul>
+     */
+    private void momentModuleMousePressed() {
         if (momentModule.opened) {
             // Añadir momento
             if (addMomentButton.mouseOverButton(p5)) addMoment();
@@ -335,7 +452,18 @@ public class SimulatorScreen extends Screen {
             // Cambiar el estado de las fuerzas del motor de simulación
             updateMoments();
         }
+    }
 
+    /**
+     * Maneja las interacciones dentro del módulo de apoyos (soportes).
+     *
+     * <ul>
+     *   <li>Activa o desactiva apoyos A y B.</li>
+     *   <li>Permite cambiar el tipo de apoyo (PIN, ROLLER, FIXED) para cada extremo.</li>
+     *   <li>Permite cerrar el módulo.</li>
+     * </ul>
+     */
+    private void supportModuleMousePressed() {
         if (supportModule.opened) {
 
             // Activar / desactivar apoyo
@@ -356,23 +484,46 @@ public class SimulatorScreen extends Screen {
             supportModule.mousePressed();
 
         }
-
-        // Actulizar listas de nombres en SimuZone
-        updateLabels();
-
     }
 
+    /**
+     * Actualiza el valor de la longitud de la viga en la zona de simulación ({@link SimuZone}).
+     *
+     * <p>Este método sincroniza el valor del {@link Slider} asociado al módulo de viga
+     * con el atributo {@code beamValue} de {@link SimuZone}, que representa la longitud actual de la viga.
+     *
+     * <p>Debe llamarse siempre que se modifique la longitud de la viga mediante
+     * interacción con el {@link FieldSlider} correspondiente.
+     */
     private void updateSimuBeam() {
         simuZone.beamValue = beamFieldSlider.slider.value;
     }
 
+    /**
+     * Maneja el evento de arrastre del ratón sobre la pantalla de simulación.
+     *
+     * <p>Este método se llama desde {@link Main.Phi6Lab#mouseDragged()} cuando la pantalla activa es
+     * una instancia de {@code SimulatorScreen}.
+     *
+     * <p>Se encarga de actualizar dinámicamente los valores asociados a sliders mientras el usuario arrastra:
+     * <ul>
+     *   <li>En el módulo de viga, actualiza la longitud con {@link #updateSimuBeam()}.</li>
+     *   <li>En el módulo de fuerzas, actualiza magnitudes y posiciones con {@link #updateForces()}.</li>
+     *   <li>En el módulo de apoyos, permite arrastrar los sliders de posición A y B, y actualiza sus ubicaciones con {@link #updateSupportPosition(String)}.</li>
+     * </ul>
+     *
+     * <p>También se actualizan las etiquetas de identificación de fuerzas y momentos en {@link SimuZone} mediante {@link #updateLabels()}.
+     */
     public void mouseDragged() {
+
+        // Actualizar valores al desplazar ratón en módulo de viga
         if (beamModule.opened) {
             updateSimuBeam();
         } else if (forceModule.opened) {
             updateForces();
         }
 
+        // Actualizar valores al desplazar ratón en módulo de apoyos
         if (supportModule.opened) {
             supportFieldSliderA.mousePressed();
             supportFieldSliderB.mousePressed();
@@ -386,6 +537,15 @@ public class SimulatorScreen extends Screen {
         updateLabels();
     }
 
+    /**
+     * Actualiza los valores de magnitud y posición de todas las fuerzas puntuales
+     * en la zona de simulación ({@link SimuZone}) con base en los valores actuales
+     * de los {@link FieldSlider} asociados a cada fuerza.
+     *
+     * <p>Este método recorre todas las fuerzas registradas y sincroniza sus datos
+     * con los controles visuales del usuario. Si la lista de fuerzas en {@code simuZone}
+     * está vacía, se emite un mensaje de advertencia en consola.
+     */
     private void updateForces() {
         for (int i = 0; i < numForces; i++) {
             float magnitude = forceValueFieldSliders.get(i).slider.value;
@@ -399,6 +559,16 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Actualiza los valores de magnitud y posición de todos los momentos aplicados
+     * en la zona de simulación ({@link SimuZone}) utilizando los valores actuales
+     * de los {@link FieldSlider} correspondientes.
+     *
+     * <p>Este método sincroniza los objetos {@link Elements.Moment} en {@code simuZone}
+     * con los controles visuales modificados por el usuario. Si la lista de fuerzas
+     * en {@code simuZone} está vacía, se emite un mensaje de advertencia, aunque
+     * esto parece ser un error lógico ya que debería validarse la lista de momentos.
+     */
     private void updateMoments() {
         for (int i = 0; i < numMoments; i++) {
             float magnitude = momentValueFieldSliders.get(i).slider.value;
@@ -413,6 +583,23 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Maneja la liberación del botón del ratón sobre los diferentes módulos interactivos de la simulación.
+     *
+     * <p>Este método se llama desde {@link Main.Phi6Lab#mouseReleased()} únicamente cuando la pantalla activa
+     * en la GUI es una instancia de {@link SimulatorScreen}.
+     *
+     * <p>Al liberar el ratón:
+     * <ul>
+     *   <li>Finaliza cualquier acción de arrastre en sliders o campos de texto.</li>
+     *   <li>Actualiza los valores internos de la viga, fuerzas, momentos y apoyos.</li>
+     *   <li>Recalcula los límites máximos de los sliders si ha cambiado la longitud de la viga.</li>
+     *   <li>Actualiza las posiciones de las etiquetas mostradas en la zona de simulación ({@link SimuZone}).</li>
+     * </ul>
+     *
+     * <p>Cada módulo es procesado de manera independiente si se encuentra activo (`opened == true`).
+     * Este enfoque modular permite que el usuario interactúe con un único panel a la vez sin conflictos.
+     */
     public void mouseReleased() {
 
         //Beam Module
@@ -449,10 +636,25 @@ public class SimulatorScreen extends Screen {
     }
 
     /**
-     * Controla la interacción con el teclado. Se debe estar encima para cambiar el texto
+     * Controla la interacción con el teclado dentro de la pantalla de simulación.
      *
-     * @param key
-     * @param keyCode
+     * <p>Este método se ejecuta automáticamente desde el método `keyPressed()` de la clase principal
+     * {@link Main.Phi6Lab}, cuando la pantalla activa en {@link Main.GUI} es una instancia de {@code SimulatorScreen}.
+     *
+     * <p>Permite al usuario modificar mediante el teclado:
+     * <ul>
+     *   <li>El título de la simulación si el puntero está sobre el campo correspondiente.</li>
+     *   <li>El tamaño de la viga.</li>
+     *   <li>Los valores y posiciones de las fuerzas y momentos.</li>
+     *   <li>Las posiciones de los apoyos A y B.</li>
+     * </ul>
+     *
+     * <p>Cada uno de los {@link FieldSlider} y {@link TextField} que detecta estar seleccionado
+     * interpreta las teclas presionadas (letras, números o retroceso).
+     * Si el texto ingresado es válido, actualiza automáticamente el valor del {@link Slider} asociado.
+     *
+     * @param key carácter presionado (por ejemplo 'a', '1', ' ')
+     * @param keyCode código de tecla presionada (por ejemplo BACKSPACE o código ASCII)
      */
     public void keyPressed(char key, int keyCode) {
 
@@ -480,17 +682,52 @@ public class SimulatorScreen extends Screen {
     }
 
     /**
-     * Instancia un {@link TextField} con el título del simulador.
+     * Inicializa los componentes gráficos de la barra superior de la pantalla de simulación.
+     *
+     * <p>Esta barra contiene los controles generales de la simulación, incluyendo:
+     * <ul>
+     *   <li>Un {@link TextField} para editar el nombre del proyecto.</li>
+     *   <li>Un botón para calcular las reacciones estáticas de la viga mediante {@link BeamReactionCalculator}.</li>
+     *   <li>Un botón para guardar el proyecto (pendiente de implementación en lógica de persistencia).</li>
+     * </ul>
+     *
+     * <p>Los componentes son posicionados de forma relativa al layout definido en {@code Constants.Layout}.
+     * Este método es invocado una única vez durante la construcción de {@code SimulatorScreen}.
      */
-    private void initializeSimulatorTitle() {
+    private void initializeTopBar() {
+        // Simulator Title
         simuTitleField = new TextField(p5, frame + margin, margin,
                 2 * hRect - frame - 2 * margin, frame - 2 * margin);
         simuTitleField.setEmptyText("Nuevo proyecto...");
+
+        // Calculate Button
+        float buttonW = hRect*2/3;
+        calculateButton = new Button(p5, screenH-buttonW-2*margin, margin, buttonW, frame-2*margin);
+        calculateButton.strokeColorOn = FinalColors.accentSkyBlue();
+        calculateButton.setText("Calcular reacciones");
+
+        // Save Button
+        buttonW = hRect/2;
+        saveButton = new Button(p5, calculateButton.x-buttonW-2*margin, margin, buttonW, frame-2*margin);
+        saveButton.setText("Guardar");
     }
 
     /**
-     * Instancia varios {@link ButtonIcon} que permiten mostrar los {@link Module}.
-     * Estos se situan en el margen derecho superior de la pantalla.
+     * Inicializa los botones de acceso rápido a módulos en la barra lateral izquierda.
+     *
+     * <p>Se crean cuatro instancias de {@link ButtonIcon}, cada una con un ícono representativo,
+     * que permiten al usuario abrir uno de los siguientes módulos:
+     * <ul>
+     *   <li>Viga ("beam")</li>
+     *   <li>Apoyos ("support")</li>
+     *   <li>Fuerzas ("load")</li>
+     *   <li>Momentos ("momentum")</li>
+     * </ul>
+     *
+     * <p>Los botones se distribuyen verticalmente con espaciado uniforme y se colocan en el margen izquierdo
+     * de la interfaz. Las imágenes SVG correspondientes se cargan desde la carpeta <code>data/icons/</code>.
+     *
+     * <p>Este método es llamado una sola vez desde el constructor de {@code SimulatorScreen}.
      */
     private void initializeLeftButtons() {
         leftButtons = new ButtonIcon[4];
@@ -503,8 +740,20 @@ public class SimulatorScreen extends Screen {
     }
 
     /**
-     * Instancia todos los componentes para el {@link Module} de propiedades de la viga.
-     * El módulo permite controlar la longitud de la viga mediante un {@link FieldSlider}.
+     * Inicializa el módulo de propiedades de la viga en la interfaz de simulación.
+     *
+     * <p>Este módulo permite al usuario definir la longitud de la viga mediante un control interactivo compuesto por:
+     * <ul>
+     *   <li>Un {@link TextField} donde se puede escribir directamente el valor de longitud.</li>
+     *   <li>Un {@link Slider} que permite ajustar dicho valor visualmente.</li>
+     *   <li>Un {@link FieldSlider} que sincroniza ambos elementos.</li>
+     * </ul>
+     *
+     * <p>El módulo se posiciona en la parte superior izquierda de la pantalla y su tamaño es fijo.
+     * Se le asigna el título "Propiedades viga" y se configura con valores iniciales seguros.
+     * Este módulo se utiliza como referencia para limitar la posición de otros elementos como fuerzas, momentos y apoyos.
+     *
+     * <p>Este método es invocado una única vez desde el constructor de {@code SimulatorScreen}.
      */
     private void initializeBeamModule() {
         beamModule = new Module(p5, frame + margin, frame + margin, moduleWidth, 150);
@@ -531,11 +780,32 @@ public class SimulatorScreen extends Screen {
     }
 
     /**
-     * Instancia los componentes del {@link Module} de fuerzas puntuales.
-     * Un {@link Button} permite añadir una nueva fuerza.
-     * Cada fuerzas tiene un {@link FieldSlider} para su valor y otro para su posición en la viga.
-     * Todos los componentes se ubican en función de los {@link TextField} y {@link Slider} iniciales.
-     * Hay dos listas de <code>FieldSlider</code> que permiten guardar la información de la base de datos.
+     * Inicializa todos los componentes visuales y lógicos del módulo de fuerzas puntuales.
+     *
+     * <p>Este módulo permite al usuario añadir, configurar y eliminar fuerzas aplicadas sobre la viga.
+     * Cada fuerza consta de dos valores configurables:
+     * <ul>
+     *   <li><b>Magnitud:</b> valor de la fuerza representado con un {@link FieldSlider} compuesto por un {@link TextField} y un {@link Slider}.</li>
+     *   <li><b>Ubicación:</b> posición de aplicación de la fuerza a lo largo de la viga, también controlada mediante un {@link FieldSlider}.</li>
+     * </ul>
+     *
+     * <p>La función realiza las siguientes tareas:
+     * <ol>
+     *   <li>Instancia el módulo contenedor de fuerzas con dimensiones y título apropiado.</li>
+     *   <li>Crea el botón "Añadir fuerza" y lo configura visualmente.</li>
+     *   <li>Inicializa los sliders y campos de texto correspondientes a la magnitud y ubicación de la primera fuerza.</li>
+     *   <li>Agrega todos los componentes al módulo y los organiza en listas para gestión posterior.</li>
+     *   <li>Genera un botón inicial para eliminar la primera fuerza, el cual también se registra en su lista correspondiente.</li>
+     * </ol>
+     *
+     * <p>Este método debe ser llamado una sola vez en el constructor de {@code SimulatorScreen},
+     * antes de que se empiece a interactuar con el módulo.
+     *
+     * @see FieldSlider
+     * @see TextField
+     * @see Slider
+     * @see Button
+     * @see Module
      */
     private void initializePointForceModule() {
         //Se podría sintetizar usando los métodos de clonación posteriormente añadidos.
@@ -628,6 +898,7 @@ public class SimulatorScreen extends Screen {
 
     }
 
+
     private void initializeMomentModule() {
         //Se podría sintetizar usando los métodos de clonación posteriormente añadidos.
 
@@ -715,9 +986,23 @@ public class SimulatorScreen extends Screen {
     }
 
     /**
-     * Instancia nuevos dos {@link FieldSlider} y los añade a una lista.
-     * Un <code>FieldSlider</code> controla el valor de la fuerza puntual
-     * y otro su posición respecto el origen de la viga.
+     * Añade una nueva fuerza puntual a la simulación.
+     *
+     * <p>Este método incrementa el contador de fuerzas, crea un nuevo par de {@link FieldSlider} para
+     * configurar la magnitud y ubicación de la nueva fuerza, y la incorpora al motor de simulación
+     * representado por {@link SimuZone}.
+     *
+     * <p>El flujo de acciones incluye:
+     * <ul>
+     *   <li>Incrementar {@code numForces} para reflejar la nueva cantidad de fuerzas.</li>
+     *   <li>Crear visualmente los sliders y campos de texto asociados mediante {@link #newForceFieldSlider()}.</li>
+     *   <li>Actualizar los valores máximos de los sliders de ubicación con {@link #setAllUbiSlidersMaxTo(float)}
+     *       en función del tamaño actual de la viga.</li>
+     *   <li>Añadir la nueva fuerza a {@code simuZone.forces} con su magnitud y posición inicial leída del nuevo slider.</li>
+     *   <li>Verificar la integridad visual y lógica de los componentes con {@link #checkForceIntegrity()}.</li>
+     * </ul>
+     *
+     * <p>Este método es invocado cada vez que el usuario presiona el botón "Añadir fuerza".
      */
     private void addPointForce() {
         numForces++;
@@ -736,6 +1021,23 @@ public class SimulatorScreen extends Screen {
         checkForceIntegrity();
     }
 
+    /**
+     * Crea y posiciona un nuevo conjunto de controles para una fuerza puntual adicional.
+     *
+     * <p>Este método se encarga de generar visualmente un nuevo par de {@link FieldSlider} que permiten:
+     * <ul>
+     *   <li>Configurar la magnitud (valor) de la fuerza.</li>
+     *   <li>Definir su ubicación (posición) a lo largo de la viga.</li>
+     * </ul>
+     *
+     * <p>También crea un botón de eliminación asociado a esta fuerza y actualiza las listas
+     * internas que mantienen sincronizados los controles visuales, los datos lógicos y la interfaz gráfica.
+     *
+     * <p>Los nuevos elementos se posicionan en vertical debajo del conjunto inicial,
+     * respetando un espaciado constante determinado por la altura del primer campo más márgenes.
+     *
+     * <p>Este método es invocado por {@link #addPointForce()} cada vez que el usuario añade una nueva fuerza.
+     */
     private void newForceFieldSlider() {
         int index = forceValueFieldSliders.size();
 
@@ -798,6 +1100,23 @@ public class SimulatorScreen extends Screen {
         forceNames.add("" + numForces);
     }
 
+    /**
+     * Elimina una fuerza puntual de la simulación y de la interfaz gráfica.
+     *
+     * <p>Este método realiza las siguientes acciones:
+     * <ul>
+     *   <li>Decrementa el contador {@code numForces}.</li>
+     *   <li>Elimina los {@link FieldSlider} de magnitud y posición, y el botón de eliminación
+     *       de sus respectivas listas lógicas.</li>
+     *   <li>Elimina la fuerza del motor de simulación ({@link SimuZone}).</li>
+     *   <li>Remueve todos los componentes visuales asociados del {@link Module} de fuerzas.</li>
+     *   <li>Actualiza la lista de etiquetas con {@link #updateLabels()}.</li>
+     *   <li>Verifica la integridad del módulo con {@link #checkForceIntegrity()}.</li>
+     *   <li>Reorganiza los elementos restantes visualmente mediante {@link #repositionForceComponents()}.</li>
+     * </ul>
+     *
+     * @param forceIndex índice de la fuerza a eliminar.
+     */
     private void deletePointForce(int forceIndex) {
         System.out.println("ELIMINANDO FUERZA CON ÍNDICE: " + forceIndex);
         numForces--;
@@ -825,6 +1144,19 @@ public class SimulatorScreen extends Screen {
         repositionForceComponents();
     }
 
+    /**
+     * Reposiciona visualmente todos los componentes del módulo de fuerzas puntuales.
+     *
+     * <p>Recalcula y actualiza la coordenada vertical {@code y} de cada:
+     * <ul>
+     *   <li>{@link FieldSlider} de magnitud (valor).</li>
+     * <li>{@link FieldSlider} de ubicación (posición).</li>
+     *   <li>Botón de eliminación asociado.</li>
+     * </ul>
+     * en función de su orden en la lista, manteniendo un espaciado uniforme respecto al campo inicial.
+     *
+     * <p>Este método se utiliza tras eliminar una fuerza para reorganizar correctamente los elementos restantes.
+     */
     private void repositionForceComponents() {
         for (int i = 0; i < forceValueFieldSliders.size(); i++) {
             float y = initialValueForceField.y +
@@ -846,6 +1178,23 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Añade un nuevo momento puntual a la simulación.
+     *
+     * <p>Este método incrementa el contador de momentos, crea un nuevo par de {@link FieldSlider}
+     * para configurar su magnitud y ubicación, y lo incorpora a la zona de simulación {@link SimuZone}.
+     *
+     * <p>El flujo de ejecución incluye:
+     * <ul>
+     *   <li>Actualizar {@code numMoments} para reflejar el nuevo total.</li>
+     *   <li>Crear y posicionar visualmente los controles con {@link #newMomentFieldSlider()}.</li>
+     *   <li>Ajustar los límites máximos de los sliders de ubicación según la longitud actual de la viga.</li>
+     *   <li>Añadir el nuevo momento a {@code simuZone.moments} con su configuración inicial.</li>
+     *   <li>Verificar que todos los componentes visuales del módulo estén sincronizados correctamente con {@link #checkMomentIntegrity()}.</li>
+     * </ul>
+     *
+     * <p>Este método se ejecuta al presionar el botón "Añadir momento" en la interfaz.
+     */
     private void addMoment() {
         numMoments++;
 
@@ -863,6 +1212,23 @@ public class SimulatorScreen extends Screen {
         checkMomentIntegrity();
     }
 
+    /**
+     * Crea y posiciona un nuevo conjunto de controles visuales para un momento puntual adicional.
+     *
+     * <p>Este método genera:
+     * <ul>
+     *   <li>Un {@link FieldSlider} para la magnitud del momento (valor).</li>
+     *   <li>Un {@link FieldSlider} para la ubicación del momento a lo largo de la viga.</li>
+     *   <li>Un botón para eliminar el momento correspondiente.</li>
+     * </ul>
+     *
+     * <p>Los nuevos controles se colocan de forma vertical, uno debajo del otro,
+     * respetando el espaciado definido por los campos iniciales del módulo.
+     * Además, los elementos se agregan a las listas correspondientes y al módulo visual para mantener
+     * la sincronización entre la lógica, la interfaz gráfica y el motor de simulación.
+     *
+     * <p>Este método es invocado automáticamente por {@link #addMoment()} cada vez que se añade un nuevo momento.
+     */
     private void newMomentFieldSlider() {
         int numMomentFieldSliders = momentValueFieldSliders.size();
 
@@ -918,6 +1284,17 @@ public class SimulatorScreen extends Screen {
         momentModule.components.addAll(momentDeleteButtons);
     }
 
+    /**
+     * Verifica la integridad lógica y visual del módulo de momentos.
+     *
+     * <p>Este método compara el tamaño de las listas internas que gestionan los {@link FieldSlider} de magnitud,
+     * los {@link FieldSlider} de ubicación, los botones de eliminación y la lista de momentos en {@link SimuZone}.
+     * Si hay discrepancias en los conteos o si algún componente visual no está registrado correctamente
+     * en el {@link Module} correspondiente, se imprime un mensaje de advertencia en consola.
+     *
+     * <p>Este chequeo ayuda a garantizar que todas las estructuras relacionadas con los momentos estén
+     * sincronizadas y que no haya errores de interfaz después de operaciones como añadir o eliminar momentos.
+     */
     private void checkMomentIntegrity() {
         int valueCount = momentValueFieldSliders.size();
         int ubiCount = momentUbiFieldSliders.size();
@@ -964,7 +1341,22 @@ public class SimulatorScreen extends Screen {
         }
     }
 
-
+    /**
+     * Elimina un momento puntual de la simulación y su interfaz gráfica.
+     *
+     * <p>A partir del índice especificado:
+     * <ul>
+     *   <li>Elimina el {@link FieldSlider} de magnitud, el de ubicación y el botón de eliminación de las listas internas.</li>
+     *   <li>Remueve el objeto {@link Elements.Moment} correspondiente de {@link SimuZone}.</li>
+     *   <li>Elimina todos los componentes visuales del {@link Module} de momentos.</li>
+     *   <li>Reorganiza visualmente los elementos restantes mediante {@link #repositionMomentComponents()}.</li>
+     *   <li>Verifica la integridad del módulo con {@link #checkMomentIntegrity()}.</li>
+     * </ul>
+     *
+     * <p>Este método es llamado al presionar el botón de eliminar asociado a un momento específico.
+     *
+     * @param index índice del momento a eliminar.
+     */
     private void deleteMoment(int index) {
         numMoments--;
 
@@ -988,6 +1380,20 @@ public class SimulatorScreen extends Screen {
         checkMomentIntegrity();
     }
 
+    /**
+     * Reposiciona visualmente todos los componentes del módulo de momentos.
+     *
+     * <p>Este método recalcula y reasigna la coordenada vertical {@code y} de cada conjunto de componentes:
+     * <ul>
+     *   <li>{@link FieldSlider} de magnitud</li>
+     *   <li>{@link FieldSlider} de ubicación</li>
+     *   <li>Botón de eliminación</li>
+     * </ul>
+     * en función de su índice, utilizando como referencia la posición del campo inicial.
+     *
+     * <p>Se debe llamar después de eliminar un momento para reorganizar los elementos restantes
+     * y mantener una distribución coherente y limpia en la interfaz del {@link Module}.
+     */
     private void repositionMomentComponents() {
         for (int i = 0; i < momentValueFieldSliders.size(); i++) {
             float y = initialValueMomentField.y +
@@ -1010,6 +1416,24 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Inicializa la zona de simulación gráfica ({@link SimuZone}) y carga los datos iniciales.
+     *
+     * <p>Configura la instancia de {@link SimuZone} con su posición y dimensiones en pantalla,
+     * asigna la longitud actual de la viga, y transfiere todos los datos relevantes para renderizar
+     * las fuerzas y momentos definidos por el usuario.
+     *
+     * <p>En detalle:
+     * <ul>
+     *   <li>Se establece {@code beamValue} en función del slider de longitud de viga.</li>
+     *   <li>Se copian las etiquetas de fuerzas y momentos a {@code forceLabels} y {@code momentLabels}.</li>
+     *   <li>Se crean objetos {@link Elements.Force} y {@link Elements.Moment} con sus valores y posiciones actuales,
+     *       y se añaden a las listas correspondientes dentro de {@code simuZone}.</li>
+     * </ul>
+     *
+     * <p>Este método debe llamarse al construir la pantalla de simulación para garantizar
+     * que todos los elementos visuales estén sincronizados con los datos lógicos.
+     */
     private void initializeSimulationZone() {
         simuZone = new SimuZone(p5, 2 * hRect + 2 * margin + hRect / 2, 2 * vRect, 3 * hRect - 4 * margin - hRect, frame);
 
@@ -1036,6 +1460,15 @@ public class SimulatorScreen extends Screen {
 
     }
 
+    /**
+     * Cierra todos los módulos laterales de la interfaz de simulación.
+     *
+     * <p>Establece la propiedad {@code opened} de cada {@link Module} (viga, fuerzas, momentos y apoyos)
+     * en {@code false}, ocultándolos de la vista del usuario.
+     *
+     * <p>Este método se utiliza para asegurar que solo un módulo esté visible a la vez,
+     * normalmente antes de abrir uno nuevo desde los botones de navegación lateral.
+     */
     private void closeAllModules() {
         beamModule.opened = false;
         forceModule.opened = false;
@@ -1043,6 +1476,22 @@ public class SimulatorScreen extends Screen {
         supportModule.opened = false;
     }
 
+    /**
+     * Inicializa el módulo de configuración de apoyos en la interfaz de simulación.
+     *
+     * <p>Este módulo permite definir la posición y el tipo de dos apoyos (A y B) sobre la viga.
+     * Para cada apoyo se crean:
+     * <ul>
+     *   <li>Un botón para activarlo o desactivarlo.</li>
+     *   <li>Un {@link FieldSlider} que incluye un {@link TextField} y un {@link Slider} para configurar su posición.</li>
+     *   <li>Tres botones adicionales para seleccionar su tipo: PIN, ROLLER o FIXED.</li>
+     * </ul>
+     *
+     * <p>Los controles de A y B se posicionan uno debajo del otro con espaciado vertical.
+     * Los botones para seleccionar el tipo de apoyo de B se clonan y reposicionan desde los de A.
+     *
+     * <p>Este método debe llamarse una sola vez durante la construcción de {@code SimulatorScreen}.
+     */
     private void initializeSupportModule() {
         supportModule = new Module(p5, frame + margin, frame + margin, moduleWidth, 400);
         supportModule.setTitle("Propiedades soporte");
@@ -1135,6 +1584,15 @@ public class SimulatorScreen extends Screen {
 
     }
 
+    /**
+     * Establece un nuevo valor máximo para todos los sliders de ubicación
+     * de fuerzas, momentos y apoyos en función del tamaño actual de la viga.
+     *
+     * <p>Esto asegura que ningún elemento interactivo pueda colocarse fuera del dominio de la viga.
+     * Además, actualiza visualmente la posición de los sliders y campos de texto asociados.
+     *
+     * @param max nuevo valor máximo permitido para los sliders de ubicación.
+     */
     private void setAllUbiSlidersMaxTo(float max) {
 
         // Force Module
@@ -1169,23 +1627,48 @@ public class SimulatorScreen extends Screen {
         updateMomentSliderRanges();
     }
 
+    /**
+     * Actualiza el valor máximo permitido en todos los sliders de magnitud de fuerzas.
+     *
+     * <p>Este método aplica el valor de {@code maxForceMagnitude} como nuevo límite superior
+     * para cada slider asociado a una fuerza puntual.
+     */
     private void updateForceSliderRanges() {
         for (FieldSlider fs : forceValueFieldSliders) {
             fs.slider.maxValue = maxForceMagnitude;
         }
     }
 
+    /**
+     * Actualiza el valor máximo permitido en todos los sliders de magnitud de momentos.
+     *
+     * <p>Este método aplica el valor de {@code maxMomentMagnitude} como nuevo límite superior
+     * para cada slider asociado a un momento puntual.
+     */
     private void updateMomentSliderRanges() {
         for (FieldSlider fs : momentValueFieldSliders) {
             fs.slider.maxValue = maxMomentMagnitude;
         }
     }
 
+    /**
+     * Actualiza las etiquetas (nombres) visibles de fuerzas y momentos en la zona de simulación.
+     *
+     * <p>Sincroniza {@code forceLabels} y {@code momentLabels} de {@link SimuZone} con las listas internas
+     * {@code forceNames} y {@code momentNames}, utilizadas para etiquetar cada carga gráficamente.
+     */
     private void updateLabels() {
         simuZone.forceLabels = new ArrayList<>(forceNames);
         simuZone.momentLabels = new ArrayList<>(momentNames);
     }
 
+    /**
+     * Activa o desactiva el apoyo A en la viga.
+     *
+     * <p>Si el apoyo está desactivado, se añade a {@link SimuZone} con su tipo y posición actual;
+     * si ya está activo, se elimina de la lista de apoyos. También actualiza el texto del botón
+     * de activación correspondiente.
+     */
     private void toggleSupportA() {
         if (!supportActiveA) {
             // Activar
@@ -1203,6 +1686,12 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Activa o desactiva el apoyo B en la viga.
+     *
+     * <p>Funciona de forma análoga a {@link #toggleSupportA()}: si el apoyo B no está activo, se añade
+     * a {@link SimuZone}; si ya está presente, se elimina. Se actualiza también el texto del botón.
+     */
     private void toggleSupportB() {
         if (!supportActiveB) {
             float pos = supportFieldSliderB.slider.value;
@@ -1218,6 +1707,14 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Actualiza el tipo de apoyo A y su estilo visual en la interfaz.
+     *
+     * <p>Resalta el botón correspondiente al tipo seleccionado (PIN, ROLLER o FIXED)
+     * y actualiza el tipo del objeto {@link Elements.Support} con id "A" dentro de {@link SimuZone}.
+     *
+     * @param type el nuevo tipo de apoyo a aplicar.
+     */
     private void updateSupportTypeA(Elements.SUPPORT_TYPE type) {
         typeA = type;
 
@@ -1241,6 +1738,15 @@ public class SimulatorScreen extends Screen {
             }
         }
     }
+
+    /**
+     * Actualiza el tipo de apoyo B y su estilo visual en la interfaz.
+     *
+     * <p>Resalta el botón correspondiente al tipo seleccionado (PIN, ROLLER o FIXED)
+     * y actualiza el tipo del objeto {@link Elements.Support} con id "B" dentro de {@link SimuZone}.
+     *
+     * @param type el nuevo tipo de apoyo a aplicar.
+     */
 
     private void updateSupportTypeB(Elements.SUPPORT_TYPE type) {
         typeB = type;
@@ -1266,6 +1772,12 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Imprime en consola un resumen del estado actual de los apoyos en {@link SimuZone}.
+     *
+     * <p>Incluye información sobre id, posición y tipo de cada apoyo presente.
+     * Se usa principalmente con fines de depuración.
+     */
     private void checkSupportTypes() {
         System.out.println("--------- Verificación de Supports en simuZone ---------");
 
@@ -1283,6 +1795,12 @@ public class SimulatorScreen extends Screen {
         System.out.println("--------------------------------------------------------");
     }
 
+    /**
+     * Actualiza la posición del apoyo A o B en {@link SimuZone} según el valor actual
+     * del {@link Slider} correspondiente.
+     *
+     * @param id el identificador del apoyo ("A" o "B").
+     */
     private void updateSupportPosition(String id) {
         float newPosition;
         if (id.equals("A")) {
@@ -1302,7 +1820,126 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Calcula las reacciones estáticas de la viga con base en los elementos actuales.
+     *
+     * <p>Verifica que haya al menos una fuerza y un apoyo para proceder.
+     * Llama a {@link BeamReactionCalculator#calculateReactions} y guarda los resultados.
+     * También imprime los resultados en consola.
+     */
+    private void updateResults() {
+        String results = "";
+        if (simuZone.forces.isEmpty() || simuZone.supports.isEmpty()) {
+            System.out.println("No se puede calcular nada. Añada algún elemento");
+        } else {
+             results = Arrays.toString(calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports));
+        }
+        System.out.println(results);
+        this.results = calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports);
+    }
+
+    /**
+     * Dibuja el panel de resultados con las reacciones calculadas.
+     *
+     * <p>Muestra las componentes de reacción en los extremos A y B (RAx, RAy, MA, RBx, RBy, MB)
+     * dentro de un área sombreada de la interfaz gráfica.
+     */
+    private void displayResultsPanel(){
+
+        // Recuadro
+        p5.fill(FinalColors.bgGrey());
+        float panelX = 2*hRect+2*margin;
+        float panelY = 4*vRect+2*margin;
+        float panelW = 3*hRect-4*margin;
+        float panelH = 2*vRect-4*margin;
+
+        p5.rect(panelX, panelY, panelW,panelH);
+
+        // Matriz de textos
+        p5.textSize(Sizes.widgetHeading);
+        p5.fill(FinalColors.textWhite());
+        p5.textAlign(PConstants.CENTER);
+        p5.text("Resultados", panelX + panelW/2, panelY+frame/2);
 
 
+        String [] label1 = {"RAx", "RAy", "MA"};
+
+        String [] values1 = new String[3];
+        String [] values2 = new String[3];
+
+        for (int i = 0; i<results.length; i++) {
+            if (i<3) values1[i] = "" + results[i];
+            else values2[i-3] = "" + results[i-3];
+        }
+
+        for (int i = 0; i<3; i++) {
+            String string = label1[i] + ": "+ values1[i];
+            p5.text(string,panelX + 3*frame, panelY + 2*frame + frame*i);
+        }
+
+        String [] label2 = {"RBx", "RBy", "MB"};
+
+        for (int i = 0; i<3; i++) {
+            String string = label2[i] + ": " + values2[i];
+            p5.text(label2[i],panelX + frame/2 + panelW/2, panelY + 2*frame + frame*i);
+        }
+
+    }
+
+    /**
+     * Verifica que todas las estructuras visuales y lógicas relacionadas con las fuerzas
+     * estén sincronizadas.
+     *
+     * <p>Comprueba que la cantidad de sliders de magnitud, sliders de posición,
+     * botones de eliminación y fuerzas en {@link SimuZone} coincidan.
+     * También revisa que cada componente visual esté correctamente registrado en el módulo.
+     *
+     * <p>Imprime advertencias detalladas en consola si detecta alguna inconsistencia.
+     */
+    private void checkForceIntegrity() {
+        int valCount = forceValueFieldSliders.size();
+        int ubiCount = forceUbiFieldSliders.size();
+        int btnCount = forceDeleteButtons.size();
+        int drawCount = simuZone.forces.size();
+
+        System.out.println("---------- Verificación de Fuerzas ----------");
+        System.out.println("Value sliders: " + valCount);
+        System.out.println("Position sliders: " + ubiCount);
+        System.out.println("Delete buttons: " + btnCount);
+        System.out.println("SimuZone forces: " + drawCount);
+
+        boolean ok = true;
+
+        if (valCount != ubiCount || valCount != btnCount || valCount != drawCount) {
+            System.out.println("Inconsistencia en conteos");
+            ok = false;
+        }
+
+        // Verifica que cada componente fue eliminado visualmente
+        for (FieldSlider fs : forceValueFieldSliders) {
+            if (!forceModule.components.contains(fs.slider) || !forceModule.components.contains(fs.textField)) {
+                System.out.println("Value FieldSlider no está en forceModule.components");
+                ok = false;
+            }
+        }
+
+        for (FieldSlider fs : forceUbiFieldSliders) {
+            if (!forceModule.components.contains(fs.slider) || !forceModule.components.contains(fs.textField)) {
+                System.out.println("Ubi FieldSlider no está en forceModule.components");
+                ok = false;
+            }
+        }
+
+        for (Button b : forceDeleteButtons) {
+            if (!forceModule.components.contains(b)) {
+                System.out.println("DeleteButton no está en forceModule.components");
+                ok = false;
+            }
+        }
+
+        if (ok) {
+            System.out.println("Todo está sincronizado");
+        }
+    }
 
 }

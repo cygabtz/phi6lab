@@ -54,6 +54,9 @@ public class SimuZone {
     }
 
     public void display() {
+        // Dibujar fondo
+        drawBg();
+
         // Dibuja la viga (rectángulo)
         drawBeam();
 
@@ -65,7 +68,12 @@ public class SimuZone {
 
         // Dibujar apoyos
         drawSupports();
+    }
 
+    private void drawBg() {
+        p5.fill(FinalColors.bgLightGrey());
+        p5.noStroke();
+        p5.rect(2 * hRect + 2 * margin, frame + 2 * margin, 3 * hRect - 4 * margin, 4 * vRect - 4 * margin - frame, corner);
     }
 
     private void drawBeam() {
@@ -181,7 +189,6 @@ public class SimuZone {
             for (Elements.Support sp : supports) {
 
                 if(sp.type==null) break;
-                System.out.println("Dibujando support con ubi " +sp.position );
 
                 float spX = beamX+ PApplet.map((float) sp.position, 0, beamValue, 0, beamWidth);
 

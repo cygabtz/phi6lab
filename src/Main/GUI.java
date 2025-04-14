@@ -52,7 +52,7 @@ public class GUI {
         //displayGrid(p5);
 
         //Normal execution
-        displayGrid(p5);
+        //displayGrid(p5);
         currentScreen.display();
     }
 

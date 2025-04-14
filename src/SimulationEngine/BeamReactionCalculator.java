@@ -11,9 +11,11 @@ import static SimulationEngine.Elements.SUPPORT_TYPE.*;
 
 public class BeamReactionCalculator {
 
-    private static ExprEvaluator engine;
+    private static ExprEvaluator engine = new ExprEvaluator();
 
     public static double[] calculateReactions(List<Force> forces, List<Moment> moments, List<Support> supports) {
+        System.out.println("Calculando reacciones...");
+
         // Inicializar variables de sumatorias
         double sumFx = 0.0;
         double sumFy = 0.0;
@@ -24,6 +26,10 @@ public class BeamReactionCalculator {
             sumFx += force.getHorizontalComponent();
             sumFy += force.getVerticalComponent();
             sumMoment += force.getVerticalComponent() * force.position; // Momento respecto al origen
+            System.out.println("Calculando sumatorias por valor de: ");
+            System.out.println("\t\tsumFx: "+sumFx);
+            System.out.println("\t\tsumFx: "+sumFx);
+            System.out.println("\t\tsumMoment: "+sumMoment);
         }
         for (Moment moment : moments) sumMoment += moment.magnitude;
 
@@ -41,6 +47,8 @@ public class BeamReactionCalculator {
                 RAx = -sumFx;
                 RAy = -sumFy;
                 MA = -sumMoment - pos * RAy;
+            } else {
+                System.out.println("Combinación no válida: si hay un apoyo este debe ser únicamente empotrado");
             }
         } else if (supports.size() == 2) {
             Support supportA = supports.get(0);
@@ -108,9 +116,12 @@ public class BeamReactionCalculator {
                 RBy = reactions[1];
 
                 //Funciona
+            } else {
+                System.out.println("Combinación no válida");
             }
         } else System.out.println("No se pueden calcular vigas con más de dos soportes");
 
+        System.out.println("Imprimiendo resultados");
         return new double[]{RAx, RAy, MA, RBx, RBy, MB};
     }
 
@@ -170,4 +181,3 @@ public class BeamReactionCalculator {
     }
 
 }
-
