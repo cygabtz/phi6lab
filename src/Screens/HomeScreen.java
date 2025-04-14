@@ -9,6 +9,7 @@ import Main.DataBase;
 import Main.GUI;
 import Main.Phi6Lab;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,8 @@ public class HomeScreen extends Screen {
     //Banner ---------------------------------
     float bannerWidth = (4 * hRect) - vMargin * 2;
     float bannerHeight = 2 * vRect - 2 * hMargin;
+    PImage bannerImage;
+
 
     //Cards Gallery --------------------------
     public Gallery gallery;
@@ -46,9 +49,11 @@ public class HomeScreen extends Screen {
 
     public HomeScreen(PApplet p5, Colors appColors, Constants.Fonts appFonts, DataBase db) {
         super(p5, appColors, appFonts);
+
         // DataBase
         this.db = db;
         initializeDataBase(db);
+
         // Create Button
         initializeCreateButton();
 
@@ -60,6 +65,10 @@ public class HomeScreen extends Screen {
 
         // Cards gallery
         initializeGallery();
+
+        // Banner
+        bannerImage = p5.loadImage("data/icons/banner.png");
+        bannerImage.resize((int) bannerWidth, 0);
 
     }
 
@@ -117,7 +126,7 @@ public class HomeScreen extends Screen {
     public void display() {
         // SideBar Area
         displaySearchBar();
-        displayExtraButtons();
+        //displayExtraButtons();
 
         // Gallery Arean
         displayBanner();
@@ -144,10 +153,14 @@ public class HomeScreen extends Screen {
 
     private void displayBanner() {
         p5.push();
+
         p5.fill(this.appColors.bgGrey());
         p5.noStroke();
-
         p5.rect(hRect + vMargin, vMargin, bannerWidth, bannerHeight, corner);
+
+        if (bannerImage != null) {
+            p5.image(bannerImage, hRect + vMargin, vMargin - 50);
+        }
         p5.pop();
     }
 

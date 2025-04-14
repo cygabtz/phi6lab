@@ -38,10 +38,12 @@ public class ConfirmationModule extends Module {
         super.display();
         if (!opened) return;
 
+        p5.push();
         p5.fill(FinalColors.textWhite());
         p5.textSize(18);
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.text(message, x + width / 2, y + height / 2 - frame);
+        p5.pop();
     }
 
     public void mousePressed() {

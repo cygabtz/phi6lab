@@ -94,6 +94,8 @@ public class SimulatorScreen extends Screen {
      */
     private Button deleteButton;
 
+    private ButtonIcon homeButton;
+
 
     // === Barra lateral izquierda ===
 
@@ -411,7 +413,7 @@ public class SimulatorScreen extends Screen {
     private double[] results = new double[6];
 
     // Confirmación de acciones
-
+    boolean simIsDirty = false;
     private ConfirmationModule confirmModule;
 
 
@@ -517,6 +519,10 @@ public class SimulatorScreen extends Screen {
         saveButton.display();
         clearButton.display();
         deleteButton.display();
+        homeButton.display();
+        if (confirmModule.opened && confirmModule.title.equals("Salir del simulador")) {
+            confirmModule.display("¿Deseas volver al inicio?\nLos cambios no guardados se perderán.");
+        }
     }
 
     /**
@@ -615,6 +621,9 @@ public class SimulatorScreen extends Screen {
         // Botón de eliminar
         deleteButtonMousePressed();
 
+        // Botón de volver a la pantalla principal
+        homeButtonMousePressed();
+
         // Diálogo de confirmación
         confirmationModuleMousePressed();
 
@@ -627,6 +636,24 @@ public class SimulatorScreen extends Screen {
         // Actulizar listas de nombres en SimuZone
         updateLabels();
 
+        // Ha habido una modificación
+        simIsDirty = true;
+    }
+
+    private void homeButtonMousePressed() {
+        if (homeButton.mouseOverButton(p5)) {
+            if (simIsDirty) {
+                confirmModule.setTitle("Salir del simulador");
+                confirmModule.setOnConfirm(() -> {
+                    GUI.setCurrentScreen(GUI.SCREEN.HOME);
+                    GUI.currentSimId = -1;
+                });
+                confirmModule.opened = true;
+            } else {
+                GUI.setCurrentScreen(GUI.SCREEN.HOME);
+                GUI.currentSimId = -1;
+            }
+        }
     }
 
     private void deleteButtonMousePressed() {
@@ -648,6 +675,7 @@ public class SimulatorScreen extends Screen {
     private void saveButtonMousePressed() {
         if (saveButton.mouseOverButton(p5)) {
             GUI.currentSimId = saveSimToDB(GUI.currentSimId); // Actualiza o crea
+            simIsDirty = false;
         }
     }
 
@@ -859,6 +887,9 @@ public class SimulatorScreen extends Screen {
 
         // Actulizar listas de nombres en SimuZone
         updateLabels();
+
+        // Ha habido una modificación
+        simIsDirty = true;
     }
 
     /**
@@ -1042,6 +1073,11 @@ public class SimulatorScreen extends Screen {
         // Delete Button
         deleteButton = new Button(p5, calculateButton.x - 3*buttonW - 6 * margin, margin, buttonW, frame - 2 * margin);
         deleteButton.setText("Eliminar");
+
+        // Home Button
+        homeButton = new ButtonIcon(p5, margin, margin, frame-2*margin, frame-2*margin);
+        homeButton.setIcon("data/icons/simuPhi6_logo.svg");
+
     }
 
     /**

@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Eliminar simulaciones de la base de datos">
-      <change afterPath="$PROJECT_DIR$/src/Components/ConfirmationModule.java" afterDir="false" />
+    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Botón de volver a HomeScreen y Banner">
+      <change afterPath="$PROJECT_DIR$/data/icons/banner.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/icons/banner.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/icons/banner.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/icons/simuPhi6_logo.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Module.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Module.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/GUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ConfirmationModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ConfirmationModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/Phi6Lab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/Phi6Lab.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/HomeScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/HomeScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" afterDir="false" />
     </list>
@@ -61,7 +64,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/benit/Documents/symja_java11-v3.0.0/symja_java11-v3.0.0/lib",
+    "last_opened_file_path": "C:/Users/benit/IdeaProjects/solucioInfo/data/icons",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -338,7 +341,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744662375174</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Eliminar simulaciones de la base de datos">
+      <option name="closed" value="true" />
+      <created>1744664819869</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1744664819869</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -387,6 +398,7 @@
     <MESSAGE value="Comentarios JavaDoc de SimuZone" />
     <MESSAGE value="Cargar y guardar simulación a y desde la base de datos" />
     <MESSAGE value="Eliminar simulaciones de la base de datos" />
-    <option name="LAST_COMMIT_MESSAGE" value="Eliminar simulaciones de la base de datos" />
+    <MESSAGE value="Botón de volver a HomeScreen y Banner" />
+    <option name="LAST_COMMIT_MESSAGE" value="Botón de volver a HomeScreen y Banner" />
   </component>
 </project>

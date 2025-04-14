@@ -50,34 +50,7 @@ public class Phi6Lab extends PApplet {
 
         gui = new GUI(this, appColors, appFonts, db);
 
-//        String[] infoColumna = db.getInfoArray("tipo", "NOMBRE");
-//        println("COLUMNA: " );
-//        printArray(infoColumna);
-//
-//        System.out.println( Arrays.deepToString(db.getInfoArray2DTipo()) );
-//
-//        System.out.println( Arrays.deepToString(db.getInfoArray2DElementoABAJO()) );
-//
-//        System.out.println( Arrays.deepToString( db.getTipoOfElement() ) );
-//
-//        System.out.println( String.valueOf(db.totalFuerzasPuntuales()  ) );
-//
-//        String user = "usuarioEjemplo";
-//        String pass = "342";
-//        System.out.println(db.isUserPass(user, pass));
-//
-//        String newUser = "pepito";
-//        String newPass = "qwerty";
-//        db.insertUser(newUser, newPass);
-//
-//        db.deleteUser(newUser);
-//
-//        String originalUser = "martina56";
-//        String originalPass = "1111";
-//        db.insertUser(originalUser, originalPass);
-//        db.updateUser(user, "martinaPatata", "2222");
-//
-//        System.out.println( Arrays.deepToString( db.getInfoSimuladores()   ) );
+        System.out.println("H: " + screenH + "V: " + screenV);
     }
 
     public void draw() {
