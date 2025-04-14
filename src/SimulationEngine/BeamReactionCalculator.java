@@ -9,10 +9,41 @@ import java.util.List;
 import static SimulationEngine.Elements.*;
 import static SimulationEngine.Elements.SUPPORT_TYPE.*;
 
+/**
+ * Clase encargada de calcular las reacciones estáticas de una viga en equilibrio.
+ *
+ * <p>Utiliza un motor simbólico basado en Symja ({@link org.matheclipse.core.eval.ExprEvaluator})
+ * para resolver ecuaciones simbólicas de equilibrio estático.
+ *
+ * <p>Las reacciones se calculan en función de las fuerzas externas, momentos y apoyos definidos,
+ * devolviendo un arreglo con las componentes de reacción en los extremos A y B.
+ *
+ * <p>Esta clase admite configuraciones con:
+ * <ul>
+ *   <li>Un solo apoyo (tipo FIXED).</li>
+ *   <li>Dos apoyos (combinaciones válidas de PIN y ROLLER).</li>
+ * </ul>
+ *
+ * <p>No soporta, por ahora, más de dos apoyos ni otras combinaciones con grados de indeterminación.
+ */
 public class BeamReactionCalculator {
 
     private static ExprEvaluator engine = new ExprEvaluator();
 
+    /**
+     * Calcula las reacciones estáticas de la viga a partir de fuerzas, momentos y apoyos definidos.
+     *
+     * <p>Si se detecta solo un apoyo, se asume que es de tipo FIXED y se calculan las reacciones directamente.
+     * Si hay dos apoyos, se generan ecuaciones de equilibrio para resolver simbólicamente las incógnitas.
+     *
+     * <p>Las componentes devueltas están en el orden:
+     * {@code [RAx, RAy, MA, RBx, RBy, MB]}.
+     *
+     * @param forces   lista de fuerzas externas aplicadas sobre la viga.
+     * @param moments  lista de momentos aplicados.
+     * @param supports lista de apoyos con su tipo y posición.
+     * @return arreglo con las reacciones estáticas calculadas.
+     */
     public static double[] calculateReactions(List<Force> forces, List<Moment> moments, List<Support> supports) {
         System.out.println("Calculando reacciones...");
 
@@ -27,9 +58,9 @@ public class BeamReactionCalculator {
             sumFy += force.getVerticalComponent();
             sumMoment += force.getVerticalComponent() * force.position; // Momento respecto al origen
             System.out.println("Calculando sumatorias por valor de: ");
-            System.out.println("\t\tsumFx: "+sumFx);
-            System.out.println("\t\tsumFx: "+sumFx);
-            System.out.println("\t\tsumMoment: "+sumMoment);
+            System.out.println("\t\tsumFx: " + sumFx);
+            System.out.println("\t\tsumFx: " + sumFx);
+            System.out.println("\t\tsumMoment: " + sumMoment);
         }
         for (Moment moment : moments) sumMoment += moment.magnitude;
 
@@ -125,30 +156,15 @@ public class BeamReactionCalculator {
         return new double[]{RAx, RAy, MA, RBx, RBy, MB};
     }
 
-    public static void main(String[] args) {
-        engine = new ExprEvaluator();
-
-        Force f1 = new Force(200, 1.5, true);
-        Force f2 = new Force(-200, 4.5, false);
-
-        Support sA = new Support("A", PIN, 0);
-        Support sB = new Support("B", ROLLER, 3.0);
-
-        List<Force> forces = new ArrayList<>();
-        forces.add(f1);
-        forces.add(f2);
-
-        List<Support> supports;
-        supports = new ArrayList<>();
-        supports.add(sA);
-        supports.add(sB);
-
-        List<Moment> moments;
-        moments = new ArrayList<>();
-
-        System.out.println(Arrays.toString(calculateReactions(forces, moments,  supports)));
-    }
-
+    /**
+     * Reformatea el resultado simbólico devuelto por Symja en un arreglo de {@code double}.
+     *
+     * <p>Extrae los valores numéricos de una cadena con el formato:
+     * {@code {RAy -> 40.0, RBy -> 60.0}} y los convierte en un arreglo: {@code [40.0, 60.0]}.
+     *
+     * @param result cadena con el resultado simbólico.
+     * @return arreglo de valores numéricos extraídos.
+     */
     private static double[] reformat(String result) {
         result = result.replaceAll("[{}\\s]", ""); // Eliminar {}, espacios y tabulaciones
 
@@ -179,5 +195,30 @@ public class BeamReactionCalculator {
 
         return resultados;
     }
+
+    public static void main(String[] args) {
+        engine = new ExprEvaluator();
+
+        Force f1 = new Force(200, 1.5, true);
+        Force f2 = new Force(-200, 4.5, false);
+
+        Support sA = new Support("A", PIN, 0);
+        Support sB = new Support("B", ROLLER, 3.0);
+
+        List<Force> forces = new ArrayList<>();
+        forces.add(f1);
+        forces.add(f2);
+
+        List<Support> supports;
+        supports = new ArrayList<>();
+        supports.add(sA);
+        supports.add(sB);
+
+        List<Moment> moments;
+        moments = new ArrayList<>();
+
+        System.out.println(Arrays.toString(calculateReactions(forces, moments, supports)));
+    }
+
 
 }

@@ -15,31 +15,135 @@ import static processing.core.PApplet.radians;
 import static processing.core.PConstants.CENTER;
 import static processing.core.PConstants.CORNER;
 
+/**
+ * Representa la zona gráfica de simulación de la viga.
+ *
+ * <p>Esta clase se encarga de renderizar visualmente la viga, las fuerzas puntuales,
+ * momentos y apoyos definidos por el usuario, así como sus etiquetas.
+ *
+ * <p>Utiliza elementos de {@link Elements} para representar cada tipo de carga y soporte,
+ * y adapta su posición al tamaño y escala de la viga.
+ *
+ * <p>Los métodos de dibujo se organizan por tipo de elemento, y utilizan funciones auxiliares
+ * para representar flechas, arcos y símbolos de apoyo.
+ */
 public class SimuZone {
+    // === Contexto gráfico y dimensiones ===
+
+    /**
+     * Instancia principal de Processing utilizada para dibujar.
+     */
     private PApplet p5;
-    public float beamX, beamY, beamWidth, beamHeight;
+
+    /**
+     * Coordenada X (horizontal) de inicio de la viga en pantalla.
+     */
+    public float beamX;
+
+    /**
+     * Coordenada Y (vertical) de la viga.
+     */
+    public float beamY;
+
+    /**
+     * Ancho (longitud visual) de la viga.
+     */
+    public float beamWidth;
+
+    /**
+     * Altura gráfica de la viga en píxeles.
+     */
+    public float beamHeight;
+
+    /**
+     * Longitud real de la viga en metros. Se usa para escalar posiciones físicas a pantalla.
+     */
     public float beamValue;
 
     public enum DIRECTION {UP, DOWN, LEFT, RIGHT}
 
+    // === Elementos estructurales ===
+
+    /**
+     * Lista de fuerzas puntuales aplicadas sobre la viga.
+     */
     public ArrayList<Elements.Force> forces;
+
+    /**
+     * Lista de apoyos (soportes) activos sobre la viga.
+     */
     public ArrayList<Elements.Support> supports;
+
+    /**
+     * Lista de momentos aplicados sobre la viga.
+     */
     public ArrayList<Elements.Moment> moments;
+
+    // === Etiquetas visuales ===
+
+    /**
+     * Etiquetas visibles para cada fuerza (e.g., F1, F2, ...).
+     */
     public ArrayList<String> forceLabels = new ArrayList<>();
+
+    /**
+     * Etiquetas visibles para cada momento (e.g., M1, M2, ...).
+     */
     public ArrayList<String> momentLabels = new ArrayList<>();
 
-    // Control de estilo
-    private int strokeColor = FinalColors.primaryYellow();        // Negro
-    private int fillColor = FinalColors.accentDenimBlue();        // Gris claro
-    private int textColor = FinalColors.textWhite();          // Negro
-    private float strokeW = 1.0f;       // Grosor de trazo
-    private int fontSize = 14;          // Tamaño de texto
-    private PFont pFont = StaticFonts.getFont(0);                // Fuente de texto
+    // === Estilos visuales ===
 
-    // Support style
-    public float supportSize = 20;          //Altura y ancho de los soportes en píxeles
+    /**
+     * Color del trazo para dibujar los elementos.
+     */
+    private int strokeColor = FinalColors.primaryYellow();
+
+    /**
+     * Color de relleno para la viga.
+     */
+    private int fillColor = FinalColors.accentDenimBlue();
+
+    /**
+     * Color del texto en etiquetas y valores.
+     */
+    private int textColor = FinalColors.textWhite();
+
+    /**
+     * Grosor del trazo de líneas.
+     */
+    private float strokeW = 1.0f;
+
+    /**
+     * Tamaño del texto de etiquetas.
+     */
+    private int fontSize = 14;
+
+    /**
+     * Fuente tipográfica usada en etiquetas.
+     */
+    private PFont pFont = StaticFonts.getFont(0);
+
+    // === Configuración visual de apoyos ===
+
+    /**
+     * Tamaño gráfico de los apoyos (ancho y alto).
+     */
+    public float supportSize = 20;
+
+    /**
+     * Diámetro de las ruedas en apoyos tipo ROLLER.
+     */
     public float wheelDiameter = 10;
 
+    /**
+     * Crea una nueva instancia de {@code SimuZone}.
+     *
+     * @param p5     instancia principal de {@link processing.core.PApplet}.
+     * @param x      posición horizontal de la zona de simulación.
+     * @param y      posición vertical de la viga.
+     * @param width  ancho total de la viga.
+     * @param height altura visual de la viga.
+     */
     public SimuZone(PApplet p5, float x, float y, float width, float height) {
         this.p5 = p5;
         // Inicializamos las listas
@@ -53,6 +157,12 @@ public class SimuZone {
         this.beamHeight = height;
     }
 
+    /**
+     * Dibuja todos los elementos gráficos de la zona de simulación.
+     *
+     * <p>Esto incluye la viga principal, las fuerzas puntuales, los momentos
+     * y los apoyos activos, usando las listas {@link #forces}, {@link #moments} y {@link #supports}.
+     */
     public void display() {
         // Dibujar fondo
         drawBg();
@@ -70,12 +180,18 @@ public class SimuZone {
         drawSupports();
     }
 
+    /**
+     * Dibuja el fondo del panel de simulación como un rectángulo.
+     */
     private void drawBg() {
         p5.fill(FinalColors.bgLightGrey());
         p5.noStroke();
         p5.rect(2 * hRect + 2 * margin, frame + 2 * margin, 3 * hRect - 4 * margin, 4 * vRect - 4 * margin - frame, corner);
     }
 
+    /**
+     * Dibuja el cuerpo principal de la viga como un rectángulo horizontal.
+     */
     private void drawBeam() {
         p5.push();
         applyStyle();
@@ -84,6 +200,12 @@ public class SimuZone {
         p5.pop();
     }
 
+    /**
+     * Dibuja las fuerzas puntuales definidas por el usuario.
+     *
+     * <p>Cada fuerza se representa mediante una flecha orientada según su dirección,
+     * y se le asigna una etiqueta correspondiente desde {@link #forceLabels}.
+     */
     void drawForces() {
         p5.push();
         applyStyle();
@@ -130,6 +252,12 @@ public class SimuZone {
         p5.pop();
     }
 
+    /**
+     * Dibuja los momentos aplicados sobre la viga.
+     *
+     * <p>Cada momento se representa con una flecha circular (arco) que indica su sentido
+     * (horario o antihorario), y se etiqueta según la lista {@link #momentLabels}.
+     */
     void drawMoments() {
         p5.push();
         applyStyle();
@@ -183,14 +311,20 @@ public class SimuZone {
         p5.pop();
     }
 
+    /**
+     * Dibuja los apoyos activos definidos por el usuario.
+     *
+     * <p>El tipo de apoyo (PIN, ROLLER o FIXED) determina el símbolo gráfico a mostrar.
+     * La posición de cada apoyo se calcula según la longitud actual de la viga.
+     */
     void drawSupports() {
         // Cada soporte se dibuja en función de su tipo
         if (!supports.isEmpty()) {
             for (Elements.Support sp : supports) {
 
-                if(sp.type==null) break;
+                if (sp.type == null) break;
 
-                float spX = beamX+ PApplet.map((float) sp.position, 0, beamValue, 0, beamWidth);
+                float spX = beamX + PApplet.map((float) sp.position, 0, beamValue, 0, beamWidth);
 
                 // Línea base donde se ubican los soportes: justo debajo de la viga
                 float baseY = beamY + beamHeight;
@@ -218,14 +352,14 @@ public class SimuZone {
     }
 
     /**
-     * Dibuja una flecha circular en sentido horario
+     * Dibuja un momento en sentido antihorario (flecha circular).
      *
-     * @param x
-     * @param y
-     * @param radius
-     * @param start
-     * @param stop
-     * @param arrowSize
+     * @param x         posición horizontal del centro.
+     * @param y         posición vertical del centro.
+     * @param radius    radio del arco.
+     * @param start     ángulo inicial.
+     * @param stop      ángulo final.
+     * @param arrowSize tamaño de la punta de flecha.
      */
     void circArrow(float x, float y, float radius, float start, float stop, float arrowSize) {
         p5.ellipseMode(CENTER);
@@ -249,14 +383,14 @@ public class SimuZone {
     }
 
     /**
-     * Lo mismo que circArrow() pero apunta en sentido antihorario
+     * Dibuja un momento en sentido horario (flecha circular invertida).
      *
-     * @param x
-     * @param y
-     * @param radius
-     * @param start
-     * @param stop
-     * @param arrowSize
+     * @param x         posición horizontal del centro.
+     * @param y         posición vertical del centro.
+     * @param radius    radio del arco.
+     * @param start     ángulo inicial.
+     * @param stop      ángulo final.
+     * @param arrowSize tamaño de la punta de flecha.
      */
     void circArrowInv(float x, float y, float radius, float start, float stop, float arrowSize) {
         p5.ellipseMode(CENTER);
@@ -283,6 +417,7 @@ public class SimuZone {
         p5.line(arrowX, arrowY, point2X, point2Y);
     }
 
+
     private void applyStyle() {
         p5.stroke(strokeColor);
         p5.fill(fillColor);
@@ -291,6 +426,16 @@ public class SimuZone {
         p5.textSize(fontSize);
     }
 
+    /**
+     * Dibuja una flecha orientada en un ángulo específico, usada para representar fuerzas.
+     *
+     * @param startX    coordenada X de inicio.
+     * @param startY    coordenada Y de inicio.
+     * @param degrees   ángulo de dirección en grados.
+     * @param length    longitud de la flecha.
+     * @param thickness grosor de la línea.
+     * @param triHeight tamaño del triángulo en la punta.
+     */
     void drawArrow(float startX, float startY, float degrees, float length, float thickness, float triHeight) {
         float angle = (float) Math.toRadians(degrees);
 
@@ -319,6 +464,16 @@ public class SimuZone {
         p5.triangle(tipX, tipY, leftX, leftY, rightX, rightY);
     }
 
+    /**
+     * Dibuja una flecha en una dirección cardinal (UP, DOWN, LEFT, RIGHT).
+     *
+     * @param startX    coordenada X de inicio.
+     * @param startY    coordenada Y de inicio.
+     * @param direction dirección de la flecha.
+     * @param length    longitud de la flecha.
+     * @param thickness grosor del trazo.
+     * @param triHeight tamaño del triángulo en la punta.
+     */
     void drawArrowDir(float startX, float startY, BeamDrawing.DIRECTION direction, float length, float thickness, float triHeight) {
 
         // Ajustar el ángulo según el valor del enumerado
@@ -332,6 +487,12 @@ public class SimuZone {
 
     }
 
+    /**
+     * Dibuja un apoyo de tipo PIN (articulado) como un triángulo.
+     *
+     * @param x     posición horizontal.
+     * @param baseY posición vertical base.
+     */
     void drawPinSupport(float x, float baseY) {
         p5.push();
 
@@ -342,32 +503,42 @@ public class SimuZone {
 
         // Triángulo
         p5.fill(FinalColors.primaryYellow());
-        p5.triangle(x + (triangleWidth) / 2, baseY, x,
-                baseY + triangleHeight,
-                x + triangleWidth, baseY + triangleHeight);
+        p5.triangle(x + (triangleWidth) / 2, baseY, x, baseY + triangleHeight, x + triangleWidth, baseY + triangleHeight);
 
         // Línea horizontal debajo del triángulo
         applyStyle();
-        p5.line(x - triangleWidth / 2, baseY + triangleHeight,
-                x + triangleWidth + triangleWidth / 2, baseY + triangleHeight);
+        p5.line(x - triangleWidth / 2, baseY + triangleHeight, x + triangleWidth + triangleWidth / 2, baseY + triangleHeight);
 
         p5.pop();
     }
 
+    /**
+     * Dibuja un apoyo de tipo FIXED (empotrado) en el extremo izquierdo o derecho.
+     *
+     * @param x        posición horizontal.
+     * @param baseY    posición vertical base.
+     * @param leftSide si es {@code true}, el apoyo se dibuja hacia la izquierda.
+     */
     void drawFixedSupport(float x, float baseY, boolean leftSide) {
         p5.push();
         applyStyle();
         float supportHeight = 100;
 
         if (leftSide) {
-            p5.rect(x-supportHeight/2, baseY - beamHeight - (supportHeight-beamHeight)/2, supportHeight/2, supportHeight);
+            p5.rect(x - supportHeight / 2, baseY - beamHeight - (supportHeight - beamHeight) / 2, supportHeight / 2, supportHeight);
         } else {
             // supportHeight = beamHeight + 2*b
-            p5.rect(x, baseY - beamHeight - (supportHeight-beamHeight)/2, supportHeight/2, supportHeight);
+            p5.rect(x, baseY - beamHeight - (supportHeight - beamHeight) / 2, supportHeight / 2, supportHeight);
         }
         p5.pop();
     }
 
+    /**
+     * Dibuja un apoyo de tipo ROLLER (rodillo), con un triángulo y ruedas debajo.
+     *
+     * @param x     posición horizontal.
+     * @param baseY posición vertical base.
+     */
     void drawRollerSupport(float x, float baseY) {
         p5.push();
         float triangleWidth = supportSize;
@@ -378,14 +549,11 @@ public class SimuZone {
         // Triángulo
         applyStyle();
         p5.fill(FinalColors.primaryYellow());
-        p5.triangle(x + (triangleWidth) / 2, baseY, x,
-                baseY + triangleHeight,
-                x + triangleWidth, baseY + triangleHeight);
+        p5.triangle(x + (triangleWidth) / 2, baseY, x, baseY + triangleHeight, x + triangleWidth, baseY + triangleHeight);
 
         // Línea horizontal debajo del triángulo
         applyStyle();
-        p5.line(x - triangleWidth / 2, baseY + triangleHeight,
-                x + triangleWidth + triangleWidth / 2, baseY + triangleHeight);
+        p5.line(x - triangleWidth / 2, baseY + triangleHeight, x + triangleWidth + triangleWidth / 2, baseY + triangleHeight);
 
 
         // Dibuja ruedas (círculos pequeños)
@@ -394,11 +562,8 @@ public class SimuZone {
         p5.ellipse(x - triangleWidth / 2, baseY + triangleHeight, wheelDiameter, wheelDiameter);
         p5.ellipseMode(CENTER);
         p5.ellipse(x + triangleWidth / 2, baseY + triangleHeight + wheelDiameter / 2, wheelDiameter, wheelDiameter);
-        p5.ellipse(x + triangleWidth + wheelDiameter / 2, baseY + triangleHeight + wheelDiameter / 2,
-                wheelDiameter, wheelDiameter);
+        p5.ellipse(x + triangleWidth + wheelDiameter / 2, baseY + triangleHeight + wheelDiameter / 2, wheelDiameter, wheelDiameter);
         p5.pop();
     }
-
-
 
 }

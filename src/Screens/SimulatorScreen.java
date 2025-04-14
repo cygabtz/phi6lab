@@ -122,7 +122,7 @@ public class SimulatorScreen extends Screen {
     private float maxMomentMagnitude = 1000f;
 
     // Panel de resultados
-    private double [] results = new double[6];
+    private double[] results = new double[6];
 
 
     /**
@@ -653,7 +653,7 @@ public class SimulatorScreen extends Screen {
      * interpreta las teclas presionadas (letras, números o retroceso).
      * Si el texto ingresado es válido, actualiza automáticamente el valor del {@link Slider} asociado.
      *
-     * @param key carácter presionado (por ejemplo 'a', '1', ' ')
+     * @param key     carácter presionado (por ejemplo 'a', '1', ' ')
      * @param keyCode código de tecla presionada (por ejemplo BACKSPACE o código ASCII)
      */
     public void keyPressed(char key, int keyCode) {
@@ -701,14 +701,14 @@ public class SimulatorScreen extends Screen {
         simuTitleField.setEmptyText("Nuevo proyecto...");
 
         // Calculate Button
-        float buttonW = hRect*2/3;
-        calculateButton = new Button(p5, screenH-buttonW-2*margin, margin, buttonW, frame-2*margin);
+        float buttonW = hRect * 2 / 3;
+        calculateButton = new Button(p5, screenH - buttonW - 2 * margin, margin, buttonW, frame - 2 * margin);
         calculateButton.strokeColorOn = FinalColors.accentSkyBlue();
         calculateButton.setText("Calcular reacciones");
 
         // Save Button
-        buttonW = hRect/2;
-        saveButton = new Button(p5, calculateButton.x-buttonW-2*margin, margin, buttonW, frame-2*margin);
+        buttonW = hRect / 2;
+        saveButton = new Button(p5, calculateButton.x - buttonW - 2 * margin, margin, buttonW, frame - 2 * margin);
         saveButton.setText("Guardar");
     }
 
@@ -1832,7 +1832,7 @@ public class SimulatorScreen extends Screen {
         if (simuZone.forces.isEmpty() || simuZone.supports.isEmpty()) {
             System.out.println("No se puede calcular nada. Añada algún elemento");
         } else {
-             results = Arrays.toString(calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports));
+            results = Arrays.toString(calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports));
         }
         System.out.println(results);
         this.results = calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports);
@@ -1844,44 +1844,44 @@ public class SimulatorScreen extends Screen {
      * <p>Muestra las componentes de reacción en los extremos A y B (RAx, RAy, MA, RBx, RBy, MB)
      * dentro de un área sombreada de la interfaz gráfica.
      */
-    private void displayResultsPanel(){
+    private void displayResultsPanel() {
 
         // Recuadro
         p5.fill(FinalColors.bgGrey());
-        float panelX = 2*hRect+2*margin;
-        float panelY = 4*vRect+2*margin;
-        float panelW = 3*hRect-4*margin;
-        float panelH = 2*vRect-4*margin;
+        float panelX = 2 * hRect + 2 * margin;
+        float panelY = 4 * vRect + 2 * margin;
+        float panelW = 3 * hRect - 4 * margin;
+        float panelH = 2 * vRect - 4 * margin;
 
-        p5.rect(panelX, panelY, panelW,panelH);
+        p5.rect(panelX, panelY, panelW, panelH);
 
         // Matriz de textos
         p5.textSize(Sizes.widgetHeading);
         p5.fill(FinalColors.textWhite());
         p5.textAlign(PConstants.CENTER);
-        p5.text("Resultados", panelX + panelW/2, panelY+frame/2);
+        p5.text("Resultados", panelX + panelW / 2, panelY + frame / 2);
 
 
-        String [] label1 = {"RAx", "RAy", "MA"};
+        String[] label1 = {"RAx", "RAy", "MA"};
 
-        String [] values1 = new String[3];
-        String [] values2 = new String[3];
+        String[] values1 = new String[3];
+        String[] values2 = new String[3];
 
-        for (int i = 0; i<results.length; i++) {
-            if (i<3) values1[i] = "" + results[i];
-            else values2[i-3] = "" + results[i-3];
+        for (int i = 0; i < results.length; i++) {
+            if (i < 3) values1[i] = "" + results[i];
+            else values2[i - 3] = "" + results[i - 3];
         }
 
-        for (int i = 0; i<3; i++) {
-            String string = label1[i] + ": "+ values1[i];
-            p5.text(string,panelX + 3*frame, panelY + 2*frame + frame*i);
+        for (int i = 0; i < 3; i++) {
+            String string = label1[i] + ": " + values1[i];
+            p5.text(string, panelX + 3 * frame, panelY + 2 * frame + frame * i);
         }
 
-        String [] label2 = {"RBx", "RBy", "MB"};
+        String[] label2 = {"RBx", "RBy", "MB"};
 
-        for (int i = 0; i<3; i++) {
+        for (int i = 0; i < 3; i++) {
             String string = label2[i] + ": " + values2[i];
-            p5.text(label2[i],panelX + frame/2 + panelW/2, panelY + 2*frame + frame*i);
+            p5.text(label2[i], panelX + frame / 2 + panelW / 2, panelY + 2 * frame + frame * i);
         }
 
     }
