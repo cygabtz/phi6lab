@@ -5,7 +5,6 @@ import Components.Module;
 import Constants.FinalColors;
 import Constants.Sizes;
 import Main.GUI;
-import SimulationEngine.BeamDrawing;
 import SimulationEngine.BeamReactionCalculator;
 import SimulationEngine.Elements;
 import SimulationEngine.SimuZone;
@@ -385,11 +384,6 @@ public class SimulatorScreen extends Screen {
     // === Zona de simulación y cálculo ===
 
     /**
-     * Encargado de dibujar gráficamente la viga y sus elementos.
-     */
-    BeamDrawing beamDrawing;
-
-    /**
      * Motor principal de simulación y renderizado de resultados.
      */
     SimuZone simuZone;
@@ -646,6 +640,7 @@ public class SimulatorScreen extends Screen {
                 confirmModule.setTitle("Salir del simulador");
                 confirmModule.setOnConfirm(() -> {
                     GUI.setCurrentScreen(GUI.SCREEN.HOME);
+                    ((HomeScreen) GUI.screens[GUI.SCREEN.HOME.ordinal()]).refreshGallery();
                     GUI.currentSimId = -1;
                 });
                 confirmModule.opened = true;
@@ -663,6 +658,7 @@ public class SimulatorScreen extends Screen {
                 deleteSimFromDB(GUI.currentSimId);
                 GUI.currentSimId = -1;
                 GUI.setCurrentScreen(GUI.SCREEN.HOME);
+                ((HomeScreen) GUI.screens[GUI.SCREEN.HOME.ordinal()]).refreshGallery();
             });
             confirmModule.opened = true;
         }
@@ -1071,11 +1067,11 @@ public class SimulatorScreen extends Screen {
         clearButton.setText("Limpiar");
 
         // Delete Button
-        deleteButton = new Button(p5, calculateButton.x - 3*buttonW - 6 * margin, margin, buttonW, frame - 2 * margin);
+        deleteButton = new Button(p5, calculateButton.x - 3 * buttonW - 6 * margin, margin, buttonW, frame - 2 * margin);
         deleteButton.setText("Eliminar");
 
         // Home Button
-        homeButton = new ButtonIcon(p5, margin, margin, frame-2*margin, frame-2*margin);
+        homeButton = new ButtonIcon(p5, margin, margin, frame - 2 * margin, frame - 2 * margin);
         homeButton.setIcon("data/icons/simuPhi6_logo.svg");
 
     }
@@ -1605,7 +1601,7 @@ public class SimulatorScreen extends Screen {
         System.out.println("Value sliders: " + valueCount);
         System.out.println("Position sliders: " + ubiCount);
         System.out.println("Delete buttons: " + btnCount);
-        System.out.println("BeamDrawing moments: " + drawCount);
+        System.out.println("SimuZone moments: " + drawCount);
 
         boolean ok = true;
 
@@ -2480,7 +2476,7 @@ public class SimulatorScreen extends Screen {
                 vigaId = rsViga.getInt("id");
 
                 // Crear nuevo simulador ===
-                String usuario = GUI.currentUser; // o como lo gestiones
+                String usuario = GUI.currentUser;
                 String qInsertSim = "INSERT INTO simulador (TITULO, CREACION, MODIFICACION, VIGA_idVIGA, USUARIO_NOMBRE) " +
                         "VALUES ('" + titulo + "', '" + now + "', '" + now + "', " + vigaId + ", '" + usuario + "')";
                 Main.Phi6Lab.db.query.execute(qInsertSim);

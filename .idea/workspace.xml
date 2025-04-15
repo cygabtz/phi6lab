@@ -4,16 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Botón de volver a HomeScreen y Banner">
-      <change afterPath="$PROJECT_DIR$/data/icons/banner.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/icons/banner.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/icons/banner.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/icons/simuPhi6_logo.svg" afterDir="false" />
+    <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Pantalla de Inicio de Sesión funcionando">
+      <change afterPath="$PROJECT_DIR$/src/Screens/LoginScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ConfirmationModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ConfirmationModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Gallery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Gallery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ModuleBox.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Simulator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/DataBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/DataBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/GUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main/Phi6Lab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/Phi6Lab.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/AboutScreen.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/GraphScreen.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/HomeScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/HomeScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SimulationEngine/BeamDrawing.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SimulationEngine/SimuZone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/SimuZone.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,33 +50,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.BeamDrawing.executor": "Run",
-    "Application.BeamReactionCalculator.executor": "Run",
-    "Application.ModuleBox.executor": "Run",
-    "Application.Phi6Lab.executor": "Run",
-    "Application.PruebaSymJa.executor": "Run",
-    "Application.Trivio003 (1).executor": "Run",
-    "Application.Trivio003.executor": "Run",
-    "Application.fontsTest.executor": "Run",
-    "Application.simuCardTest.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/benit/IdeaProjects/solucioInfo/data/icons",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.BeamDrawing.executor&quot;: &quot;Run&quot;,
+    &quot;Application.BeamReactionCalculator.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ModuleBox.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Phi6Lab.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PruebaSymJa.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Trivio003 (1).executor&quot;: &quot;Run&quot;,
+    &quot;Application.Trivio003.executor&quot;: &quot;Run&quot;,
+    &quot;Application.fontsTest.executor&quot;: &quot;Run&quot;,
+    &quot;Application.simuCardTest.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/benit/IdeaProjects/solucioInfo/data/icons&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\benit\IdeaProjects\solucioInfo\data\icons" />
@@ -349,7 +355,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744664819869</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Botón de volver a HomeScreen y Banner">
+      <option name="closed" value="true" />
+      <created>1744669439871</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1744669439871</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -399,6 +413,7 @@
     <MESSAGE value="Cargar y guardar simulación a y desde la base de datos" />
     <MESSAGE value="Eliminar simulaciones de la base de datos" />
     <MESSAGE value="Botón de volver a HomeScreen y Banner" />
-    <option name="LAST_COMMIT_MESSAGE" value="Botón de volver a HomeScreen y Banner" />
+    <MESSAGE value="Pantalla de Inicio de Sesión funcionando" />
+    <option name="LAST_COMMIT_MESSAGE" value="Pantalla de Inicio de Sesión funcionando" />
   </component>
 </project>

@@ -3,18 +3,66 @@ package Main;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * Clase que gestiona la conexión con la base de datos y permite ejecutar operaciones SQL.
+ *
+ * <p>Incluye métodos para:
+ * <ul>
+ *     <li>Conectarse a la base de datos MySQL</li>
+ *     <li>Ejecutar consultas y actualizaciones</li>
+ *     <li>Autenticar usuarios</li>
+ *     <li>Insertar nuevos usuarios</li>
+ *     <li>Obtener y guardar simuladores</li>
+ * </ul>
+ *
+ * Esta clase es utilizada en todas las pantallas que necesitan acceder a los datos,
+ * especialmente {@link Screens.LoginScreen}, {@link Screens.HomeScreen} y {@link Screens.SimulatorScreen}.
+ *
+ * @author [Tu nombre]
+ * @see java.sql.Connection
+ * @see java.sql.Statement
+ * @see java.sql.ResultSet
+ */
 public class DataBase {
     Connection c;               //Variable de conexión
     public Statement query;            //Variablde de consulta
     String user, password, databaseName;
     boolean connected = false;  //Estado de la conexión
 
+    /**
+     * Instancia los atributos necesarios para activar la base de datos
+     *
+     * @param user nombre de usuario de MySQL
+     * @param password contraseña de MySQL
+     * @param databaseName nombre de la base de datos
+     */
     public DataBase(String user, String password, String databaseName) {
         this.user = user;
         this.password = password;
         this.databaseName = databaseName;
     }
 
+    /**
+     * Establece una conexión con la base de datos MySQL utilizando los parámetros configurados.
+     *
+     * <p>Intenta conectarse al servidor local (localhost) en el puerto 3306,
+     * a la base de datos especificada por {@code databaseName}, usando el
+     * {@code user} y {@code password} definidos previamente.
+     *
+     * <p>Si la conexión es exitosa:
+     * <ul>
+     *   <li>Se crea un {@link java.sql.Statement} vacío para ejecutar consultas</li>
+     *   <li>Se imprime un mensaje de confirmación en consola</li>
+     *   <li>Se actualiza el estado {@code connected = true}</li>
+     * </ul>
+     *
+     * <p>En caso de fallo (por credenciales incorrectas, permisos, base inexistente...),
+     * el error es impreso en la consola con {@code e.printStackTrace()}.
+     *
+     * @see java.sql.DriverManager#getConnection(String, String, String)
+     * @see java.sql.Statement
+     * @see java.sql.Connection
+     */
     public void connect() {
         try {
             //Class.forName("com.mysql.jbdc.Driver");
@@ -30,15 +78,6 @@ public class DataBase {
         }
     }
 
-
-
-
-
-
-
-
-
-    // ==== Funciones prescindibles =====
 
     public String getInfo(String tableName, String columnName, String keyName, String keyValue) {
         String q = " SELECT " + columnName +
@@ -148,6 +187,19 @@ public class DataBase {
         return info;
     }
 
+    /**
+     * Ejecuta una consulta SQL de conteo (por ejemplo, {@code SELECT COUNT(*) AS num ...})
+     * y devuelve el número de filas resultantes.
+     *
+     * <p>La consulta debe estar formulada de forma que devuelva un único valor con el alias {@code num},
+     * es decir, debe incluir: {@code SELECT COUNT(*) AS num FROM ...}
+     *
+     * @param q consulta SQL que devuelve un conteo con alias {@code num}
+     * @return número de filas coincidentes; 0 si ocurre un error o no hay resultados
+     *
+     * @see java.sql.ResultSet
+     * @see java.sql.Statement#executeQuery(String)
+     */
     public int getRowsNumMatchQuery(String q) {
         try {
             ResultSet rs = query.executeQuery(q);
@@ -280,31 +332,83 @@ public class DataBase {
         }
     }
 
-    public String[][] getInfoSimuladores(){
-        //Pendiente filtrar por usuario
-
-        int nf = getRowsNumFrom("simulador");
-        int numCol = 4;
-        String[][] info = new String[nf][numCol];
-        String s = " SELECT * FROM " + "simulador" +
-                " ORDER BY " + "idSIMULADOR" +
-                " ASC";
-
+    
+    public String[][] getInfoSimuladores(String usuario) {
+        String[][] info = new String[0][];
         try {
-            ResultSet rs = query.executeQuery(s);
-            int n = 0;
-            while (rs.next()) {
-                info[n][0] = String.valueOf(rs.getInt("idSIMULADOR"));
-                info[n][1] = rs.getString("TITULO");
-                info[n][2] = rs.getString("CREACION");
-                info[n][3] = rs.getString("MODIFICACION");
-                n++;
+            // Contar filas
+            String countQuery = "SELECT COUNT(*) AS total FROM simulador WHERE USUARIO_NOMBRE = '" + usuario + "'";
+            ResultSet countRs = query.executeQuery(countQuery);
+            int nf = 0;
+            if (countRs.next()) {
+                nf = countRs.getInt("total");
             }
-        } catch (SQLException e) {
+
+            // Inicializar array
+            info = new String[nf][4];
+
+            // Consulta real
+            String q = "SELECT idSIMULADOR, TITULO, CREACION, MODIFICACION " +
+                    "FROM simulador " +
+                    "WHERE USUARIO_NOMBRE = '" + usuario + "' " +
+                    "ORDER BY idSIMULADOR ASC";
+
+            ResultSet rs = query.executeQuery(q);
+            int i = 0;
+            while (rs.next() && i < nf) {
+                info[i][0] = String.valueOf(rs.getInt("idSIMULADOR"));
+                info[i][1] = rs.getString("TITULO");
+                info[i][2] = rs.getString("CREACION");
+                info[i][3] = rs.getString("MODIFICACION");
+                i++;
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return info;
     }
+
+    /**
+     * Verifica si ya existe un usuario con el nombre especificado en la base de datos.
+     *
+     * <p>Ejecuta una consulta sobre la tabla {@code usuario} buscando coincidencias
+     * exactas en el campo {@code NOMBRE}.
+     *
+     * <p>Este método es útil para evitar duplicación de usuarios durante el registro.
+     *
+     * @param nombre nombre del usuario a comprobar
+     * @return {@code true} si el usuario existe o si ocurre un error; {@code false} si no existe
+     */
+    public boolean existsUser(String nombre) {
+        try {
+            ResultSet rs = query.executeQuery("SELECT * FROM usuario WHERE NOMBRE = '" + nombre + "'");
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true; // asumimos que sí existe si falla
+        }
+    }
+
+    /**
+     * Inserta un nuevo usuario en la tabla {@code usuario} con el nombre y contraseña especificados.
+     *
+     * <p>Este método debe usarse después de verificar que el usuario no existe previamente,
+     * utilizando {@link #existsUser(String)}.
+     *
+     * @param nombre nombre del nuevo usuario
+     * @param contrasena contraseña del nuevo usuario
+     */
+    public void insertNewUser(String nombre, String contrasena) {
+        try {
+            String q = "INSERT INTO usuario (NOMBRE, PASSWORD) VALUES ('" + nombre + "', '" + contrasena + "')";
+            query.execute(q);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public ArrayList<String[]> getInfoSimuladoresArrayList(){
         //Pendiente filtrar por usuario

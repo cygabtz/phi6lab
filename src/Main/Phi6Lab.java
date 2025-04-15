@@ -49,6 +49,7 @@ public class Phi6Lab extends PApplet {
 
 
         gui = new GUI(this, appColors, appFonts, db);
+        GUI.setCurrentScreen(GUI.SCREEN.LOGIN);
 
         System.out.println("H: " + screenH + "V: " + screenV);
     }
@@ -56,6 +57,7 @@ public class Phi6Lab extends PApplet {
     public void draw() {
         background(FinalColors.bgBlack());
         gui.displayActualScreen(this);
+        //if (gui.currentScreen instanceof Screens.HomeScreen) text("Usuario: " + GUI.currentUser, 50, screenV-50);
     }
 
 
@@ -69,13 +71,12 @@ public class Phi6Lab extends PApplet {
             }
         } else if (gui.currentScreen instanceof Screens.SimulatorScreen ss) {
             ss.keyPressed(key, keyCode);
-        } else if (gui.currentScreen instanceof Screens.GraphScreen) {
-
-        } else if (gui.currentScreen instanceof Screens.SettingsScreen) {
-
-        } else if (gui.currentScreen instanceof Screens.AboutScreen) {
-
         }
+
+        if (gui.currentScreen instanceof Screens.LoginScreen ls) {
+            ls.keyPressed(key, keyCode);
+        }
+
     }
 
     public void mousePressed() {
@@ -84,6 +85,11 @@ public class Phi6Lab extends PApplet {
         } else if (gui.currentScreen instanceof Screens.SimulatorScreen ss) {
             ss.mousePressed();
         }
+
+        if (gui.currentScreen instanceof Screens.LoginScreen ls) {
+            ls.mousePressed(gui);
+        }
+
 
     }
 

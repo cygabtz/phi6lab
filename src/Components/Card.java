@@ -40,15 +40,13 @@ public class Card extends Button{
         image.mask(p5.get());
     }
 
-    public void setInfo(String [][] simuList){
-
-        for (String[] strings : simuList) {
+    public void setInfo(String [] strings){
+            System.out.println("Id: "+ id);
             this.id = strings[0];
             this.title = strings[1];
             this.creation = strings[2];
             this.lastModified = strings[3];
             this.imgPath = "";
-        }
     }
 
     public void setId(String id) {

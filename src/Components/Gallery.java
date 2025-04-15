@@ -47,7 +47,7 @@ public class Gallery {
             float yc = (k% maxCardsInPage)<(maxCardsInPage /2)? y : y + hCard + margin;
 
             cards[i] = new Card(p5, xc, yc, wCard, hCard);
-            cards[i].setInfo(cardsInfo);
+            cards[i].setInfo(cardsInfo[i]);
             cards[i].buildImage(p5, "data/testImage.png");
             k++;
         }

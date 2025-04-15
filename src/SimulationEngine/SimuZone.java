@@ -223,9 +223,9 @@ public class SimuZone {
                 float forceX = (float) (beamX + pos);
 
                 if (f.isUpward) {
-                    drawArrowDir(forceX, beamY + arrowLength + arrowHeadSize, BeamDrawing.DIRECTION.UP, arrowLength, arrowThickness, arrowHeadSize);
+                    drawArrowDir(forceX, beamY + arrowLength + arrowHeadSize, DIRECTION.UP, arrowLength, arrowThickness, arrowHeadSize);
                 } else {
-                    drawArrowDir(forceX, beamY, BeamDrawing.DIRECTION.DOWN, arrowLength, arrowThickness, arrowHeadSize);
+                    drawArrowDir(forceX, beamY, DIRECTION.DOWN, arrowLength, arrowThickness, arrowHeadSize);
                 }
 
                 // Etiqueta
@@ -474,7 +474,7 @@ public class SimuZone {
      * @param thickness grosor del trazo.
      * @param triHeight tamaño del triángulo en la punta.
      */
-    void drawArrowDir(float startX, float startY, BeamDrawing.DIRECTION direction, float length, float thickness, float triHeight) {
+    void drawArrowDir(float startX, float startY, DIRECTION direction, float length, float thickness, float triHeight) {
 
         // Ajustar el ángulo según el valor del enumerado
 
