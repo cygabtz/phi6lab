@@ -8,11 +8,11 @@ import Main.GUI;
 import SimulationEngine.BeamReactionCalculator;
 import SimulationEngine.Elements;
 import SimulationEngine.SimuZone;
-import org.matheclipse.core.eval.ExprEvaluator;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +20,8 @@ import java.util.Objects;
 
 import static Constants.Layout.*;
 import static SimulationEngine.BeamReactionCalculator.calculateReactions;
-import static SimulationEngine.Elements.SUPPORT_TYPE.PIN;
-import static SimulationEngine.Elements.SUPPORT_TYPE.ROLLER;
+import static processing.core.PConstants.CENTER;
+import static processing.core.PConstants.LEFT;
 
 /**
  * Pantalla principal de simulación de estructuras tipo viga.
@@ -386,7 +386,7 @@ public class SimulatorScreen extends Screen {
     /**
      * Motor principal de simulación y renderizado de resultados.
      */
-    SimuZone simuZone;
+    public static SimuZone simuZone;
 
 
     // === Parámetros y resultados ===
@@ -443,9 +443,11 @@ public class SimulatorScreen extends Screen {
         initializeSimulationZone();
         initializeSupportModule();
         initializeConfirmationModule();
+        initializeResultsModule();
         closeAllModules();
         clearEverything();
         setAllUbiSlidersMaxTo(beamSizeSlider.value);
+        loadSimFromDB(GUI.currentSimId);
     }
 
     /**
@@ -486,7 +488,8 @@ public class SimulatorScreen extends Screen {
         supportModule.display();
 
         // Results Panel
-        displayResultsPanel();
+        resultsModule.display();
+        displayResultsModule();
 
         // Díalogo de confirmación
         confirmModule.display();
@@ -570,7 +573,7 @@ public class SimulatorScreen extends Screen {
         p5.stroke(FinalColors.primaryYellow());
         p5.line(module.x + 2 * margin, addButton.y + addButton.height + 2 * margin + frame * 0.75f, module.x + module.width - 2 * margin, addButton.y + addButton.height + 2 * margin + frame * 0.75f);
 
-        p5.textAlign(PConstants.CENTER, PConstants.CENTER);
+        p5.textAlign(CENTER, CENTER);
         p5.textSize(Sizes.buttonText);
         p5.fill(FinalColors.textWhite());
 
@@ -879,7 +882,7 @@ public class SimulatorScreen extends Screen {
         }
 
         // Actualizar valores al desplazar ratón en módulo de momentos
-        if (forceModule.opened) updateMoments();
+        if (momentModule.opened) updateMoments();
 
         // Actulizar listas de nombres en SimuZone
         updateLabels();
@@ -924,10 +927,10 @@ public class SimulatorScreen extends Screen {
         for (int i = 0; i < numMoments; i++) {
             float magnitude = momentValueFieldSliders.get(i).slider.value;
             float ubi = momentUbiFieldSliders.get(i).slider.value;
-            if (simuZone.forces.isEmpty()) {
+            if (simuZone.moments.isEmpty()) {
                 System.out.println("No se puede actualizar la lista de momentos de SimuZone porque está vacía");
             } else {
-                //System.out.println("Momento "+i+" actualizado a magnitude "+ magnitude + " y ubi "+ubi);
+                System.out.println("Momento "+i+" actualizado a magnitude "+ magnitude + " y ubi "+ubi);
                 simuZone.moments.get(i).setMagnitude(magnitude);
                 simuZone.moments.get(i).setPosition(ubi);
             }
@@ -1796,7 +1799,7 @@ public class SimulatorScreen extends Screen {
         // Botón de activar desactivar apoyo A
         deleteButtonA = initialDeleteForceButton.clone();
         deleteButtonA.y = supportModule.y + margin + frame;
-        deleteButtonA.setText("A");
+        deleteButtonA.setText("Off");
         supportModule.components.add(deleteButtonA);
 
         // Crear TextField del apoyo A
@@ -1834,7 +1837,7 @@ public class SimulatorScreen extends Screen {
         // Botón de activar desactivar apoyo B
         deleteButtonB = deleteButtonA.clone();
         deleteButtonB.y += supportFieldB.height + 2 * margin;
-        deleteButtonB.setText("B");
+        deleteButtonB.setText("Off");
         supportModule.components.add(deleteButtonB);
 
         // Botones para seleccionar el tipo de apoyo en A
@@ -1958,14 +1961,14 @@ public class SimulatorScreen extends Screen {
             // Activar
             float pos = supportFieldSliderA.slider.value;
             simuZone.supports.add(new Elements.Support("A", typeA, pos));
-            deleteButtonA.setText("A");
+            deleteButtonA.setText("On");
             supportActiveA = true;
         } else {
             // Desactivar
             if (!simuZone.supports.isEmpty()) {
                 simuZone.supports.removeIf(s -> Objects.equals(s.id, "A"));
             }
-            deleteButtonA.setText("D");
+            deleteButtonA.setText("Off");
             supportActiveA = false;
         }
     }
@@ -1980,13 +1983,13 @@ public class SimulatorScreen extends Screen {
         if (!supportActiveB) {
             float pos = supportFieldSliderB.slider.value;
             simuZone.supports.add(new Elements.Support("B", typeB, pos));
-            deleteButtonB.setText("A");
+            deleteButtonB.setText("On");
             supportActiveB = true;
         } else {
             if (!simuZone.supports.isEmpty()) {
                 simuZone.supports.removeIf(s -> Objects.equals(s.id, "B"));
             }
-            deleteButtonB.setText("D");
+            deleteButtonB.setText("Off");
             supportActiveB = false;
         }
     }
@@ -2112,15 +2115,60 @@ public class SimulatorScreen extends Screen {
      * También imprime los resultados en consola.
      */
     private void updateResults() {
-        String results = "";
-        if (simuZone.forces.isEmpty() || simuZone.supports.isEmpty()) {
-            System.out.println("No se puede calcular nada. Añada algún elemento");
-        } else {
-            results = Arrays.toString(calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports));
+        String validationError = validateSupports(simuZone.supports);
+        if (validationError != null) {
+            this.errorMessage = "ERROR: " + validationError;
+            return;
         }
+        else {
+            this.errorMessage = null;
+        }
+
+        String results = "";
+        results = Arrays.toString(calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports));
+
         System.out.println(results);
         this.results = calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports);
+
+        // Dibujar reacciones
+
+        this.results = calculateReactions(simuZone.forces, simuZone.moments, simuZone.supports);
+        simuZone.setReactions(this.results, simuZone.supports);
     }
+
+    private String errorMessage;
+
+    private String validateSupports(List<Elements.Support> supports) {
+        if (simuZone.forces.isEmpty() || simuZone.supports.isEmpty()) {
+            return "No se puede calcular nada. Añada algún elemento.";
+        }
+
+        if (supports.size() == 1) {
+            if (!supports.getFirst().type.equals(Elements.SUPPORT_TYPE.FIXED)) {
+                return "Debe usar un apoyo empotrado si solo hay uno.";
+            }
+        } else if (supports.size() == 2) {
+            boolean hasFixed = false;
+            boolean hasOther = false;
+            for (Elements.Support s : supports) {
+                if (s.type == Elements.SUPPORT_TYPE.FIXED) hasFixed = true;
+                else hasOther = true;
+            }
+            if (hasFixed && hasOther) {
+                return "No se puede combinar un empotrado con un PIN o ROLLER.";
+            }
+        }
+        return null; // válido
+    }
+
+    private Module resultsModule;
+
+    private void initializeResultsModule () {
+        resultsModule = new Module(p5, 2 * hRect + 2 * margin, 4 * vRect + 2 * margin,
+                3 * hRect - 4 * margin, 2 * vRect - 4 * margin);
+        resultsModule.setTitle("Resultados");
+    }
+
 
     /**
      * Dibuja el panel de resultados con las reacciones calculadas.
@@ -2128,46 +2176,44 @@ public class SimulatorScreen extends Screen {
      * <p>Muestra las componentes de reacción en los extremos A y B (RAx, RAy, MA, RBx, RBy, MB)
      * dentro de un área sombreada de la interfaz gráfica.
      */
-    private void displayResultsPanel() {
+    private void displayResultsModule() {
 
-        // Recuadro
-        p5.fill(FinalColors.bgGrey());
-        float panelX = 2 * hRect + 2 * margin;
-        float panelY = 4 * vRect + 2 * margin;
-        float panelW = 3 * hRect - 4 * margin;
-        float panelH = 2 * vRect - 4 * margin;
+        if (errorMessage != null) {
+            p5.push();
+            p5.fill(255, 60, 60); // rojo claro
+            p5.textAlign(LEFT);
+            p5.textSize(Sizes.widgetHeading);
+            p5.text(errorMessage, resultsModule.x+2*margin, resultsModule.y + resultsModule.height-3*margin);
+            p5.pop();
+        }
 
-        p5.rect(panelX, panelY, panelW, panelH);
+        String[] labels1 = {"RAx", "RAy", "MA"};
+        String[] labels2 = {"RBx", "RBy", "MB"};
 
-        // Matriz de textos
+        float x = resultsModule.x;
+        float y = resultsModule.y;
+        float w = resultsModule.width;
+
+        float textStartY = y + 2 * frame;
+        float lineHeight = frame * 1.2f;
+        float col1X = x + 2 * frame;
+        float col2X = x + w / 2 + frame;
+
+        p5.textAlign(LEFT, CENTER);
         p5.textSize(Sizes.widgetHeading);
         p5.fill(FinalColors.textWhite());
-        p5.textAlign(PConstants.CENTER);
-        p5.text("Resultados", panelX + panelW / 2, panelY + frame / 2);
 
-
-        String[] label1 = {"RAx", "RAy", "MA"};
-
-        String[] values1 = new String[3];
-        String[] values2 = new String[3];
-
-        for (int i = 0; i < results.length; i++) {
-            if (i < 3) values1[i] = "" + results[i];
-            else values2[i - 3] = "" + results[i - 3];
-        }
+        String unit = " N";
 
         for (int i = 0; i < 3; i++) {
-            String string = label1[i] + ": " + values1[i];
-            p5.text(string, panelX + 3 * frame, panelY + 2 * frame + frame * i);
+            String val1 = (results.length > i) ? String.format("%.3f", results[i]) : "—";
+            String val2 = (results.length > i + 3) ? String.format("%.3f", results[i + 3]) : "—";
+
+            if (i==2) unit = " N·m"; // Unidad del momento
+
+            p5.text(labels1[i] + ": " + val1 + unit, col1X, textStartY + i * lineHeight);
+            p5.text(labels2[i] + ": " + val2 + unit, col2X, textStartY + i * lineHeight);
         }
-
-        String[] label2 = {"RBx", "RBy", "MB"};
-
-        for (int i = 0; i < 3; i++) {
-            String string = label2[i] + ": " + values2[i];
-            p5.text(label2[i], panelX + frame / 2 + panelW / 2, panelY + 2 * frame + frame * i);
-        }
-
     }
 
     /**
@@ -2259,11 +2305,28 @@ public class SimulatorScreen extends Screen {
         // Reinicializar sliders máximos
         setAllUbiSlidersMaxTo(beamSizeSlider.value);
 
+        // Volver a añadir botones de añadir
+
+        addForceButton = new Button(p5, forceModule.x + 2 * margin, forceModule.y + margin + frame, forceModule.width - 4 * margin, frame * 0.75f);
+        addForceButton.setText("Añadir fuerza");
+        addForceButton.strokeColorOn = FinalColors.primaryYellow();
+        addForceButton.strokeColorOff = FinalColors.primaryYellow();
+        addForceButton.strokeWeight = 1;
+        forceModule.components.add(addForceButton);
+
+        addMomentButton = new Button(p5, momentModule.x + 2 * margin, momentModule.y + margin + frame, momentModule.width - 4 * margin, frame * 0.75f);
+        addMomentButton.setText("Añadir momento");
+        addMomentButton.strokeColorOn = FinalColors.primaryYellow();
+        addMomentButton.strokeColorOff = FinalColors.primaryYellow();
+        addMomentButton.strokeWeight = 1;
+        momentModule.components.add(addMomentButton);
+
+
         // === Añadir fuerza inicial de nuevo ===
-        initializeCreateForce();
+        //initializeCreateForce();
 
         // === Añadir momento inicial de nuevo ===
-        initializeCreateMoment();
+        //initializeCreateMoment();
 
         // Cerrar todos los módulos
         closeAllModules();
@@ -2468,38 +2531,47 @@ public class SimulatorScreen extends Screen {
 
             // === Insertar o actualizar VIGA ===
             if (simId <= 0) {
-                // Nueva simulación, crear nueva viga
+                // Nueva simulación
                 String qInsertViga = "INSERT INTO viga (LONGITUD) VALUES (" + longitud + ")";
+                System.out.println("[DB] " + qInsertViga);
                 Main.Phi6Lab.db.query.execute(qInsertViga);
+
                 ResultSet rsViga = Main.Phi6Lab.db.query.executeQuery("SELECT LAST_INSERT_ID() as id");
                 rsViga.next();
                 vigaId = rsViga.getInt("id");
+                System.out.println("[DB] Nueva viga insertada con idVIGA = " + vigaId);
 
-                // Crear nuevo simulador ===
+                // Crear nuevo simulador
                 String usuario = GUI.currentUser;
                 String qInsertSim = "INSERT INTO simulador (TITULO, CREACION, MODIFICACION, VIGA_idVIGA, USUARIO_NOMBRE) " +
                         "VALUES ('" + titulo + "', '" + now + "', '" + now + "', " + vigaId + ", '" + usuario + "')";
+                System.out.println("[DB] " + qInsertSim);
                 Main.Phi6Lab.db.query.execute(qInsertSim);
+
                 ResultSet rsSim = Main.Phi6Lab.db.query.executeQuery("SELECT LAST_INSERT_ID() as id");
                 rsSim.next();
                 simId = rsSim.getInt("id");
+                System.out.println("[DB] Nuevo simulador insertado con idSIMULADOR = " + simId);
 
             } else {
-                // Simulador existente: obtener viga
+                // Simulador existente
                 String qGetViga = "SELECT VIGA_idVIGA FROM simulador WHERE idSIMULADOR = " + simId;
                 ResultSet rsViga = Main.Phi6Lab.db.query.executeQuery(qGetViga);
                 rsViga.next();
                 vigaId = rsViga.getInt("VIGA_idVIGA");
+                System.out.println("[DB] Editando simulador existente con idSIMULADOR = " + simId + " y idVIGA = " + vigaId);
 
-                // Actualizar longitud de viga y simulador
                 String qUpdateViga = "UPDATE viga SET LONGITUD = " + longitud + " WHERE idVIGA = " + vigaId;
+                System.out.println("[DB] " + qUpdateViga);
                 Main.Phi6Lab.db.query.execute(qUpdateViga);
 
-                String qUpdateSim = "UPDATE simulador SET TITULO = '" + titulo + "', MODIFICACION = '" + now + "' " + "WHERE idSIMULADOR = " + simId;
+                String qUpdateSim = "UPDATE simulador SET TITULO = '" + titulo + "', MODIFICACION = '" + now + "' " +
+                        "WHERE idSIMULADOR = " + simId;
+                System.out.println("[DB] " + qUpdateSim);
                 Main.Phi6Lab.db.query.execute(qUpdateSim);
 
-                // Eliminar elementos existentes
                 String qDeleteElems = "DELETE FROM elemento WHERE VIGA_idVIGA = " + vigaId;
+                System.out.println("[DB] " + qDeleteElems);
                 Main.Phi6Lab.db.query.execute(qDeleteElems);
             }
 
@@ -2508,8 +2580,17 @@ public class SimulatorScreen extends Screen {
                 Elements.Force f = simuZone.forces.get(i);
                 int tipoId = 1;
                 String sentido = f.isUpward() ? "ARRIBA" : "ABAJO";
-                String q = "INSERT INTO elemento (VALOR, UBICACION, SENTIDO, TIPO_idTIPO, VIGA_idVIGA) " + "VALUES (" + f.getMagnitude() + ", " + f.getPosition() + ", '" + sentido + "', " + tipoId + ", " + vigaId + ")";
-                Main.Phi6Lab.db.query.execute(q);
+                String q = "INSERT INTO elemento (VALOR, UBICACION, SENTIDO, TIPO_idTIPO, VIGA_idVIGA) " +
+                        "VALUES (" + f.getMagnitude() + ", " + f.getPosition() + ", '" + sentido + "', " + tipoId + ", " + vigaId + ")";
+                System.out.println("[DB] Fuerza: " + q);
+                try {
+                    Main.Phi6Lab.db.query.execute(q);
+                } catch (SQLException ex) {
+                    System.out.println("[ERROR] Falló al insertar elemento:");
+                    System.out.println("→ " + q);
+                    ex.printStackTrace();
+                }
+
             }
 
             // === Insertar momentos ===
@@ -2517,7 +2598,9 @@ public class SimulatorScreen extends Screen {
                 Elements.Moment m = simuZone.moments.get(i);
                 int tipoId = 3;
                 String sentido = m.isClokwise() ? "HORARIO" : "ANTIHORARIO";
-                String q = "INSERT INTO elemento (VALOR, UBICACION, SENTIDO, TIPO_idTIPO, VIGA_idVIGA) " + "VALUES (" + m.getMagnitude() + ", " + m.getPosition() + ", '" + sentido + "', " + tipoId + ", " + vigaId + ")";
+                String q = "INSERT INTO elemento (VALOR, UBICACION, SENTIDO, TIPO_idTIPO, VIGA_idVIGA) " +
+                        "VALUES (" + m.getMagnitude() + ", " + m.getPosition() + ", '" + sentido + "', " + tipoId + ", " + vigaId + ")";
+                System.out.println("[DB] Momento: " + q);
                 Main.Phi6Lab.db.query.execute(q);
             }
 
@@ -2530,11 +2613,13 @@ public class SimulatorScreen extends Screen {
                     case FIXED -> 6;
                 };
                 String sentido = "N/A";
-                String q = "INSERT INTO elemento (VALOR, UBICACION, SENTIDO, TIPO_idTIPO, VIGA_idVIGA) " + "VALUES (0, " + s.position + ", '" + sentido + "', " + tipoId + ", " + vigaId + ")";
+                String q = "INSERT INTO elemento (VALOR, UBICACION, SENTIDO, TIPO_idTIPO, VIGA_idVIGA) " +
+                        "VALUES (0, " + s.position + ", '" + sentido + "', " + tipoId + ", " + vigaId + ")";
+                System.out.println("[DB] Apoyo: " + q);
                 Main.Phi6Lab.db.query.execute(q);
             }
 
-            System.out.println("Simulación guardada correctamente con ID " + simId);
+            System.out.println("[DB] Simulación guardada correctamente con ID SIMULADOR = " + simId);
             return simId;
 
         } catch (Exception e) {
@@ -2545,7 +2630,7 @@ public class SimulatorScreen extends Screen {
 
     public void deleteSimFromDB(int simId) {
         try {
-            // 1. Obtener id de la viga
+            // Obtener id de la viga
             String qViga = "SELECT VIGA_idVIGA FROM simulador WHERE idSIMULADOR = " + simId;
             ResultSet rs = Main.Phi6Lab.db.query.executeQuery(qViga);
             if (!rs.next()) {
@@ -2554,15 +2639,15 @@ public class SimulatorScreen extends Screen {
             }
             int vigaId = rs.getInt("VIGA_idVIGA");
 
-            // 2. Eliminar elementos relacionados
+            // Eliminar elementos relacionados
             String qDeleteElems = "DELETE FROM elemento WHERE VIGA_idVIGA = " + vigaId;
             Main.Phi6Lab.db.query.execute(qDeleteElems);
 
-            // 3. Eliminar simulador
+            // Eliminar simulador
             String qDeleteSim = "DELETE FROM simulador WHERE idSIMULADOR = " + simId;
             Main.Phi6Lab.db.query.execute(qDeleteSim);
 
-            // 4. Eliminar viga
+            // Eliminar viga
             String qDeleteViga = "DELETE FROM viga WHERE idVIGA = " + vigaId;
             Main.Phi6Lab.db.query.execute(qDeleteViga);
 

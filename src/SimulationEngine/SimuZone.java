@@ -101,7 +101,7 @@ public class SimuZone {
     /**
      * Color de relleno para la viga.
      */
-    private int fillColor = FinalColors.accentDenimBlue();
+    private int fillColor = FinalColors.primaryYellow();
 
     /**
      * Color del texto en etiquetas y valores.
@@ -178,6 +178,13 @@ public class SimuZone {
 
         // Dibujar apoyos
         drawSupports();
+
+        // Dibujar reacciones
+
+        if (reactionValues != null && !supportReactions.isEmpty()) {
+            drawReactions();
+        }
+
     }
 
     /**
@@ -195,6 +202,7 @@ public class SimuZone {
     private void drawBeam() {
         p5.push();
         applyStyle();
+        p5.fill(FinalColors.accentDenimBlue());
         p5.rect(beamX, beamY, beamWidth, beamHeight);
         //drawArrow(beamX, beamY, 0, 100, 2, 20);
         p5.pop();
@@ -364,7 +372,7 @@ public class SimuZone {
     void circArrow(float x, float y, float radius, float start, float stop, float arrowSize) {
         p5.ellipseMode(CENTER);
         p5.noFill();
-        p5.stroke(FinalColors.primaryYellow());
+        p5.stroke(strokeColor);
         p5.strokeWeight(2);
 
         p5.arc(x, y, radius * 2, radius * 2, start, stop);
@@ -395,7 +403,7 @@ public class SimuZone {
     void circArrowInv(float x, float y, float radius, float start, float stop, float arrowSize) {
         p5.ellipseMode(CENTER);
         p5.noFill();
-        p5.stroke(FinalColors.primaryYellow());
+        p5.stroke(strokeColor);
         p5.strokeWeight(2);
 
         // Dibujar arco
@@ -440,8 +448,7 @@ public class SimuZone {
         float angle = (float) Math.toRadians(degrees);
 
         p5.strokeWeight(thickness);
-        p5.stroke(FinalColors.primaryYellow());
-        p5.fill(FinalColors.primaryYellow());
+        applyStyle();
 
         float triWidth = 20;
 
@@ -565,5 +572,84 @@ public class SimuZone {
         p5.ellipse(x + triangleWidth + wheelDiameter / 2, baseY + triangleHeight + wheelDiameter / 2, wheelDiameter, wheelDiameter);
         p5.pop();
     }
+
+    private double[] reactionValues; // [RAx, RAy, MA, RBx, RBy, MB]
+    private ArrayList<Elements.Support> supportReactions = new ArrayList<>();
+
+    public void setReactions(double[] values, ArrayList<Elements.Support> supports) {
+        this.reactionValues = values;
+        this.supportReactions = new ArrayList<>(supports); // Copia local
+    }
+
+    private void drawReactions() {
+        p5.push();
+        applyStyle();
+        p5.textAlign(PConstants.CENTER, PConstants.CENTER);
+        p5.textSize(16);
+
+        this.strokeColor = FinalColors.accentDenimBlue(); // Color para diferenciar
+        this.fillColor = FinalColors.accentDenimBlue(); // Color para diferenciar
+
+        for (int i = 0; i < supportReactions.size(); i++) {
+            Elements.Support support = supportReactions.get(i);
+            float x = beamX + PApplet.map((float) support.position, 0, beamValue, 0, beamWidth);
+            float y = beamY;
+
+            String id = support.id;
+            int offset = id.equals("A") ? 0 : 3;
+            //System.out.println("[Draw Reactions]: Reaccionando con ID "+ id);
+
+            float rAx = (float) reactionValues[offset];
+            float rAy = (float) reactionValues[offset + 1];
+            float mA  = (float) reactionValues[offset + 2];
+
+            // Dibujar RAx
+            if (Math.abs(rAx) > 0.1f)
+                drawArrowDir(x, y + 20, rAx > 0 ? DIRECTION.RIGHT : DIRECTION.LEFT, 60, 2, 15, "R" + id + "x");
+
+            float length = 40;
+            float triHeight = 10;
+            float startY = y - 10; // Justo encima de la viga
+
+            if (Math.abs(rAy) > 0.1f) {
+                if (rAy > 0) {
+                    drawArrowDir(x, startY, DIRECTION.UP, length, 2, triHeight, "R" + id + "y");
+                } else {
+                    drawArrowDir(x, startY, DIRECTION.UP, length, 2, triHeight, "R" + id + "y");
+                }
+            }
+
+            // Dibujar momento
+            if (Math.abs(mA) > 0.1f)
+                drawMomentArrow(x, y - 40, mA < 0, "M" + id);
+        }
+
+        this.strokeColor = FinalColors.primaryYellow(); // Restaurar color
+        this.fillColor = FinalColors.primaryYellow(); // Restaurar color
+
+        p5.pop();
+    }
+
+    private void drawArrowDir(float x, float y, DIRECTION dir, float length, float thickness, float triHeight, String label) {
+        drawArrow(x, y, dir == DIRECTION.UP ? 0 : dir == DIRECTION.DOWN ? 180 : dir == DIRECTION.LEFT ? 270 : 90, length, thickness, triHeight);
+        p5.fill(0, 150, 255); // Azul
+        p5.text(label, x, dir == DIRECTION.UP ? y - length - triHeight : y + length + triHeight + 15);
+    }
+
+    private void drawMomentArrow(float x, float y, boolean clockwise, String label) {
+        float r = 35;
+        float start = -p5.HALF_PI;
+        float stop = p5.PI;
+        if (clockwise)
+            circArrowInv(x, y, r, start, stop, 10);
+        else
+            circArrow(x, y, r, start, stop, 10);
+
+        p5.fill(0, 150, 255);
+        p5.text(label, x, y - r - 15);
+    }
+
+
+
 
 }

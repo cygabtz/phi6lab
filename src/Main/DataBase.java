@@ -1,7 +1,12 @@
 package Main;
 
+import SimulationEngine.Elements;
+
 import java.sql.*;
 import java.util.ArrayList;
+
+import static Main.Phi6Lab.db;
+import static Screens.SimulatorScreen.simuZone;
 
 /**
  * Clase que gestiona la conexión con la base de datos y permite ejecutar operaciones SQL.
@@ -434,6 +439,27 @@ public class DataBase {
         }
         return wholeTable;
     }
+
+    public int insertSimulador(String titulo, String usuario) {
+        int idGenerado = -1;
+        String q = "INSERT INTO simulador (TITULO, USUARIO_NOMBRE, CREACION, MODIFICACION) " +
+                "VALUES (?, ?, NOW(), NOW())";
+        try {
+            PreparedStatement ps = c.prepareStatement(q, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, titulo);
+            ps.setString(2, usuario);
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                idGenerado = rs.getInt(1); // idSIMULADOR generado
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idGenerado;
+    }
+
 
 
 }

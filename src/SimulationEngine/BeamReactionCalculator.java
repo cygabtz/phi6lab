@@ -37,8 +37,16 @@ public class BeamReactionCalculator {
      * Si hay dos apoyos, se generan ecuaciones de equilibrio para resolver simbólicamente las incógnitas.
      *
      * <p>Las componentes devueltas están en el orden:
-     * {@code [RAx, RAy, MA, RBx, RBy, MB]}.
-     *
+     * {@code [RAx, RAy, MA, RBx, RBy, MB]};
+     * <p>donde:
+     * <ul>
+     *      <li>RAx es la componente horizontal de la reacción en el apoyo A
+     *      <li>RAy es la componente vertical de la reacción en el apoyo A
+     *      <li>MA es el momento en A en caso de apoyo empotrado
+     *      <li>RBx es la componente horizontal de la reacción en el apoyo B
+     *      <li>RBy es la componente vertical de la reacción en el apoyo B
+     *      <li>MB es el momento en A en caso de apoyo empotrado
+     * </ul>
      * @param forces   lista de fuerzas externas aplicadas sobre la viga.
      * @param moments  lista de momentos aplicados.
      * @param supports lista de apoyos con su tipo y posición.
@@ -153,6 +161,7 @@ public class BeamReactionCalculator {
         } else System.out.println("No se pueden calcular vigas con más de dos soportes");
 
         System.out.println("Imprimiendo resultados");
+        Arrays.toString(new double[]{RAx, RAy, MA, RBx, RBy, MB});
         return new double[]{RAx, RAy, MA, RBx, RBy, MB};
     }
 
