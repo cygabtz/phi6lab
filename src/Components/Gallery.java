@@ -3,20 +3,66 @@ package Components;
 import Main.GUI;
 import processing.core.PApplet;
 
+/**
+ * Clase que representa una galería de tarjetas (Cards) dentro de la interfaz gráfica.
+ *
+ * <p>La galería permite mostrar un conjunto de tarjetas paginadas, cada una representando una
+ * simulación (o producto) en forma visual. Controla la disposición, paginación y renderizado de
+ * las tarjetas según la resolución y el número de elementos.
+ *
+ * <p>Esta clase es utilizada principalmente en {@code HomeScreen} para mostrar las simulaciones
+ * asociadas a un usuario.
+ */
 public class Gallery {
-    Card[] cards;               // Productes
-    int numCards;               // Número total de Productes
-    int maxCardsInPage;         // Número de targetas en una página
+    /** Array de objetos {@link Card} que representan cada simulación visualizada. */
+    Card[] cards;
+
+    /** Número total de tarjetas a mostrar en la galería. */
+    int numCards;
+
+    /** Número máximo de tarjetas visibles por página. */
+    int maxCardsInPage;
+
+    /** Número de tarjetas por fila (normalmente 3). */
     int numCardsRows = 3;
 
+    /** Página actual que se está visualizando. */
     int numPage;
+
+    /** Número total de páginas disponibles. */
     int numTotalPages;
+
+    /** Margen entre las tarjetas. */
     float margin;
 
-    float x, y, w, h;
-    float wCard, hCard;
+    /** Posición X del área de la galería. */
+    float x;
 
-    // Constructor
+    /** Posición Y del área de la galería. */
+    float y;
+
+    /** Ancho total de la galería. */
+    float w;
+
+    /** Alto total de la galería. */
+    float h;
+
+    /** Ancho individual de una tarjeta. */
+    float wCard;
+
+    /** Alto individual de una tarjeta. */
+    float hCard;
+
+    /**
+     * Crea una nueva galería de tarjetas con posición, tamaño y espaciado definidos.
+     *
+     * @param p5     instancia de Processing
+     * @param x      coordenada X de inicio
+     * @param y      coordenada Y de inicio
+     * @param w      ancho total de la galería
+     * @param h      alto total de la galería
+     * @param margin espacio entre tarjetas
+     */
     public Gallery(PApplet p5, float x, float y, float w, float h, int margin) {
 
         this.numCards = 10;
@@ -37,6 +83,14 @@ public class Gallery {
 
     // Setters
 
+    /**
+     * Carga los datos de las tarjetas a mostrar en la galería a partir de un array con la información.
+     *
+     * <p>Se crean instancias de {@link Card} en posiciones predefinidas con imágenes por defecto.
+     *
+     * @param p5        instancia de Processing
+     * @param cardsInfo matriz con información de cada tarjeta (ID, título, fechas, etc.)
+     */
     public void setCards(PApplet p5, String [][] cardsInfo) {
         cards = new Card[numCards];
         int k=0;
@@ -53,20 +107,25 @@ public class Gallery {
         }
     }
 
-
+    /** Avanza a la siguiente página si no se ha alcanzado la última. */
     public void nextPage() {
         if (this.numPage<this.numTotalPages) {
             this.numPage++;
         }
     }
 
+    /** Retrocede a la página anterior si no se está en la primera. */
     public void prevPage() {
         if (this.numPage>0) {
             this.numPage--;
         }
     }
 
-    // Dibuixa taula
+    /**
+     * Dibuja las tarjetas correspondientes a la página actual y muestra información de paginación.
+     *
+     * @param p5 instancia de Processing utilizada para el renderizado
+     */
     public void display(PApplet p5) {
 
         p5.pushStyle();
@@ -91,6 +150,12 @@ public class Gallery {
         p5.popStyle();
     }
 
+    /**
+     * Devuelve el índice de la tarjeta sobre la que está posicionado el cursor.
+     *
+     * @param p5 instancia de Processing
+     * @return índice de la tarjeta sobre la que está el ratón, o {@code -1} si no hay ninguna
+     */
     public int numCardOver(PApplet p5) {
 
         int firstCardPage = maxCardsInPage *numPage;
@@ -112,14 +177,26 @@ public class Gallery {
         return -1;
     }
 
+    /**
+     * Establece el número total de tarjetas a mostrar.
+     * @param numCards número total de elementos
+     */
     public void setNumCards(int numCards) {
         this.numCards = numCards;
     }
 
+    /**
+     * Define el número máximo de tarjetas visibles por página.
+     * @param num número de tarjetas por página
+     */
     public void setMaxCardsInPage(int num){
         this.maxCardsInPage = num;
     }
 
+    /**
+     * Devuelve el array de tarjetas actualmente cargadas.
+     * @return array de objetos {@link Card}
+     */
     public Card[] getCards(){
         return this.cards;
     }

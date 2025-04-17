@@ -5,11 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eab7278a-d07e-4ce3-9270-5223be049576" name="Changes" comment="Bugs varios de la BD y mejora panel resultados">
-      <change afterPath="$PROJECT_DIR$/PHPcommands/prueba.puml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Button.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Button.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ConfirmationModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ConfirmationModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/FieldSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/FieldSlider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Gallery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Gallery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Module.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Module.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Slider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Slider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/TextField.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/TextField.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/TextList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/TextList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants/Colors.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants/Colors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants/FinalColors.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants/FinalColors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants/Fonts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants/Fonts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants/Layout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants/Layout.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants/Sizes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants/Sizes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants/StaticFonts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants/StaticFonts.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main/DataBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/DataBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/GUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/Phi6Lab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main/Phi6Lab.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main/fontsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tests/fontsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/HomeScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/HomeScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/LoginScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/LoginScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/Screen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/Screen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SimulatorScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SimulationEngine/BeamReactionCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/BeamReactionCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SimulationEngine/Elements.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/Elements.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SimulationEngine/PruebaSymJa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tests/PruebaSymJa.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SimulationEngine/SimuZone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationEngine/SimuZone.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -22,8 +44,8 @@
       <list>
         <option value="Record" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="UML Sequence" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -64,7 +86,7 @@
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/benit/IdeaProjects/solucioInfo/data/icons",
-    "project.structure.last.edited": "Libraries",
+    "project.structure.last.edited": "Artifacts",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.pluginManager"
@@ -91,7 +113,7 @@
       <module name="solucioInfo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="SimulationEngine.*" />
+          <option name="PATTERN" value="Tests.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -104,7 +126,7 @@
       <module name="solucioInfo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="SimulationEngine.*" />
+          <option name="PATTERN" value="Tests.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -117,7 +139,7 @@
       <module name="solucioInfo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="SimulationEngine.*" />
+          <option name="PATTERN" value="Tests.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -133,11 +155,11 @@
       </method>
     </configuration>
     <configuration name="PruebaSymJa" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="SimulationEngine.PruebaSymJa" />
+      <option name="MAIN_CLASS_NAME" value="Tests.PruebaSymJa" />
       <module name="solucioInfo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="SimulationEngine.*" />
+          <option name="PATTERN" value="Tests.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -364,7 +386,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744676545800</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Bugs varios de la BD y mejora panel resultados">
+      <option name="closed" value="true" />
+      <created>1744837395428</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1744837395429</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

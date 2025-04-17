@@ -9,38 +9,89 @@ import java.util.ArrayList;
 import static Constants.Layout.*;
 
 /**
- * Un <code>Module</code> es un contenedor de otros <code>Components</code> interactivos.
- * Se puede cerrar con el {@link ButtonIcon} de la cruz.
- * Los módulos están incialmente vacíos y se les incorpora componentes mediante añadirlos a la lista
- * <code>components</code>.
- * <p>
- * La interacción con el ratón debe manejarse individualmente para cada componente añadido.
+ * Clase que representa un módulo gráfico flotante o acoplado dentro de la interfaz de usuario.
+ *
+ * <p>Un módulo actúa como una ventana o panel que puede contener diferentes componentes
+ * interactivos (como botones, sliders, campos de texto, etc.), y puede mostrar u ocultar
+ * su contenido dinámicamente. Está diseñado para usarse en pantallas como el simulador.
+ *
+ * <p>Cada módulo tiene un título, una zona de cabecera con un botón de cierre, y un
+ * sistema de estados ({@code ATTACHED}, {@code DEATACHED}, {@code HIDDEN}) que permite
+ * controlar su comportamiento en pantalla.
+ *
+ * <p>Admite personalización de colores, tipografía, bordes y admite clonación si se requiere
+ * replicar su estructura. También mantiene una lista de componentes internos que son renderizados
+ * automáticamente cuando se llama al método {@link #display()}.
  */
 public class Module implements Cloneable{
+    /** Instancia de Processing utilizada para dibujar el módulo. */
     PApplet p5;
-    public String title;
-    public float x, y, width, height;
-    public int bgColor, fontColor, selectedColor, borderColor;
 
+    /** Título visible del módulo, normalmente mostrado en la cabecera. */
+    public String title;
+
+    /** Coordenada horizontal (X) del módulo. */
+    public float x;
+
+    /** Coordenada vertical (Y) del módulo. */
+    public float y;
+
+    /** Ancho del módulo en píxeles. */
+    public float width;
+
+    /** Altura del módulo en píxeles. */
+    public float height;
+
+    /** Color de fondo del módulo. */
+    public int bgColor;
+
+    /** Color del texto mostrado dentro del módulo. */
+    public int fontColor;
+
+    /** Color que se usa para resaltar si el módulo está activo o seleccionado. */
+    public int selectedColor;
+
+    /** Color del borde del módulo. */
+    public int borderColor;
+
+    /** Indica si el módulo está actualmente abierto ({@code true}) o cerrado/oculto ({@code false}). */
     public boolean opened;
 
-    //Base components
+    /** Botón para cerrar o minimizar el módulo (usualmente en la esquina superior derecha). */
     public ButtonIcon closeButton;
 
-    //Module management
+    /**
+     * Enum que representa el estado del módulo:
+     * <ul>
+     *   <li>{@code ATTACHED} – acoplado a una zona fija de la interfaz</li>
+     *   <li>{@code DEATACHED} – flotante, arrastrable</li>
+     *   <li>{@code HIDDEN} – no visible</li>
+     * </ul>
+     */
     public enum STATE {ATTACHED, DEATACHED, HIDDEN}
+
+    /** Estado actual del módulo dentro de la interfaz. */
     public STATE state;
 
-    //Extra components
+    /**
+     * Lista de componentes visuales y funcionales añadidos al módulo.
+     * Puede contener botones, sliders u otros elementos gráficos.
+     */
     public ArrayList<Object> components;
 
     /**
-     * Constructor de un módulo vacío.
-     * @param p5
-     * @param x
-     * @param y
-     * @param width
-     * @param height
+     * Constructor que crea un nuevo módulo interactivo con posición, dimensiones
+     * y estilo visual predeterminados.
+     *
+     * <p>El módulo se inicia en estado {@code ATTACHED} y se muestra como abierto.
+     * Incluye un botón de cierre con ícono SVG y se configura con los colores por defecto
+     * definidos en {@link FinalColors}. El título se inicializa como "Nuevo módulo...".
+     *
+     * @param p5     instancia de Processing necesaria para el renderizado
+     * @param x      posición horizontal del módulo (coordenada X)
+     * @param y      posición vertical del módulo (coordenada Y)
+     * @param width  ancho del módulo en píxeles
+     * @param height alto del módulo en píxeles
      */
     public Module(PApplet p5, float x, float y, float width, float height){
         this.p5 = p5;
@@ -64,6 +115,27 @@ public class Module implements Cloneable{
         this.components = new ArrayList<>();
     }
 
+    /**
+     * Dibuja visualmente el módulo en pantalla si está abierto.
+     *
+     * <p>El módulo se representa como un rectángulo con cabecera y borde. Si el cursor del ratón
+     * está sobre el área del módulo, se usa un color de borde destacado y se dibuja una línea
+     * divisoria entre la cabecera y el cuerpo. Si no hay interacción, se usa un borde más neutro.
+     *
+     * <p>Se muestra el título en la parte superior y el botón de cierre. Además, se recorren
+     * todos los componentes añadidos al módulo para dibujarlos en su respectiva posición.
+     * Los componentes soportados actualmente incluyen:
+     * <ul>
+     *   <li>{@link Button}</li>
+     *   <li>{@link ButtonIcon}</li>
+     *   <li>{@link FieldSlider} (mostrando tanto el campo de texto como el slider)</li>
+     *   <li>{@link TextField}</li>
+     *   <li>{@link Slider}</li>
+     * </ul>
+     *
+     * <p>Este método debe llamarse en el bucle principal de dibujo de la aplicación para mantener
+     * actualizada la visualización del módulo.
+     */
     public void display() {
         if (opened) {
             p5.push();
@@ -116,6 +188,14 @@ public class Module implements Cloneable{
         }
     }
 
+    /**
+     * Verifica si el cursor del ratón se encuentra actualmente sobre el área visible del módulo.
+     *
+     * <p>Esta comprobación se utiliza para aplicar estilos visuales especiales
+     * (como resaltar el borde) cuando el módulo está siendo apuntado por el cursor.
+     *
+     * @return {@code true} si el ratón está dentro de los límites del módulo, {@code false} en caso contrario
+     */
     boolean isMouseOver() {
         return p5.mouseX > x && p5.mouseX < x + width && p5.mouseY > y && p5.mouseY < y + height;
     }

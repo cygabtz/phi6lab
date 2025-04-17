@@ -77,7 +77,6 @@ public class GUI {
 
         initializeScreens(p5);
         currentScreen = new Screen(p5, appColors, appFonts);
-        setCurrentScreen(SCREEN.HOME);
     }
 
     /**

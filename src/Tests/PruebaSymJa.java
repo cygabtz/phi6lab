@@ -1,4 +1,4 @@
-package SimulationEngine;
+package Tests;
 
 import org.matheclipse.core.eval.ExprEvaluator;
 

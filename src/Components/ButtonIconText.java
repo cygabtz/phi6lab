@@ -7,12 +7,38 @@ import processing.core.PConstants;
 
 import static Constants.Layout.*;
 
+/**
+ * Botón personalizado que combina un ícono SVG con un texto lateral.
+ *
+ * <p>Extiende la clase {@link ButtonIcon} y añade soporte para mostrar una etiqueta textual
+ * alineada horizontalmente junto al ícono, útil en interfaces donde se requiere una acción visual clara
+ * (como el botón "Crear" en {@code HomeScreen}).
+ *
+ * <p>Se apoya en {@link StaticFonts} y {@link FinalColors} para mantener coherencia visual.
+ */
 public class ButtonIconText extends ButtonIcon{
 
+    /**
+     * Crea un botón con ícono y texto con las dimensiones especificadas.
+     *
+     * @param p5     instancia de Processing para renderizado
+     * @param x      posición horizontal del botón
+     * @param y      posición vertical del botón
+     * @param width  ancho del botón
+     * @param height alto del botón
+     */
     public ButtonIconText(PApplet p5, float x, float y, float width, float height) {
         super(p5, x, y, width, height);
     }
 
+    /**
+     * Dibuja el botón con su fondo, ícono SVG y texto alineado a la izquierda.
+     *
+     * <p>El botón cambia su contorno cuando el ratón pasa por encima. El ícono se coloca a la izquierda
+     * y el texto a la derecha, usando las fuentes y colores definidos en la interfaz.
+     *
+     * <p>Se utiliza un margen y escalado personalizado para adaptar el diseño visual.
+     */
     @Override
     public void display() {
         p5.pushStyle();

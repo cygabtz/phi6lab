@@ -27,7 +27,16 @@ import static SimulationEngine.Elements.SUPPORT_TYPE.*;
  * <p>No soporta, por ahora, más de dos apoyos ni otras combinaciones con grados de indeterminación.
  */
 public class BeamReactionCalculator {
-
+    /**
+     * Evaluador simbólico estático proporcionado por la librería Symja.
+     *
+     * <p>Se utiliza para construir, simplificar y evaluar expresiones matemáticas
+     * simbólicas durante el cálculo de las reacciones en vigas.
+     *
+     * <p>Al ser estático, permite reutilizar una única instancia del motor de evaluación
+     * a lo largo de toda la clase sin necesidad de crear nuevos objetos cada vez,
+     * mejorando el rendimiento en operaciones simbólicas repetidas.
+     */
     private static ExprEvaluator engine = new ExprEvaluator();
 
     /**
@@ -205,6 +214,10 @@ public class BeamReactionCalculator {
         return resultados;
     }
 
+    /**
+     * Método para hacer tests con SymJa
+     * @param args
+     */
     public static void main(String[] args) {
         engine = new ExprEvaluator();
 

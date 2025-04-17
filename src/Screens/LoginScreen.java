@@ -143,6 +143,20 @@ public class LoginScreen extends Screen {
 
     }
 
+    /**
+     * Dibuja el banner superior en la pantalla de inicio de sesión.
+     *
+     * <p>Este método se encarga de mostrar visualmente la imagen decorativa
+     * correspondiente al banner de la pantalla de login, centrada en la parte superior.
+     *
+     * <p>Primero establece el estilo gráfico (relleno y sin borde), y si la imagen
+     * del banner está correctamente cargada, la dibuja en la posición determinada.
+     *
+     * <p>Este método es llamado automáticamente dentro del método {@link #display()},
+     * y su ejecución es condicional a que {@code bannerImage} no sea nulo.
+     *
+     * @see #display()
+     */
     private void displayBanner() {
         p5.push();
 

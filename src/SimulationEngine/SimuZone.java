@@ -573,14 +573,50 @@ public class SimuZone {
         p5.pop();
     }
 
+    /**
+     * Array que almacena los valores de las reacciones calculadas en los apoyos de la viga.
+     *
+     * <p>El orden de los valores es el siguiente:
+     * <ul>
+     *   <li>{@code RAx} – Componente horizontal de la reacción en el apoyo A</li>
+     *   <li>{@code RAy} – Componente vertical de la reacción en el apoyo A</li>
+     *   <li>{@code MA}  – Momento resultante en el apoyo A</li>
+     *   <li>{@code RBx} – Componente horizontal de la reacción en el apoyo B</li>
+     *   <li>{@code RBy} – Componente vertical de la reacción en el apoyo B</li>
+     *   <li>{@code MB}  – Momento resultante en el apoyo B</li>
+     * </ul>
+     *
+     * <p>Este array se establece mediante el método {@link #setReactions(double[], ArrayList)} y se utiliza para
+     * representar gráficamente las reacciones en {@code drawReactions()}.
+     */
     private double[] reactionValues; // [RAx, RAy, MA, RBx, RBy, MB]
+
+    /**
+     * Lista de apoyos (A y B) en los que se deben mostrar las reacciones.
+     * Se sincroniza con la base de datos o al calcular resultados.
+     */
     private ArrayList<Elements.Support> supportReactions = new ArrayList<>();
 
+    /**
+     * Asigna los valores de reacciones y los apoyos correspondientes.
+     *
+     * <p>Este método debe llamarse después del cálculo simbólico de reacciones.
+     * Se almacena una copia local de los apoyos y sus reacciones para poder dibujarlos.
+     *
+     * @param values   array con los valores de las reacciones [RAx, RAy, MA, RBx, RBy, MB]
+     * @param supports lista de apoyos (A y B) donde aplicar las reacciones
+     */
     public void setReactions(double[] values, ArrayList<Elements.Support> supports) {
         this.reactionValues = values;
         this.supportReactions = new ArrayList<>(supports); // Copia local
     }
 
+    /**
+     * Dibuja visualmente las reacciones (fuerzas y momentos) sobre la viga.
+     *
+     * <p>Se dibujan vectores (flechas) para RAx y RAy o RBx y RBy, y flechas circulares para momentos MA y MB.
+     * Las reacciones se posicionan correctamente sobre los apoyos A y B, en función de su posición relativa.
+     */
     private void drawReactions() {
         p5.push();
         applyStyle();
@@ -630,12 +666,31 @@ public class SimuZone {
         p5.pop();
     }
 
+    /**
+     * Dibuja una flecha con una etiqueta indicando el tipo de reacción (RAx, RAy, etc.).
+     *
+     * @param x         coordenada X de inicio
+     * @param y         coordenada Y de inicio
+     * @param dir       dirección de la flecha (UP, DOWN, LEFT, RIGHT)
+     * @param length    longitud de la flecha
+     * @param thickness grosor de la línea
+     * @param triHeight altura del triángulo de punta
+     * @param label     texto que acompaña a la flecha (e.g. "RAy")
+     */
     private void drawArrowDir(float x, float y, DIRECTION dir, float length, float thickness, float triHeight, String label) {
         drawArrow(x, y, dir == DIRECTION.UP ? 0 : dir == DIRECTION.DOWN ? 180 : dir == DIRECTION.LEFT ? 270 : 90, length, thickness, triHeight);
         p5.fill(0, 150, 255); // Azul
         p5.text(label, x, dir == DIRECTION.UP ? y - length - triHeight : y + length + triHeight + 15);
     }
 
+    /**
+     * Dibuja una flecha circular que representa un momento aplicado sobre la viga.
+     *
+     * @param x         coordenada X del centro
+     * @param y         coordenada Y del centro
+     * @param clockwise true si el momento es horario, false si es antihorario
+     * @param label     etiqueta de texto (por ejemplo, "MA" o "MB")
+     */
     private void drawMomentArrow(float x, float y, boolean clockwise, String label) {
         float r = 35;
         float start = -p5.HALF_PI;
@@ -648,8 +703,5 @@ public class SimuZone {
         p5.fill(0, 150, 255);
         p5.text(label, x, y - r - 15);
     }
-
-
-
 
 }

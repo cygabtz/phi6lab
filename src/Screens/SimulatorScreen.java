@@ -630,7 +630,7 @@ public class SimulatorScreen extends Screen {
         momentModuleMousePressed();
         supportModuleMousePressed();
 
-        // Actulizar listas de nombres en SimuZone
+        // Actualizar listas de nombres en SimuZone
         updateLabels();
 
         // Ha habido una modificación
@@ -675,6 +675,7 @@ public class SimulatorScreen extends Screen {
         if (saveButton.mouseOverButton(p5)) {
             GUI.currentSimId = saveSimToDB(GUI.currentSimId); // Actualiza o crea
             simIsDirty = false;
+            ((HomeScreen) GUI.screens[GUI.SCREEN.HOME.ordinal()]).refreshGallery();
         }
     }
 
@@ -1767,7 +1768,7 @@ public class SimulatorScreen extends Screen {
      * <p>Este método se utiliza para asegurar que solo un módulo esté visible a la vez,
      * normalmente antes de abrir uno nuevo desde los botones de navegación lateral.
      */
-    private void closeAllModules() {
+    void closeAllModules() {
         beamModule.opened = false;
         forceModule.opened = false;
         momentModule.opened = false;
@@ -2171,10 +2172,10 @@ public class SimulatorScreen extends Screen {
 
 
     /**
-     * Dibuja el panel de resultados con las reacciones calculadas.
+     * Muestra el panel de resultados con los valores de reacciones y momentos calculados.
      *
-     * <p>Muestra las componentes de reacción en los extremos A y B (RAx, RAy, MA, RBx, RBy, MB)
-     * dentro de un área sombreada de la interfaz gráfica.
+     * <p>Los resultados se presentan en dos columnas (RAx, RAy, MA y RBx, RBy, MB) alineadas,
+     * con una precisión de tres decimales.
      */
     private void displayResultsModule() {
 
@@ -2274,6 +2275,13 @@ public class SimulatorScreen extends Screen {
 
     // === Sincronización con la base de datos
 
+    /**
+     * Restaura completamente la pantalla del simulador, eliminando todos los módulos, sliders,
+     * y componentes interactivos visibles.
+     *
+     * <p>Tras limpiar, se reinsertan los botones de añadir fuerza y momento para evitar que desaparezcan
+     * de la interfaz. También se reinicia el valor de la viga y se limpia el título de la simulación.
+     */
     public void clearEverything() {
         // Limpiar datos
         forceValueFieldSliders.clear();
@@ -2438,6 +2446,15 @@ public class SimulatorScreen extends Screen {
         simuZone.moments.add(new Elements.Moment(10, beamFieldSlider.slider.value / 2, true));
     }
 
+    /**
+     * Carga todos los datos de la simulación especificada desde la base de datos.
+     *
+     * <p>Incluye la carga de la viga, elementos (fuerzas, momentos y apoyos) y el título.
+     * Para los apoyos, detecta su estado y asignación (A o B) a través del campo {@code SENTIDO}
+     * con valores {@code "ACTIVO_A"} o {@code "ACTIVO_B"}, restaurando sliders y tipo correspondientes.
+     *
+     * @param simId ID del simulador a cargar.
+     */
     public void loadSimFromDB(int simId) {
         try {
             clearEverything();
@@ -2482,22 +2499,26 @@ public class SimulatorScreen extends Screen {
                         ubiFS.setValue(ubicacion);
                         simuZone.moments.getLast().setClokwise(sentido.equalsIgnoreCase("HORARIO"));
                     }
-                    case 4, 5, 6 -> { // === Apoyo ===
+                    case 4, 5, 6 -> {
                         Elements.SUPPORT_TYPE type = switch (tipoNombre.toUpperCase()) {
                             case "SOPORTE_FIJO" -> Elements.SUPPORT_TYPE.PIN;
                             case "SOPORTE_MOVIL" -> Elements.SUPPORT_TYPE.ROLLER;
                             case "SOPORTE_EMPOTRADO" -> Elements.SUPPORT_TYPE.FIXED;
-                            default -> Elements.SUPPORT_TYPE.PIN; // por defecto
+                            default -> Elements.SUPPORT_TYPE.PIN;
                         };
 
-                        if (!supportActiveA) {
+                        if (sentido.equalsIgnoreCase("ACTIVO_A")) {
                             supportFieldSliderA.setValue(ubicacion);
                             updateSupportTypeA(type);
-                            toggleSupportA();
-                        } else {
+                            toggleSupportA(); // crea y marca como activo
+                            simuZone.supports.add(new Elements.Support("A", type, ubicacion));
+                        }
+
+                        if (sentido.equalsIgnoreCase("ACTIVO_B")) {
                             supportFieldSliderB.setValue(ubicacion);
                             updateSupportTypeB(type);
-                            toggleSupportB();
+                            toggleSupportB(); // crea y marca como activo
+                            simuZone.supports.add(new Elements.Support("B", type, ubicacion));
                         }
                     }
                     default -> {
@@ -2521,6 +2542,16 @@ public class SimulatorScreen extends Screen {
         }
     }
 
+    /**
+     * Guarda o actualiza la simulación actual en la base de datos.
+     *
+     * <p>Incluye la inserción o actualización de la viga, simulador, fuerzas, momentos y apoyos.
+     * Para los apoyos, se usa el campo {@code SENTIDO} para registrar si están activos y si corresponden a
+     * apoyo A o B, mediante los valores {@code "ACTIVO_A"} y {@code "ACTIVO_B"}.
+     *
+     * @param simId ID del simulador si ya existe; si es {@code -1}, se crea uno nuevo.
+     * @return ID del simulador guardado.
+     */
     public int saveSimToDB(int simId) {
         try {
             String titulo = simuTitleField.getText();
@@ -2605,18 +2636,23 @@ public class SimulatorScreen extends Screen {
             }
 
             // === Insertar apoyos ===
-            for (int i = 0; i < simuZone.supports.size(); i++) {
-                Elements.Support s = simuZone.supports.get(i);
-                int tipoId = switch (s.type) {
-                    case PIN -> 4;
-                    case ROLLER -> 5;
-                    case FIXED -> 6;
-                };
-                String sentido = "N/A";
-                String q = "INSERT INTO elemento (VALOR, UBICACION, SENTIDO, TIPO_idTIPO, VIGA_idVIGA) " +
-                        "VALUES (0, " + s.position + ", '" + sentido + "', " + tipoId + ", " + vigaId + ")";
-                System.out.println("[DB] Apoyo: " + q);
-                Main.Phi6Lab.db.query.execute(q);
+            for (Elements.Support s : simuZone.supports) {
+                String sentido = null;
+
+                if (s.id.equals("A") && supportActiveA) sentido = "ACTIVO_A";
+                if (s.id.equals("B") && supportActiveB) sentido = "ACTIVO_B";
+
+                if (sentido != null) {
+                    int tipoId = switch (s.type) {
+                        case PIN -> 4;
+                        case ROLLER -> 5;
+                        case FIXED -> 6;
+                    };
+
+                    String q = "INSERT INTO elemento (VALOR, UBICACION, SENTIDO, TIPO_idTIPO, VIGA_idVIGA) " +
+                            "VALUES (0, " + s.position + ", '" + sentido + "', " + tipoId + ", " + vigaId + ")";
+                    Main.Phi6Lab.db.query.execute(q);
+                }
             }
 
             System.out.println("[DB] Simulación guardada correctamente con ID SIMULADOR = " + simId);
@@ -2656,6 +2692,12 @@ public class SimulatorScreen extends Screen {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateEverything() {
+        updateMoments();
+        updateLabels();
+        updateForces();
     }
 
 }

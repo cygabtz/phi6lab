@@ -1,17 +1,13 @@
-package Main;
+package Tests;
 
 import Components.Slider;
 import Constants.FinalColors;
 import Constants.Fonts;
-import Constants.Sizes;
 import processing.core.PApplet;
-
-import static Constants.Layout.screenH;
-import static Constants.Layout.screenV;
 
 public class fontsTest extends PApplet {
     public static void main(String[] args) {
-        PApplet.main("Main.fontsTest");
+        PApplet.main("Tests.fontsTest");
     }
 
     public void settings() {

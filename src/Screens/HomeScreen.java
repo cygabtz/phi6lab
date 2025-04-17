@@ -282,6 +282,10 @@ public class HomeScreen extends Screen {
                 SimulatorScreen simScreen = (SimulatorScreen) GUI.screens[GUI.SCREEN.SIMULATOR.ordinal()];
                 GUI.currentSimId = Integer.parseInt(cardButton.getId());
                 simScreen.loadSimFromDB(Integer.parseInt(cardButton.getId()));
+                simScreen.closeAllModules();
+                simScreen.clearEverything();
+                simScreen.loadSimFromDB(GUI.currentSimId);
+                simScreen.updateEverything();
                 GUI.setCurrentScreen(GUI.SCREEN.SIMULATOR);
             }
         }
